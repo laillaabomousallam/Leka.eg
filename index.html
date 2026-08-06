@@ -226,9 +226,18 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 /* ─── PRODUCT PAGE ─── */
 .prod-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 52px)}
 .prod-gallery{background:var(--dust);position:sticky;top:52px;height:calc(100vh - 52px);display:flex;flex-direction:column}
-.gallery-main{flex:1;overflow:hidden;background:var(--dust)}
-.gallery-main img{width:100%;height:100%;object-fit:contain;transition:opacity .25s}
-.gallery-thumbs{display:flex;gap:4px;padding:8px;background:var(--white);border-top:1px solid var(--line);overflow-x:auto}
+.gallery-slider{position:relative;background:var(--dust);flex:1;overflow:hidden;display:flex;align-items:center;cursor:grab}
+.gallery-slider:active{cursor:grabbing}
+.gallery-slides{display:flex;width:100%;height:100%;transition:transform .3s ease}
+.gallery-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.gallery-slide img{width:100%;height:100%;object-fit:contain}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.35);color:#fff;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;z-index:5;transition:background .2s}
+.gallery-arrow:hover{background:rgba(0,0,0,.6)}
+.gallery-arrow.left{left:10px}
+.gallery-arrow.right{right:10px}
+.gallery-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:5}
+.gallery-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:background .2s;border:1px solid rgba(0,0,0,.2)}
+.gallery-dot.active{background:#fff}
 .thumb{width:52px;height:52px;object-fit:cover;flex-shrink:0;border:2px solid transparent;cursor:pointer;opacity:.45;transition:all .2s}
 .thumb.active{border-color:var(--ink);opacity:1}
 .prod-info{padding:3rem 2.5rem 3rem 5rem;overflow-y:auto;max-height:calc(100vh - 52px);position:relative}
@@ -634,7 +643,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   .shop-header{padding:1.5rem 1rem 0;margin-bottom:1.5rem}
   /* product page */
   .prod-wrap{grid-template-columns:1fr}
-  .prod-gallery{position:static;height:auto}
+  .prod-gallery{position:static;height:70vw;max-height:400px}
   .prod-info{padding:1.5rem}
   .prod-info{padding:1.5rem}
   /* checkout */
@@ -803,8 +812,12 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <div class="view" id="view-product">
   <div class="prod-wrap">
     <div class="prod-gallery">
-      <div class="gallery-main"><img id="mainImg" src="" alt=""/></div>
-      <div class="gallery-thumbs" id="thumbsRow"></div>
+      <div class="gallery-slider" id="gallerySlider">
+        <div class="gallery-slides" id="gallerySlides"></div>
+        <button class="gallery-arrow left" onclick="galleryPrev()">‹</button>
+        <button class="gallery-arrow right" onclick="galleryNext()">›</button>
+        <div class="gallery-dots" id="galleryDots"></div>
+      </div>
     </div>
     <div class="prod-info">
       <div class="prod-name" id="prodName"></div>
@@ -1083,13 +1096,13 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
       </a>
 
-      <a class="contact-info-item" href="https://www.instagram.com/leka.sw/" target="_blank">
+      <a class="contact-info-item" href="https://www.instagram.com/leka.eg/" target="_blank">
         <div class="contact-info-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
         </div>
         <div>
           <div class="contact-info-name t" data-ar="انستجرام" data-en="INSTAGRAM"></div>
-          <div class="contact-info-val">@leka.sw</div>
+          <div class="contact-info-val">@leka.eg</div>
         </div>
       </a>
 
@@ -1103,13 +1116,13 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
       </a>
 
-      <a class="contact-info-item" href="https://tiktok.com/@leka.sw" target="_blank">
+      <a class="contact-info-item" href="https://tiktok.com/@leka.eg" target="_blank">
         <div class="contact-info-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
         </div>
         <div>
           <div class="contact-info-name t" data-ar="تيك توك" data-en="TIKTOK"></div>
-          <div class="contact-info-val">@leka.sw</div>
+          <div class="contact-info-val">@leka.eg</div>
         </div>
       </a>
     </div>
@@ -1223,15 +1236,19 @@ const COLORS=[
   {nameAr:'برجاندي',nameEn:'Burgundy',hex:'#800020',key:'Burgundy'},
 ];
 const IMG={
-  'Black':{'Asl':'imgs/Black Asl.png','80s':'imgs/Black 80s.png','Graffity':'imgs/Black Graffity.png','English':'imgs/Black English.png'},
-  'White':{'Asl':'imgs/White Asl.png','80s':'imgs/White 80s.png','Graffity':'imgs/White Graffity.png','English':'imgs/White English.png'},
-  'Burgundy': {'Asl':'imgs/Red Asl.png','80s':'imgs/Red 80s.png','Graffity':'imgs/Red Graffity.png','English':'imgs/Red English.png'},
+  'Black':{'Asl':'imgs/Black Asl','80s':'imgs/Black 80s','Graffity':'imgs/Black Graffity','English':'imgs/Black English','Leka':'imgs/Black Leka','Dahabi':'imgs/Black Dahabi'},
+  'White':{'Asl':'imgs/White Asl','80s':'imgs/White 80s','Graffity':'imgs/White Graffity','English':'imgs/White English','Leka':'imgs/White Leka','Dahabi':'imgs/White Dahabi'},
+  'Burgundy':{'Asl':'imgs/Red Asl','80s':'imgs/Red 80s','Graffity':'imgs/Red Graffity','English':'imgs/Red English','Leka':'imgs/Red Leka','Dahabi':'imgs/Red Dahabi'},
+  'Black_hj':{'Asl':'imgs/Black Asl Hj','80s':'imgs/Black 80s Hj','Graffity':'imgs/Black Graffity Hj','English':'imgs/Black English Hj','Leka':'imgs/Black Leka Hj','Dahabi':'imgs/Black Dahabi Hj'},
+  'White_hj':{'Asl':'imgs/White Asl Hj','80s':'imgs/White 80s Hj','Graffity':'imgs/White Graffity Hj','English':'imgs/White English Hj','Leka':'imgs/White Leka Hj','Dahabi':'imgs/White Dahabi Hj'},
+  'Burgundy_hj':{'Asl':'imgs/Red Asl Hj','80s':'imgs/Red 80s Hj','Graffity':'imgs/Red Graffity Hj','English':'imgs/Red English Hj','Leka':'imgs/Red Leka Hj','Dahabi':'imgs/Red Dahabi Hj'},
 };
-function mc(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key][d]}))}
-function mc2(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key][d]}))}
+function mc(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key][d]+'/1.png',folder:IMG[c.key][d]}))}
+function mc2(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key+'_hj'][d]+'/1.png',folder:IMG[c.key+'_hj'][d]}))}
+function mc_hj(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key+'_hj'][d]+'/1.png',folder:IMG[c.key+'_hj'][d]}))}
 function mcLeka(){return[
-  {nameAr:'أسود',nameEn:'Black',hex:'#0a0a0a',key:'Black',img:'imgs/Black Leka.png'},
-  {nameAr:'أبيض',nameEn:'White',hex:'#f0f0f0',key:'White',img:'imgs/White Leka.png'},
+  {nameAr:'أسود',nameEn:'Black',hex:'#0a0a0a',key:'Black',img:'imgs/Black Asl/1.png',folder:'imgs/Black Asl'},
+  {nameAr:'أبيض',nameEn:'White',hex:'#f0f0f0',key:'White',img:'imgs/White Asl/1.png',folder:'imgs/White Asl'},
 ]}
 
 const PRODUCTS=[
@@ -1239,10 +1256,14 @@ const PRODUCTS=[
   {id:2,cat:'half',nameAr:'تيشرت الثمانينات ',nameEn:'80s Tee',descAr:' أوڤر سايز يونيسكس —  أوڤر سايز يونيسكس — تصميم كلاسيكي من الثمانينات — قطن 100%',descEn:'Oversized unisex — 80s collage design — 100% cotton',price:600,badge:null,sizes:['S','M','L','XL'],colors:mc('80s')},
   {id:3,cat:'half',nameAr:'تيشرت جرافيتي',nameEn:'Graffiti Tee',descAr:'  أوڤر سايز يونيسكس — تيشرت جرافيتي - كُن أنت الرسام — قطن 100%',descEn:'Oversized unisex — Graffiti Tee - Be the Artist — 100% cotton ',price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Graffity')},
   {id:4,cat:'half',nameAr:'تيشرت ليكا رحلة التعلم',nameEn:'Leka Learning Journey Tee',descAr:'  أوڤر سايز يونيسكس — تيشرت ليكا- كن فخوراً بمحاولاتك — قطن 100%',descEn:'Oversized unisex — Be Proud of Your Attempts — 100% cotton',price:600,badge:null,sizes:['S','M','L','XL'],colors:mc('English')},
-  {id:5,cat:'full',nameAr:'أصل الحكاية — حجابي',nameEn:'Asl Alhekaya — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc2('Asl')},
-  {id:6,cat:'full',nameAr:'تيشرت الثمانينات — حجابي',nameEn:'80s Tee — Hijabi ',descAr:' أوڤر سايز بكم طويل — تصميم كلاسيكي من الثمانينات— قطن 100%',descEn:'Oversized long sleeve — Hijabi — 80s collage design — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc('80s')},
-  {id:7,cat:'full',nameAr:'تيشرت الجرافيتي — حجابي',nameEn:'Graffiti Tee — Hijabi',descAr:' أوڤر سايز بكم طويل — كُن أنت الرسام— قطن 100%',descEn:'Oversized long sleeve — Hijabi —  Be the Artist — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc('Graffity')},
-  {id:8,cat:'full',nameAr:'تيشرت ليكا رحلة التعلم — حجابي',nameEn:'Leka Learning Journey Tee — Hijabi',descAr:' أوڤر سايز بكم طويل— تيشرت ليكا- كن فخوراً بمحاولاتك — قطن 100% ',descEn:'Oversized long sleeve — Hijabi— Be Proud of Your Attempts — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc('English')},
+  {id:5,cat:'full',nameAr:'أصل الحكاية — حجابي',nameEn:'Asl Alhekaya — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Asl')},
+  {id:6,cat:'full',nameAr:'تيشرت الثمانينات — حجابي',nameEn:'80s Tee — Hijabi ',descAr:' أوڤر سايز بكم طويل — تصميم كلاسيكي من الثمانينات— قطن 100%',descEn:'Oversized long sleeve — Hijabi — 80s collage design — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('80s')},
+  {id:7,cat:'full',nameAr:'تيشرت الجرافيتي — حجابي',nameEn:'Graffiti Tee — Hijabi',descAr:' أوڤر سايز بكم طويل — كُن أنت الرسام— قطن 100%',descEn:'Oversized long sleeve — Hijabi —  Be the Artist — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Graffity')},
+  {id:8,cat:'full',nameAr:'تيشرت ليكا رحلة التعلم — حجابي',nameEn:'Leka Learning Journey Tee — Hijabi',descAr:' أوڤر سايز بكم طويل— تيشرت ليكا- كن فخوراً بمحاولاتك — قطن 100% ',descEn:'Oversized long sleeve — Hijabi— Be Proud of Your Attempts — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('English')},
+  {id:9,cat:'half',nameAr:'تيشرت ليكا',nameEn:'Leka',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Leka')},
+  {id:10,cat:'half',nameAr:'تيشرت الذهبي',nameEn:'Al Dahabi',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Dahabi')},
+  {id:11,cat:'full',nameAr:'تيشرت ليكا — حجابي',nameEn:'Leka — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Leka')},
+  {id:12,cat:'full',nameAr:'تيشرت الذهبي — حجابي',nameEn:'Al Dahabi — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Dahabi')},
 ];
 
 let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,selColor=0,selSize=null,qty=1,prevView='home',toastTimer=null;
@@ -1396,15 +1417,18 @@ function shuffle(arr){
 function renderGrids(){
   function buildCards(prods){
     const lekaCards=prods.filter(p=>p.id===1||p.id===5).flatMap(p=>p.colors.map((_,i)=>({p,i}))).sort((a,b)=>a.i-b.i);
-    // الباقي يدوي — كل منتج × كل لون بترتيب مش متسلسل
     const others=prods.filter(p=>p.id!==1&&p.id!==5);
-    // ترتيب يدوي: منتج 0 لون 0، منتج 1 لون 2، منتج 2 لون 1، منتج 0 لون 1، منتج 1 لون 0، منتج 2 لون 2، منتج 0 لون 2، منتج 1 لون 1، منتج 2 لون 0
-    const manual=[
-      [0,0],[1,2],[2,1],[3,0],
-      [0,2],[1,0],[2,2],[3,1],
-      [0,1],[1,1],[2,0],[3,2],
-    ];
-    const otherCards=manual.filter(([pi,ci])=>others[pi]&&others[pi].colors[ci]).map(([pi,ci])=>({p:others[pi],i:ci}));
+    // تناوب تلقائي — كل لون بالتناوب عبر كل المنتجات
+    const otherCards=[];
+    const maxColors=Math.max(...others.map(p=>p.colors.length),0);
+    const colorOrder=[0,2,1]; // أسود، برجاندي، أبيض — متلخبطين
+    colorOrder.forEach(ci=>{
+      // لكل لون، خد من كل منتج بس مش بالترتيب
+      const shuffledOthers=[...others].sort(()=>0); // ثابت
+      shuffledOthers.forEach(p=>{
+        if(p.colors[ci]) otherCards.push({p,i:ci});
+      });
+    });
 
     const result=[];
     const gap=2;let oi=0;
@@ -1502,13 +1526,25 @@ function openProduct(id){
   renderProd(cur);showView('product');
   document.getElementById('backBtn').classList.add('show');
 }
+function getColorImages(img){
+  // img = 'imgs/Black 80s.png'
+  // بيدور على 'imgs/Black 80s 1.png', 'imgs/Black 80s 2.png', etc
+  // بيرجع array من الصور
+  const base=img.replace(/\.png$/i,'');
+  const imgs=[img]; // الصورة الأساسية دايماً أول حاجة
+  // جرب لغاية 5 صور إضافية
+  for(let i=1;i<=5;i++){
+    imgs.push(base+' '+i+'.png');
+  }
+  return imgs;
+}
+
 function renderProd(p){
   const col=p.colors[selColor];
   document.getElementById('prodName').textContent=lang==='ar'?p.nameAr:p.nameEn;
   document.getElementById('prodPrice').textContent=p.price+' EGP';
   document.getElementById('prodCat').textContent=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':'كم طويل — حجابي'):(p.cat==='half'?'Half Sleeve — Unisex':'Long Sleeve — Hijabi');
   document.getElementById('prodDesc').textContent=lang==='ar'?p.descAr:p.descEn;
-  document.getElementById('mainImg').src=col.img;
   document.getElementById('colorLabel').textContent=lang==='ar'?col.nameAr:col.nameEn;
   document.getElementById('qtyVal').value=qty;
   document.getElementById('buyNow').textContent=lang==='ar'?'اشتر الآن':'Buy Now';
@@ -1516,7 +1552,29 @@ function renderProd(p){
   document.getElementById('addCartBtn').textContent=lang==='ar'?'أضف لعربة التسوق':'Add to Cart';
   const notice=document.querySelector('#view-product .prod-notice');
   notice.textContent=lang==='ar'?notice.dataset.ar:notice.dataset.en;
-  document.getElementById('thumbsRow').innerHTML=p.colors.map((c,i)=>`<img class="thumb ${i===selColor?'active':''}" src="${c.img}" onclick="switchColor(${i})" alt=""/>`).join('');
+
+  // Gallery slider
+  const folder=col.folder||col.img.replace(/\/1\.png$/,'');
+  const candidates=Array.from({length:10},(_,i)=>folder+'/'+(i+1)+'.png');
+  let validImgs=[];let loaded=0;
+  candidates.forEach((src,idx)=>{
+    const t=new Image();
+    t.onload=()=>{validImgs.push({src,idx});finalize();};
+    t.onerror=()=>{finalize();};
+    t.src=src;
+    function finalize(){
+      loaded++;
+      if(loaded===candidates.length){
+        validImgs.sort((a,b)=>a.idx-b.idx);
+        if(validImgs.length===0){
+          // مفيش فولدر — حاول الصورة الأساسية بدون /1.png
+          buildSlider([col.folder+'/1.png'||col.img]);
+        } else {
+          buildSlider(validImgs.map(v=>v.src));
+        }
+      }
+    }
+  });
   document.getElementById('colorOpts').innerHTML=p.colors.map((c,i)=>{
     const key=getColorKey(c);
     const colorAvail=isColorAvailable(p,key);
@@ -1533,20 +1591,79 @@ function renderProd(p){
     return `<button class="sz ${s===selSize?'active':''} ${!avail?'sold-out':''}" onclick="${avail?`selectSize('${s}')`:''}">${s}</button>`;
   }).join('');
 }
+let currentSlide=0;
+
+function buildSlider(imgs){
+  currentSlide=0;
+  const slides=document.getElementById('gallerySlides');
+  const dots=document.getElementById('galleryDots');
+  if(!slides||!dots) return;
+  slides.innerHTML=imgs.map(src=>`<div class="gallery-slide"><img src="${src}" alt=""/></div>`).join('');
+  dots.innerHTML=imgs.length>1?imgs.map((_,i)=>`<div class="gallery-dot ${i===0?'active':''}" onclick="goSlide(${i})"></div>`).join(''):'';
+  slides.style.transform='translateX(0)';
+
+  const slider=document.getElementById('gallerySlider');
+  // Touch swipe
+  let startX=0;
+  slider.ontouchstart=e=>startX=e.touches[0].clientX;
+  slider.ontouchend=e=>{
+    const diff=startX-e.changedTouches[0].clientX;
+    if(Math.abs(diff)>50) diff>0?galleryNext():galleryPrev();
+  };
+  // Mouse drag
+  let mouseDown=false,mouseStartX=0;
+  slider.onmousedown=e=>{mouseDown=true;mouseStartX=e.clientX;};
+  slider.onmouseup=e=>{
+    if(!mouseDown) return;mouseDown=false;
+    const diff=mouseStartX-e.clientX;
+    if(Math.abs(diff)>50) diff>0?galleryNext():galleryPrev();
+  };
+  // Trackpad swipe (two fingers)
+  let wheelLock=false;
+  slider.addEventListener('wheel',e=>{
+    if(Math.abs(e.deltaX)<10) return;
+    e.preventDefault();
+    if(wheelLock) return;
+    wheelLock=true;
+    setTimeout(()=>wheelLock=false,600);
+    e.deltaX>0?galleryNext():galleryPrev();
+  },{passive:false});
+}
+
+// Trackpad - add once on page load
+document.addEventListener('DOMContentLoaded',()=>{
+  const slider=document.getElementById('gallerySlider');
+  if(!slider) return;
+  let wheelLock=false;
+  slider.addEventListener('wheel',e=>{
+    if(Math.abs(e.deltaX)<10) return;
+    e.preventDefault();
+    if(wheelLock) return;
+    wheelLock=true;
+    setTimeout(()=>wheelLock=false,600);
+    e.deltaX>0?galleryNext():galleryPrev();
+  },{passive:false});
+});
+
+function goSlide(n){
+  const slides=document.getElementById('gallerySlides');
+  const dots=document.querySelectorAll('.gallery-dot');
+  const total=slides.children.length;
+  currentSlide=(n+total)%total;
+  slides.style.transform=`translateX(-${currentSlide*100}%)`;
+  dots.forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
+}
+
+function galleryNext(){goSlide(currentSlide+1)}
+function galleryPrev(){goSlide(currentSlide-1)}
+
+function switchGalleryImg(thumb,src){
+  // مش محتاجينها مع الـ slider
+}
+
 function switchColor(i){
-  selColor=i;const col=cur.colors[i];
-  const img=document.getElementById('mainImg');img.style.opacity='0';
-  setTimeout(()=>{img.src=col.img;img.style.opacity='1'},220);
-  document.querySelectorAll('.thumb').forEach((t,idx)=>t.classList.toggle('active',idx===i));
-  document.getElementById('colorLabel').textContent=lang==='ar'?col.nameAr:col.nameEn;
-  // تحديث المقاسات بناءً على اللون الجديد
-  const curColorKey=getColorKey(col);
-  document.getElementById('sizeOpts').innerHTML=cur.sizes.map(s=>{
-    const avail=isAvailable(cur.id,s,curColorKey);
-    return `<button class="sz ${s===selSize?'active':''} ${!avail?'sold-out':''}" onclick="${avail?`selectSize('${s}')`:''}"">${s}</button>`;
-  }).join('');
-  // تحديث دوائر الألوان
-  document.querySelectorAll('.color-sw').forEach((c,idx)=>c.classList.toggle('active',idx===i));
+  selColor=i;
+  renderProd(cur);
 }
 function selectSize(s){selSize=s;document.querySelectorAll('.sz').forEach(el=>el.classList.toggle('active',el.textContent===s))}
 document.getElementById('qtyMinus').onclick=()=>{if(qty>1){qty--;document.getElementById('qtyVal').value=qty}};
