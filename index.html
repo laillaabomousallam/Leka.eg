@@ -1237,12 +1237,12 @@ const COLORS=[
   {nameAr:'برجاندي',nameEn:'Burgundy',hex:'#800020',key:'Burgundy'},
 ];
 const IMG={
-  'Black':{'Asl':'imgs/Black Asl','80s':'imgs/Black 80s','Graffity':'imgs/Black Graffity','English':'imgs/Black English','Leka':'imgs/Black Leka','Dahabi':'imgs/Black Dahabi'},
-  'White':{'Asl':'imgs/White Asl','80s':'imgs/White 80s','Graffity':'imgs/White Graffity','English':'imgs/White English','Leka':'imgs/White Leka','Dahabi':'imgs/White Dahabi'},
-  'Burgundy':{'Asl':'imgs/Red Asl','80s':'imgs/Red 80s','Graffity':'imgs/Red Graffity','English':'imgs/Red English','Leka':'imgs/Red Leka','Dahabi':'imgs/Red Dahabi'},
-  'Black_hj':{'Asl':'imgs/Black Asl Hj','80s':'imgs/Black 80s Hj','Graffity':'imgs/Black Graffity Hj','English':'imgs/Black English Hj','Leka':'imgs/Black Leka Hj','Dahabi':'imgs/Black Dahabi Hj'},
-  'White_hj':{'Asl':'imgs/White Asl Hj','80s':'imgs/White 80s Hj','Graffity':'imgs/White Graffity Hj','English':'imgs/White English Hj','Leka':'imgs/White Leka Hj','Dahabi':'imgs/White Dahabi Hj'},
-  'Burgundy_hj':{'Asl':'imgs/Red Asl Hj','80s':'imgs/Red 80s Hj','Graffity':'imgs/Red Graffity Hj','English':'imgs/Red English Hj','Leka':'imgs/Red Leka Hj','Dahabi':'imgs/Red Dahabi Hj'},
+  'Black':{'Asl':'imgs/Black Asl','80s':'imgs/Black 80s','Graffity':'imgs/Black Graffity','English':'imgs/Black English','Leka':'imgs/Black Leka','Dahabi':'imgs/Black Dahabi','Basic':'imgs/Black Basic'},
+  'White':{'Asl':'imgs/White Asl','80s':'imgs/White 80s','Graffity':'imgs/White Graffity','English':'imgs/White English','Leka':'imgs/White Leka','Dahabi':'imgs/White Dahabi','Basic':'imgs/White Basic'},
+  'Burgundy':{'Asl':'imgs/Red Asl','80s':'imgs/Red 80s','Graffity':'imgs/Red Graffity','English':'imgs/Red English','Leka':'imgs/Red Leka','Dahabi':'imgs/Red Dahabi','Basic':'imgs/Red Basic'},
+  'Black_hj':{'Asl':'imgs/Black Asl Hj','80s':'imgs/Black 80s Hj','Graffity':'imgs/Black Graffity Hj','English':'imgs/Black English Hj','Leka':'imgs/Black Leka Hj','Dahabi':'imgs/Black Dahabi Hj','Basic':'imgs/Black Basic Hj'},
+  'White_hj':{'Asl':'imgs/White Asl Hj','80s':'imgs/White 80s Hj','Graffity':'imgs/White Graffity Hj','English':'imgs/White English Hj','Leka':'imgs/White Leka Hj','Dahabi':'imgs/White Dahabi Hj','Basic':'imgs/White Basic Hj'},
+  'Burgundy_hj':{'Asl':'imgs/Red Asl Hj','80s':'imgs/Red 80s Hj','Graffity':'imgs/Red Graffity Hj','English':'imgs/Red English Hj','Leka':'imgs/Red Leka Hj','Dahabi':'imgs/Red Dahabi Hj','Basic':'imgs/Red Basic Hj'},
 };
 function mc(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key][d]+'/1.png',folder:IMG[c.key][d]}))}
 function mc2(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key+'_hj'][d]+'/1.png',folder:IMG[c.key+'_hj'][d]}))}
@@ -1265,6 +1265,8 @@ const PRODUCTS=[
   {id:10,cat:'half',nameAr:'تيشرت الذهبي',nameEn:'Al Dahabi',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Dahabi')},
   {id:11,cat:'full',nameAr:'تيشرت ليكا — حجابي',nameEn:'Leka — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Leka')},
   {id:12,cat:'full',nameAr:'تيشرت الذهبي — حجابي',nameEn:'Al Dahabi — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Dahabi')},
+  {id:13,cat:'half',nameAr:'تيشرت بيسيك',nameEn:'Basic',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',price:500,badge:null,sizes:['S','M','L','XL'],colors:mc('Basic')},
+  {id:14,cat:'full',nameAr:'تيشرت بيسيك — حجابي',nameEn:'Basic — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',price:500,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Basic')},
 ];
 
 let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,selColor=0,selSize=null,qty=1,prevView='home',toastTimer=null;
@@ -1494,16 +1496,16 @@ function renderInlineSizeChart(cat){
     `<tr><th>المقاس</th><th>طول الجسم (سم)</th><th>عرض الجسم (سم)</th></tr>`:
     `<tr><th>Size</th><th>Body Length (cm)</th><th>Body Width (cm)</th></tr>`;
   const halfRows=[
-    ['S','68','54'],
+    ['S','68','55'],
     ['M','70','57'],
-    ['L','72','60'],
-    ['XL','74','63'],
+    ['L','72','59'],
+    ['XL','74','61'],
   ];
   const hijabiRows=[
-    ['S','68','54'],
-    ['M','68','57'],
-    ['L','70','60'],
-    ['XL','70','63'],
+    ['S','70.5','54'],
+    ['M','71','56'],
+    ['L','72','58'],
+    ['XL','72','60'],
   ];
   const rows=(isHijabi?hijabiRows:halfRows).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
   tbl.innerHTML=`<thead>${hdr}</thead><tbody>${rows}</tbody>`;
