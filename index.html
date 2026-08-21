@@ -1333,10 +1333,11 @@ function mapProductRow(row){
     originalPrice:row.original_price||null,
     badge:row.badge||null,
     sizes:row.sizes||['S','M','L','XL'],
-    colors:(row.colors||[]).map(c=>({
+    // بنستخبى أي لون لسه ملوش صور مرفوعة — يفضل يظهر في الداشبورد بس لحد ما يترفعله صور
+    colors:(row.colors||[]).filter(c=>c.images&&c.images.length).map(c=>({
       nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,
-      images:c.images&&c.images.length?c.images:[],
-      img:(c.images&&c.images[0])||''
+      images:c.images,
+      img:c.images[0]
     }))
   };
 }
