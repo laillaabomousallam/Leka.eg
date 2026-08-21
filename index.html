@@ -295,6 +295,25 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
   font-size:.72rem;color:var(--mid);line-height:1.65;
 }
 html[lang=en] .prod-notice{border-right:none;border-left:none}
+.related-wrap{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--line);min-width:0}
+.related-title{font-family:var(--display);font-size:1.1rem;font-weight:400;margin-bottom:1rem;letter-spacing:-.01em}
+.related-strip{display:flex;gap:.85rem;overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-snap-type:x proximity}
+.related-card{flex:0 0 150px;scroll-snap-align:start;cursor:pointer}
+.related-card-img{aspect-ratio:3/4;background:var(--dust);overflow:hidden;margin-bottom:.5rem;border-radius:2px;position:relative}
+.related-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s cubic-bezier(.25,.46,.45,.94)}
+.related-card:hover .related-card-img img{transform:scale(1.05)}
+.related-card-name{font-size:.72rem;font-weight:500;margin-bottom:3px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.related-card-price{font-size:.72rem;font-weight:600;display:flex;align-items:baseline;gap:5px}
+.related-card-btns{display:flex;flex-direction:column;gap:5px;margin-top:.6rem}
+.related-btn-buy,.related-btn-add{
+  border:none;padding:7px 0;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;
+  border-radius:4px;cursor:pointer;transition:background .2s;width:100%;
+}
+.related-btn-buy{background:#0a0a0a;color:#fff;font-weight:700}
+.related-btn-buy:hover{background:#333}
+.related-btn-add{background:#f2f2f2;color:var(--ink);font-weight:600}
+.related-btn-add:hover{background:#e8e8e8}
+.related-btn-buy:disabled,.related-btn-add:disabled{opacity:.4;cursor:not-allowed}
 
 /* ─── SIZE CHART ─── */
 .chart-wrap{max-width:700px;padding:3rem 2.5rem}
@@ -639,6 +658,8 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   .prod-gallery{position:static;height:100vw;max-height:500px}
   .gallery-arrow{display:none}
   .prod-info{padding:1.5rem;overflow-y:visible;max-height:none}
+  .related-wrap{margin-top:1.25rem;padding-top:1.25rem}
+  .related-card{flex:0 0 120px}
   /* checkout */
   .co-layout{grid-template-columns:1fr}
   .order-box{position:static}
@@ -841,6 +862,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem" class="t" data-ar="جدول المقاسات" data-en="Size Chart"></div>
         <table class="size-table" id="inlineSizeTable" style="width:100%;font-size:.75rem"></table>
         <p class="chart-note t" data-ar="* القياسات بالسنتيمتر — قياس واسع" data-en="* Measurements in cm — Oversized fit"></p>
+      </div>
+
+      <div class="related-wrap">
+        <div class="related-title t" data-ar="قد يعجبك أيضاً" data-en="You Might Also Like"></div>
+        <div class="related-strip" id="relatedStrip"></div>
       </div>
     </div>
   </div>
@@ -1622,6 +1648,34 @@ function renderProd(p){
   document.getElementById('sizeOpts').innerHTML=p.sizes.map(s=>{
     const avail=isAvailable(p.id,s,curColorKey);
     return `<button class="sz ${s===selSize?'active':''} ${!avail?'sold-out':''}" onclick="${avail?`selectSize('${s}')`:''}">${s}</button>`;
+  }).join('');
+  renderRelated(p);
+}
+function renderRelated(p){
+  const strip=document.getElementById('relatedStrip');
+  if(!strip) return;
+  const sameCat=shuffle(PRODUCTS.filter(x=>x.id!==p.id&&x.cat===p.cat));
+  const otherCat=shuffle(PRODUCTS.filter(x=>x.id!==p.id&&x.cat!==p.cat));
+  const list=[...sameCat,...otherCat].slice(0,10);
+  strip.innerHTML=list.map(item=>{
+    const col=item.colors[0];
+    const colorKey=getColorKey(col);
+    const name=lang==='ar'?item.nameAr:item.nameEn;
+    const available=isColorAvailable(item,colorKey);
+    const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
+    const soldOverlay=!available?`<div class="card-sold-overlay"><span>${lang==='ar'?'نفذت الكمية':'Sold Out'}</span></div>`:'';
+    return `<div class="related-card" onclick="openProductWithColor(${item.id},0)">
+      <div class="related-card-img">
+        <img src="${col.img}" alt="${name}" loading="lazy"/>
+        ${soldOverlay}
+      </div>
+      <div class="related-card-name">${name}</div>
+      <div class="related-card-price">${priceHTML(item)}</div>
+      <div class="related-card-btns">
+        <button class="related-btn-buy" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`cardBuyNowColor(${item.id},0)`:''}">${buyTxt}</button>
+        <button class="related-btn-add" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`quickAddColor(${item.id},0)`:''}">${lang==='ar'?'أضف للعربة':'Add to Cart'}</button>
+      </div>
+    </div>`;
   }).join('');
 }
 let currentSlide=0;
