@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#fafaf8"/>
 <title>ليكا | Leka</title>
+<meta name="description" content="تيشرتات أوڤر سايز يونيسكس وحجابي بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
+<link rel="canonical" href="https://leka.eg/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Leka"/>
+<meta property="og:title" content="ليكا | Leka"/>
+<meta property="og:description" content="تيشرتات أوڤر سايز يونيسكس وحجابي بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
+<meta property="og:image" content="https://leka.eg/imgs/Short%20sleeve.png"/>
+<meta property="og:url" content="https://leka.eg/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="ليكا | Leka"/>
+<meta name="twitter:description" content="تيشرتات أوڤر سايز يونيسكس وحجابي بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
+<meta name="twitter:image" content="https://leka.eg/imgs/Short%20sleeve.png"/>
 <link rel="icon" type="image/png" href="favicon.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,10 +215,11 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
 .card:hover .card-img img{transform:scale(1.05)}
 .card-badge{
-  position:absolute;top:10px;left:10px;
+  position:absolute;top:10px;right:10px;z-index:2;
   background:var(--ink);color:#fff;
   font-size:.55rem;padding:3px 8px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
 }
+.card-badge.badge-new{background:#0a7c0a}
 .card-name{font-size:.88rem;font-weight:500;margin-bottom:3px;line-height:1.3}
 .card-cat{font-size:.65rem;color:var(--muted);letter-spacing:.05em;margin-bottom:.6rem}
 .card-bottom{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
@@ -298,13 +311,13 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 .related-wrap{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--line);min-width:0}
 .related-title{font-family:var(--display);font-size:1.1rem;font-weight:400;margin-bottom:1rem;letter-spacing:-.01em}
 .related-strip{display:flex;gap:.85rem;overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-snap-type:x proximity}
-.related-card{flex:0 0 150px;scroll-snap-align:start;cursor:pointer}
+.related-card{flex:0 0 150px;scroll-snap-align:start;cursor:pointer;display:flex;flex-direction:column}
 .related-card-img{aspect-ratio:3/4;background:var(--dust);overflow:hidden;margin-bottom:.5rem;border-radius:2px;position:relative}
 .related-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s cubic-bezier(.25,.46,.45,.94)}
 .related-card:hover .related-card-img img{transform:scale(1.05)}
 .related-card-name{font-size:.72rem;font-weight:500;margin-bottom:3px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .related-card-price{font-size:.72rem;font-weight:600;display:flex;align-items:baseline;gap:5px}
-.related-card-btns{display:flex;flex-direction:column;gap:5px;margin-top:.6rem}
+.related-card-btns{display:flex;flex-direction:column;gap:5px;margin-top:auto;padding-top:.6rem}
 .related-btn-buy,.related-btn-add{
   border:none;padding:7px 0;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;
   border-radius:4px;cursor:pointer;transition:background .2s;width:100%;
@@ -701,6 +714,9 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <button class="menu-btn" id="menuBtn" onclick="openSidebar()">
       <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
+    <button class="menu-btn" id="searchBtn" onclick="openSearch()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
     <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
     <button class="cart-btn" id="cartBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -748,6 +764,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div><div class="sb-item-name t" data-ar="جدول المقاسات" data-en="Size Chart"></div></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
     </div>
+    <div class="sb-item" onclick="showView('returns');closeSidebar()">
+      <div><div class="sb-item-name t" data-ar="سياسة الاستبدال" data-en="Return Policy"></div></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    </div>
     <div class="sb-item" onclick="openCart();closeSidebar()">
       <div>
         <div class="sb-item-name t" data-ar="عربة التسوق" data-en=" Cart"></div>
@@ -794,6 +814,18 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       </div>
     </div>
   </div>
+</div>
+
+<!-- SEARCH -->
+<div class="view" id="view-search">
+  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div style="max-width:600px;margin:0 auto;padding:1.5rem 1.5rem 0">
+    <input type="text" id="searchInput" oninput="doSearch()" class="t"
+      data-ar-placeholder="ابحث عن منتج..." data-en-placeholder="Search products..."
+      style="width:100%;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none"/>
+  </div>
+  <div class="products-grid" id="searchResults" style="margin-top:1.5rem"></div>
+  <p class="favs-empty" id="searchEmpty" style="display:none"></p>
 </div>
 
 <!-- OVERSIZED -->
@@ -868,6 +900,32 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <div class="related-title t" data-ar="قد يعجبك أيضاً" data-en="You Might Also Like"></div>
         <div class="related-strip" id="relatedStrip"></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- RETURNS -->
+<div class="view" id="view-returns">
+  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="chart-wrap">
+    <h1 class="t" data-ar="سياسة الاستبدال والاسترجاع" data-en="Return &amp; Exchange Policy"></h1>
+    <div class="chart-section">
+      <p style="font-size:.85rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="يحق لك استبدال المنتج خلال 3 أيام من تاريخ الاستلام، بشرط أن يكون المنتج بحالته الأصلية ولم يتم استخدامه."
+        data-en="You may exchange your item within 3 days of delivery, provided it is unused and in its original condition."></p>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title t" data-ar="شروط الاستبدال" data-en="Exchange Conditions"></div>
+      <ul style="font-size:.82rem;color:var(--mid);line-height:2.1;padding-inline-start:1.2rem">
+        <li class="t" data-ar="خلال 3 أيام من تاريخ استلام الطلب" data-en="Within 3 days of receiving your order"></li>
+        <li class="t" data-ar="المنتج لم يُستخدم ومحافظ على حالته الأصلية" data-en="Item must be unused and in its original condition"></li>
+      </ul>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title t" data-ar="إزاي تبدئي" data-en="How to Start"></div>
+      <p style="font-size:.82rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="تواصلي معانا على واتساب أو الإيميل من صفحة تواصل معنا، وهنساعدك تكملي عملية الاستبدال."
+        data-en="Reach out to us via WhatsApp or email from the Contact Us page, and we'll help you complete the exchange."></p>
     </div>
   </div>
 </div>
@@ -1260,43 +1318,36 @@ const SUPABASE_URL='https://axoyqisvnmkgbuvklvis.supabase.co';
 const SUPABASE_KEY='sb_publishable_VJHuyzV-YTy_L3ia1ss8QA_gn4J6qlu';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const COLORS=[
-  {nameAr:'أسود',nameEn:'Black',hex:'#0a0a0a',key:'Black'},
-  {nameAr:'أبيض',nameEn:'White',hex:'#f0f0f0',key:'White'},
-  {nameAr:'برجاندي',nameEn:'Burgundy',hex:'#800020',key:'Burgundy'},
-];
-const IMG={
-  'Black':{'Asl':'imgs/Black Asl','80s':'imgs/Black 80s','Graffity':'imgs/Black Graffity','English':'imgs/Black English','Leka':'imgs/Black Leka','Dahabi':'imgs/Black Dahabi','Basic':'imgs/Black Basic'},
-  'White':{'Asl':'imgs/White Asl','80s':'imgs/White 80s','Graffity':'imgs/White Graffity','English':'imgs/White English','Leka':'imgs/White Leka','Dahabi':'imgs/White Dahabi','Basic':'imgs/White Basic'},
-  'Burgundy':{'Asl':'imgs/Red Asl','80s':'imgs/Red 80s','Graffity':'imgs/Red Graffity','English':'imgs/Red English','Leka':'imgs/Red Leka','Dahabi':'imgs/Red Dahabi','Basic':'imgs/Red Basic'},
-  'Black_hj':{'Asl':'imgs/Black Asl Hj','80s':'imgs/Black 80s Hj','Graffity':'imgs/Black Graffity Hj','English':'imgs/Black English Hj','Leka':'imgs/Black Leka Hj','Dahabi':'imgs/Black Dahabi Hj','Basic':'imgs/Black Basic Hj'},
-  'White_hj':{'Asl':'imgs/White Asl Hj','80s':'imgs/White 80s Hj','Graffity':'imgs/White Graffity Hj','English':'imgs/White English Hj','Leka':'imgs/White Leka Hj','Dahabi':'imgs/White Dahabi Hj','Basic':'imgs/White Basic Hj'},
-  'Burgundy_hj':{'Asl':'imgs/Red Asl Hj','80s':'imgs/Red 80s Hj','Graffity':'imgs/Red Graffity Hj','English':'imgs/Red English Hj','Leka':'imgs/Red Leka Hj','Dahabi':'imgs/Red Dahabi Hj','Basic':'imgs/Red Basic Hj'},
-};
-function mc(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key][d]+'/1.png',folder:IMG[c.key][d]}))}
-function mc2(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key+'_hj'][d]+'/1.png',folder:IMG[c.key+'_hj'][d]}))}
-function mc_hj(d){return COLORS.map(c=>({nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,img:IMG[c.key+'_hj'][d]+'/1.png',folder:IMG[c.key+'_hj'][d]}))}
-function mcLeka(){return[
-  {nameAr:'أسود',nameEn:'Black',hex:'#0a0a0a',key:'Black',img:'imgs/Black Asl/1.png',folder:'imgs/Black Asl'},
-  {nameAr:'أبيض',nameEn:'White',hex:'#f0f0f0',key:'White',img:'imgs/White Asl/1.png',folder:'imgs/White Asl'},
-]}
-
-const PRODUCTS=[
-  {id:1,cat:'half',nameAr:'أصل الحكاية',nameEn:'Asl Alhekaya',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',originalPrice:700,price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Asl')},
-  {id:2,cat:'half',nameAr:'تيشرت الثمانينات ',nameEn:'80s Tee',descAr:' أوڤر سايز يونيسكس —  أوڤر سايز يونيسكس — تصميم كلاسيكي من الثمانينات — قطن 100%',descEn:'Oversized unisex — 80s collage design — 100% cotton',originalPrice:700,price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('80s')},
-  {id:3,cat:'half',nameAr:'تيشرت جرافيتي',nameEn:'Graffiti Tee',descAr:'  أوڤر سايز يونيسكس — تيشرت جرافيتي - كُن أنت الرسام — قطن 100%',descEn:'Oversized unisex — Graffiti Tee - Be the Artist — 100% cotton ',originalPrice:700,price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Graffity')},
-  {id:4,cat:'half',nameAr:'تيشرت ليكا رحلة التعلم',nameEn:'Leka Learning Journey Tee',descAr:'  أوڤر سايز يونيسكس — تيشرت ليكا- كن فخوراً بمحاولاتك — قطن 100%',descEn:'Oversized unisex — Be Proud of Your Attempts — 100% cotton',originalPrice:700,price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('English')},
-  {id:5,cat:'full',nameAr:'أصل الحكاية — حجابي',nameEn:'Asl Alhekaya — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',originalPrice:750,price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Asl')},
-  {id:6,cat:'full',nameAr:'تيشرت الثمانينات — حجابي',nameEn:'80s Tee — Hijabi ',descAr:' أوڤر سايز بكم طويل — تصميم كلاسيكي من الثمانينات— قطن 100%',descEn:'Oversized long sleeve — Hijabi — 80s collage design — 100% cotton',originalPrice:750,price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('80s')},
-  {id:7,cat:'full',nameAr:'تيشرت الجرافيتي — حجابي',nameEn:'Graffiti Tee — Hijabi',descAr:' أوڤر سايز بكم طويل — كُن أنت الرسام— قطن 100%',descEn:'Oversized long sleeve — Hijabi —  Be the Artist — 100% cotton',originalPrice:750,price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Graffity')},
-  {id:8,cat:'full',nameAr:'تيشرت ليكا رحلة التعلم — حجابي',nameEn:'Leka Learning Journey Tee — Hijabi',descAr:' أوڤر سايز بكم طويل— تيشرت ليكا- كن فخوراً بمحاولاتك — قطن 100% ',descEn:'Oversized long sleeve — Hijabi— Be Proud of Your Attempts — 100% cotton',originalPrice:750,price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('English')},
-  {id:9,cat:'half',nameAr:'تيشرت ليكا',nameEn:'Leka',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',originalPrice:700,price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Leka')},
-  {id:10,cat:'half',nameAr:'تيشرت الذهبي',nameEn:'Al Dahabi',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',originalPrice:700,price:650,badge:null,sizes:['S','M','L','XL'],colors:mc('Dahabi')},
-  {id:11,cat:'full',nameAr:'تيشرت ليكا — حجابي',nameEn:'Leka — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',originalPrice:750,price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Leka')},
-  {id:12,cat:'full',nameAr:'تيشرت الذهبي — حجابي',nameEn:'Al Dahabi — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',originalPrice:750,price:700,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Dahabi')},
-  {id:13,cat:'half',nameAr:'تيشرت بيسيك',nameEn:'Basic',descAr:' أوڤر سايز يونيسكس — قطن 100%',descEn:'Oversized unisex — 100% cotton',originalPrice:550,price:500,badge:null,sizes:['S','M','L','XL'],colors:mc('Basic')},
-  {id:14,cat:'full',nameAr:'تيشرت بيسيك — حجابي',nameEn:'Basic — Hijabi',descAr:' أوڤر سايز بكم طويل — قطن 100%',descEn:'Oversized long sleeve — Hijabi — 100% cotton',originalPrice:600,price:550,badge:null,sizes:['S','M','L','XL'],colors:mc_hj('Basic')},
-];
+// المنتجات بتتحمّل من قاعدة البيانات (Supabase) — تقدري تضيفي/تعدّلي/تمسحي منتج من الداشبورد
+// من غير ما تلمسي الكود خالص، والتغيير بيظهر على الموقع فوراً.
+let PRODUCTS=[];
+function mapProductRow(row){
+  return {
+    id:row.id,
+    cat:row.cat,
+    nameAr:row.name_ar,
+    nameEn:row.name_en,
+    descAr:row.desc_ar||'',
+    descEn:row.desc_en||'',
+    price:row.price,
+    originalPrice:row.original_price||null,
+    badge:row.badge||null,
+    sizes:row.sizes||['S','M','L','XL'],
+    colors:(row.colors||[]).map(c=>({
+      nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,
+      images:c.images&&c.images.length?c.images:[],
+      img:(c.images&&c.images[0])||''
+    }))
+  };
+}
+async function loadProducts(){
+  const {data,error}=await sb.from('products').select('*').eq('active',true).order('id');
+  if(error){
+    console.error('products error:', error.message||error.code||JSON.stringify(error));
+    return;
+  }
+  PRODUCTS=(data||[]).map(mapProductRow);
+}
 
 let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,selColor=0,selSize=null,qty=1,prevView='home',toastTimer=null;
 let viewHistory=[];  // تاريخ الصفحات
@@ -1362,6 +1413,32 @@ async function loadInventory(){
   if(cur)renderProd(cur);
 }
 
+async function loadBestSeller(){
+  const {data:orders,error}=await sb.from('orders').select('items');
+  if(error||!orders) return;
+  const productCount={};
+  orders.forEach(o=>{
+    let itemsArr=[];
+    try{itemsArr=Array.isArray(o.items)?o.items:(typeof o.items==='string'?JSON.parse(o.items):[]);}catch(e){}
+    itemsArr.forEach(i=>{
+      const name=i.name||'';
+      productCount[name]=(productCount[name]||0)+(i.qty||1);
+    });
+  });
+  const sorted=Object.entries(productCount).sort((a,b)=>b[1]-a[1]);
+  let topProduct=null;
+  for(const [name] of sorted){
+    topProduct=PRODUCTS.find(p=>(p.nameAr+' / '+p.nameEn)===name);
+    if(topProduct) break;
+  }
+  if(!topProduct) return;
+  PRODUCTS.forEach(p=>{if(p.badge==='bestseller')p.badge=null});
+  topProduct.badge='bestseller';
+  renderGrids();
+  if(cur)renderProd(cur);
+  doSearch();
+}
+
 function getColorKey(color){
   return color.key || color.nameEn;
 }
@@ -1389,13 +1466,32 @@ function applyLang(){
   document.querySelectorAll('.t[data-ar-placeholder]').forEach(el=>{el.placeholder=lang==='ar'?el.dataset.arPlaceholder:el.dataset.enPlaceholder});
   const ctBtn=document.getElementById('ctSubmit');if(ctBtn)ctBtn.textContent=lang==='ar'?'إرسال':'Send Message';
   const ba=document.getElementById('backArrow');if(ba)ba.textContent=lang==='ar'?'←':'→';
-  renderGrids();if(cur)renderProd(cur);renderCart();renderCheckout();
+  renderGrids();if(cur)renderProd(cur);renderCart();renderCheckout();doSearch();
   // إعادة رسم نتايج الطلبات لو موجودة
   if(document.getElementById('trackResult')&&document.getElementById('trackResult').innerHTML.trim()) trackOrder();
 }
 function toggleLang(){lang=lang==='ar'?'en':'ar';applyLang()}
 
 function goHome(){showView('home')}
+function openSearch(){
+  showView('search');
+  setTimeout(()=>{const el=document.getElementById('searchInput');if(el)el.focus()},150);
+}
+function doSearch(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  const results=document.getElementById('searchResults');
+  const empty=document.getElementById('searchEmpty');
+  if(!q){results.innerHTML='';empty.style.display='none';return}
+  const matches=PRODUCTS.filter(p=>p.nameAr.toLowerCase().includes(q)||p.nameEn.toLowerCase().includes(q));
+  if(!matches.length){
+    results.innerHTML='';
+    empty.style.display='block';
+    empty.textContent=lang==='ar'?'لا يوجد نتائج':'No results found';
+  } else {
+    empty.style.display='none';
+    results.innerHTML=matches.map(p=>makeCard(p,0)).join('');
+  }
+}
 function setActiveNav(b){document.querySelectorAll('.nav-page-btn').forEach(x=>x.classList.remove('active-nav'));if(b)b.classList.add('active-nav')}
 let scrollLockY=0,scrollLockCount=0;
 function lockBodyScroll(){
@@ -1449,11 +1545,14 @@ function makeCard(p,colorIdx=0){
   const isFav=favorites.includes(p.id+'_'+colorKey);
   const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
   const soldOverlay=!available?`<div class="card-sold-overlay"><span>${lang==='ar'?'نفذت الكمية':'Sold Out'}</span></div>`:'';
+  const badgeTxt=p.badge==='new'?(lang==='ar'?'جديد':'New'):p.badge==='bestseller'?(lang==='ar'?'الأكثر مبيعاً':'Best Seller'):'';
+  const badgeHtml=badgeTxt?`<div class="card-badge ${p.badge==='new'?'badge-new':''}">${badgeTxt}</div>`:'';
   // دوايرة الألوان
   const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${col.hex};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i})"></div>`).join('');
   return `<div class="card" onclick="openProductWithColor(${p.id},${colorIdx})">
     <div class="card-img" style="position:relative">
       <img src="${c.img}" alt="${name}" loading="lazy" id="cardimg_${p.id}_${colorIdx}"/>
+      ${badgeHtml}
       ${soldOverlay}
       <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav(${p.id}+'_'+${JSON.stringify(colorKey)})"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
     </div>
@@ -1614,28 +1713,8 @@ function renderProd(p){
   const notice=document.querySelector('#view-product .prod-notice');
   notice.textContent=lang==='ar'?notice.dataset.ar:notice.dataset.en;
 
-  // Gallery slider
-  const folder=col.folder||col.img.replace(/\/1\.png$/,'');
-  const candidates=Array.from({length:12},(_,i)=>folder+'/'+(i+1)+'.png');
-  let validImgs=[];let loaded=0;
-  candidates.forEach((src,idx)=>{
-    const t=new Image();
-    t.onload=()=>{validImgs.push({src,idx});finalize();};
-    t.onerror=()=>{finalize();};
-    t.src=src;
-    function finalize(){
-      loaded++;
-      if(loaded===candidates.length){
-        validImgs.sort((a,b)=>a.idx-b.idx);
-        if(validImgs.length===0){
-          // مفيش فولدر — حاول الصورة الأساسية بدون /1.png
-          buildSlider([col.folder+'/1.png'||col.img]);
-        } else {
-          buildSlider(validImgs.map(v=>v.src));
-        }
-      }
-    }
-  });
+  // Gallery slider — uses the color's explicit image list, no probing needed
+  buildSlider(col.images&&col.images.length?col.images:[col.img]);
   document.getElementById('colorOpts').innerHTML=p.colors.map((c,i)=>{
     const key=getColorKey(c);
     const colorAvail=isColorAvailable(p,key);
@@ -2238,7 +2317,9 @@ async function renderDashboard(){
   // أكتر منتج مطلوب
   const productCount={};
   orders.forEach(o=>{
-    (o.items||[]).forEach(i=>{
+    let itemsArr=[];
+    try{itemsArr=Array.isArray(o.items)?o.items:(typeof o.items==='string'?JSON.parse(o.items):[]);}catch(e){}
+    itemsArr.forEach(i=>{
       const name=i.name||'';
       productCount[name]=(productCount[name]||0)+(i.qty||1);
     });
@@ -2431,7 +2512,10 @@ sb.from('analytics').insert([{event:'page_view'}]).then(()=>{});
 function trackPurchase(){
   sb.from('analytics').insert([{event:'purchase'}]).then(()=>{});
 }
-loadInventory();
+loadProducts().then(()=>{
+  loadInventory();
+  loadBestSeller();
+});
 </script>
 </body>
 </html>
