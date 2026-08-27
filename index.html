@@ -1394,7 +1394,14 @@ async function loadProducts(){
 let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,selColor=0,selSize=null,qty=1,prevView='home',toastTimer=null;
 let viewHistory=[];  // تاريخ الصفحات
 
+let scrollPositions={};  // بتحفظ مكان السكرول في كل صفحة عشان لما ترجعي تلاقي نفسك في نفس المكان
+function saveCurrentScroll(){
+  const active=document.querySelector('.view.active');
+  if(active) scrollPositions[active.id]=window.scrollY;
+}
+
 function showView(n){
+  saveCurrentScroll();
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+n).classList.add('active');
   if(!['product','checkout','success'].includes(n))prevView=n;
@@ -1409,6 +1416,7 @@ function showView(n){
 }
 
 window.addEventListener('popstate',function(e){
+  saveCurrentScroll();
   // شيل الصفحة الحالية من الـ history
   viewHistory.pop();
   const prev=viewHistory[viewHistory.length-1]||'home';
@@ -1419,19 +1427,20 @@ window.addEventListener('popstate',function(e){
   const btn=document.getElementById('backBtn');
   if(prev==='home') btn.classList.remove('show');
   else btn.classList.add('show');
-  window.scrollTo(0,0);
+  window.scrollTo(0,scrollPositions['view-'+prev]||0);
   // لو وصلنا للهوم حط state عشان الضغطة الجاية ترجع للهوم مش تخرج
   if(prev==='home') history.pushState({view:'home',len:1},'','');
 });
 
 function navGoBack(){
+  saveCurrentScroll();
   // شيل الصفحة الحالية
   viewHistory.pop();
   const prev=viewHistory[viewHistory.length-1]||'home';
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+prev).classList.add('active');
   if(!['product','checkout','success'].includes(prev))prevView=prev;
-  window.scrollTo(0,0);
+  window.scrollTo(0,scrollPositions['view-'+prev]||0);
 }
 let inventory={};  // {productId_size: quantity}
 let shippingCosts={};  // {governorate: cost}
@@ -1508,7 +1517,7 @@ function applyLang(){
   document.documentElement.dir=lang==='ar'?'rtl':'ltr';
   document.querySelectorAll('.t[data-ar]').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   document.querySelectorAll('.btype-btn').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
-  document.getElementById('langBtn').textContent=lang==='ar'?'EN':'عر';
+  document.getElementById('langBtn').textContent=lang==='ar'?'EN':'عربي';
   ['logoImgAr','shopLogoAr1','shopLogoAr2','shopLogoAr4','shopLogoAr5','shopLogoAr6','shopLogoAr7'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=lang==='ar'?'block':'none'});
   ['logoImgEn','shopLogoEn1','shopLogoEn2','shopLogoEn4','shopLogoEn5','shopLogoEn6','shopLogoEn7'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=lang==='en'?'block':'none'});
   document.querySelectorAll('.t[data-ar-placeholder]').forEach(el=>{el.placeholder=lang==='ar'?el.dataset.arPlaceholder:el.dataset.enPlaceholder});
@@ -1826,10 +1835,17 @@ function buildSlider(imgs){
   slides.style.transform='translateX(0)';
 
   const slider=document.getElementById('gallerySlider');
-  // Touch swipe
-  let startX=0;
-  slider.ontouchstart=e=>startX=e.touches[0].clientX;
+  // Touch swipe (متجاهل لمسة الزوم بإصبعين — لازم إصبع واحد بس عشان يتحسب سحب)
+  let startX=0,isPinch=false;
+  slider.ontouchstart=e=>{
+    isPinch=e.touches.length>1;
+    if(!isPinch) startX=e.touches[0].clientX;
+  };
+  slider.ontouchmove=e=>{
+    if(e.touches.length>1) isPinch=true;
+  };
   slider.ontouchend=e=>{
+    if(isPinch) return;
     const diff=startX-e.changedTouches[0].clientX;
     if(Math.abs(diff)>50) diff>0?galleryNext():galleryPrev();
   };
