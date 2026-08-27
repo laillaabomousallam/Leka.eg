@@ -1653,7 +1653,7 @@ function renderGrids(){
   }
   document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')));
   document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('full')));
-  document.getElementById('grid-all').innerHTML=buildCards(PRODUCTS);
+  document.getElementById('grid-all').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('all')));
   renderFavs();
 }
 
