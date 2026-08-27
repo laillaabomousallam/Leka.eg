@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#fafaf8"/>
 <title>ليكا | Leka</title>
-<meta name="description" content="تيشرتات أوڤر سايز يونيسكس وحجابي بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
+<meta name="description" content="تيشرتات أوڤر سايز يونيسكس وموديست بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
 <link rel="canonical" href="https://www.leka-eg.com/"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Leka"/>
 <meta property="og:title" content="ليكا | Leka"/>
-<meta property="og:description" content="تيشرتات أوڤر سايز يونيسكس وحجابي بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
+<meta property="og:description" content="تيشرتات أوڤر سايز يونيسكس وموديست بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
 <meta property="og:image" content="https://www.leka-eg.com/imgs/Short%20sleeve.png"/>
 <meta property="og:url" content="https://www.leka-eg.com/"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="ليكا | Leka"/>
-<meta name="twitter:description" content="تيشرتات أوڤر سايز يونيسكس وحجابي بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
+<meta name="twitter:description" content="تيشرتات أوڤر سايز يونيسكس وموديست بتصاميم مميزة وقطن 100% — تسوقي دلوقتي"/>
 <meta name="twitter:image" content="https://www.leka-eg.com/imgs/Short%20sleeve.png"/>
 <link rel="icon" type="image/png" href="favicon.png"/>
 <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
@@ -124,9 +124,9 @@ html[lang=ar] .nav-search-cart{order:1;flex-direction:row-reverse}
 .home-banner:hover .home-banner-imgs img{transform:scale(1.06)}
 .home-banner-overlay{
   position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;text-align:start;
   background:rgba(0,0,0,.15);
-  padding:1rem;
+  padding:1.5rem;
 }
 .home-banner-overlay .home-panel-label{margin-bottom:.5rem}
 .home-banner-overlay .home-panel-arrow{opacity:1;transform:none;margin-top:0}
@@ -187,7 +187,7 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 .sb-head{padding:1.5rem 1.75rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 .sb-head-label{font-size:.52rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
 .sb-close{background:none;border:none;font-size:.85rem;color:var(--muted);padding:4px;cursor:pointer;letter-spacing:.05em}
-.sb-items{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(2rem + env(safe-area-inset-bottom))}
+.sb-items{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(2rem + env(safe-area-inset-bottom))}
 .sb-item{
   display:flex;align-items:center;justify-content:space-between;
   padding:1.1rem 1.75rem;cursor:pointer;border-bottom:1px solid var(--line);
@@ -534,8 +534,8 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .cd-opt:last-child{border-radius:0 0 16px 16px}
 .cd-opt:hover{background:#f2f2f2}
 .cd-opt.selected{font-weight:600;color:var(--ink);background:#f2f2f2}
-.page-logo{display:flex;justify-content:center;padding:1.5rem 0 0;margin-bottom:0}
-.page-logo img{height:80px;width:auto}
+.page-logo{display:flex;justify-content:center;padding:1.5rem 0 0;margin-bottom:0;cursor:pointer}
+.page-logo img{height:64px;width:auto}
 
 .card-sold-overlay{
   position:absolute;inset:0;
@@ -770,8 +770,8 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     </div>
     <div class="sb-item" onclick="showView('hijabi');closeSidebar()">
       <div>
-        <div class="sb-item-name t" data-ar="كوليكشن الحجابي" data-en="Hijabi Collection"></div>
-        <div class="sb-item-sub t" data-ar="كم طويل — للمحجبات" data-en="Long Sleeve — Hijabi"></div>
+        <div class="sb-item-name t" data-ar="كوليكشن موديست" data-en="Modest Collection"></div>
+        <div class="sb-item-sub t" data-ar="كم طويل — موديست" data-en="Long Sleeve — Modest"></div>
       </div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>
     </div>
@@ -810,7 +810,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
 <!-- HOME -->
 <div class="view active" id="view-home">
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="home-hero-wrap">
     <div class="home-banner" onclick="showView('all')">
       <div class="home-banner-imgs">
@@ -831,10 +831,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
       </div>
       <div class="home-panel" onclick="showView('hijabi')">
-        <img src="imgs/Long sleeve.png" alt="Hijabi"/>
+        <img src="imgs/Long sleeve.png" alt="Modest"/>
         <div class="home-panel-overlay">
-          <div class="home-panel-label t" data-ar="كوليكشن الحجابي" data-en="Hijabi Collection"></div>
-          <div class="home-panel-sub t" data-ar="كم طويل — للمحجبات" data-en="Long Sleeve — Hijabi"></div>
+          <div class="home-panel-label t" data-ar="كوليكشن موديست" data-en="Modest Collection"></div>
+          <div class="home-panel-sub t" data-ar="كم طويل — موديست" data-en="Long Sleeve — Modest"></div>
           <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
         </div>
       </div>
@@ -845,7 +845,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- ALL PRODUCTS -->
 <div class="view" id="view-all">
 
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="shop-wrap">
     <div class="shop-header">
       <div class="shop-header-label t" data-ar="تسوّق" data-en="Shop"></div>
@@ -857,7 +857,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
 <!-- SEARCH -->
 <div class="view" id="view-search">
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div style="max-width:600px;margin:0 auto;padding:1.5rem 1.5rem 0">
     <input type="text" id="searchInput" oninput="doSearch()" class="t"
       data-ar-placeholder="ابحث عن منتج..." data-en-placeholder="Search products..."
@@ -870,7 +870,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- OVERSIZED -->
 <div class="view" id="view-oversized">
   
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="shop-wrap">
     <div class="shop-header">
       <div class="shop-header-label t" data-ar="تسوّق" data-en="Shop"></div>
@@ -883,11 +883,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- HIJABI -->
 <div class="view" id="view-hijabi">
   
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="shop-wrap">
     <div class="shop-header">
       <div class="shop-header-label t" data-ar="تسوّق" data-en="Shop"></div>
-      <div class="shop-header-title t" data-ar="تيشرتات حجابي" data-en="Hijabi T-Shirts"></div>
+      <div class="shop-header-title t" data-ar="تيشرتات موديست" data-en="Modest T-Shirts"></div>
     </div>
     <div class="products-grid" id="grid-full"></div>
   </div>
@@ -945,7 +945,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
 <!-- RETURNS -->
 <div class="view" id="view-returns">
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="chart-wrap">
     <h1 class="t" data-ar="سياسة الاستبدال والاسترجاع" data-en="Return &amp; Exchange Policy"></h1>
     <div class="chart-section">
@@ -972,11 +972,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- SIZE CHART -->
 <div class="view" id="view-sizechart">
   
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="chart-wrap">
     <h1 class="t" data-ar="جدول المقاسات" data-en="Size Chart"></h1>
     <div class="chart-section">
-      <div class="chart-section-title t" data-ar="الحجابي — كم طويل" data-en="Hijabi — Long Sleeve"></div>
+      <div class="chart-section-title t" data-ar="موديست — كم طويل" data-en="Modest — Long Sleeve"></div>
       <table class="size-table">
         <thead><tr>
           <th>Size</th>
@@ -1015,7 +1015,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- CHECKOUT -->
 <div class="view" id="view-checkout">
   
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="co-wrap">
     <div class="co-layout">
       <div>
@@ -1159,7 +1159,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- FAVORITES -->
 <div class="view" id="view-favorites">
   
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="favs-page">
     <div class="shop-header">
       <div class="shop-header-label t" data-ar="قائمتك" data-en="Your List"></div>
@@ -1196,7 +1196,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- CONTACT -->
 <div class="view" id="view-contact">
   
-  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.png" alt="Leka"/></div>
   <div class="contact-layout">
     <!-- معلومات التواصل على الشمال -->
     <div class="contact-info">
@@ -1580,7 +1580,7 @@ function makeCard(p,colorIdx=0){
   const colorKey=getColorKey(c);
   const name=lang==='ar'?p.nameAr:p.nameEn;
   const colorName=lang==='ar'?c.nameAr:c.nameEn;
-  const cat=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':'كم طويل — حجابي'):(p.cat==='half'?'Half Sleeve — Unisex':'Long Sleeve — Hijabi');
+  const cat=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':'كم طويل — موديست'):(p.cat==='half'?'Half Sleeve — Unisex':'Long Sleeve — Modest');
   const available=isColorAvailable(p,colorKey);
   const isFav=favorites.includes(p.id+'_'+colorKey);
   const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
@@ -1744,7 +1744,7 @@ function renderProd(p){
   const col=p.colors[selColor];
   document.getElementById('prodName').textContent=lang==='ar'?p.nameAr:p.nameEn;
   document.getElementById('prodPrice').innerHTML=priceHTML(p);
-  document.getElementById('prodCat').textContent=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':'كم طويل — حجابي'):(p.cat==='half'?'Half Sleeve — Unisex':'Long Sleeve — Hijabi');
+  document.getElementById('prodCat').textContent=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':'كم طويل — موديست'):(p.cat==='half'?'Half Sleeve — Unisex':'Long Sleeve — Modest');
   document.getElementById('prodDesc').textContent=lang==='ar'?p.descAr:p.descEn;
   document.getElementById('colorLabel').textContent=lang==='ar'?col.nameAr:col.nameEn;
   document.getElementById('qtyVal').value=qty;
