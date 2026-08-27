@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://axoyqisvnmkgbuvklvis.supabase.co">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500;600&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -39,7 +39,7 @@
   --mid:#6b6560;
   --sale:#b5232e;
   --display:'Playfair Display',serif;
-  --body-ar:'IBM Plex Sans Arabic',sans-serif;
+  --body-ar:'Cairo',sans-serif;
   --body-en:'Jost',sans-serif;
 }
 html[lang=ar]{font-family:var(--body-ar)}
@@ -53,8 +53,8 @@ button{font-family:inherit;cursor:pointer;touch-action:manipulation}
 /* ─── NAV ─── */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:200;
-  background:var(--paper);border-bottom:1px solid var(--line);
-  display:flex;align-items:center;height:52px;
+  background:var(--paper);
+  display:flex;justify-content:space-between;align-items:center;height:52px;
   direction:ltr;
 }
 /* زرار رجوع */
@@ -69,38 +69,23 @@ nav{
 .back-float:hover{background:#e0e0e0}
 .back-float svg{width:16px;height:16px;stroke:var(--ink);stroke-width:2;fill:none}
 @media(max-width:768px){.back-float{margin-top:1rem;margin-left:1rem}}
-/* لوجو: عربي=يسار(order1) | إنجليزي=يمين(order3) */
-.nav-logo-wrap{
-  display:flex;align-items:center;justify-content:center;
-  height:100%;flex-shrink:0;padding:0 1.25rem;
-}
-html[lang=ar] .nav-logo-wrap{order:1;border-right:1px solid var(--line)}
-html[lang=en] .nav-logo-wrap{order:3;border-left:1px solid var(--line)}
-.nav-logo-wrap button{background:none;border:none;display:flex;align-items:center}
-.nav-logo-wrap img{height:24px;width:auto}
-/* فراغ */
-.nav-spacer{flex:1;order:2}
-/* أيقونات: عربي=يمين(order3) | إنجليزي=يسار(order1) */
-/* ترتيب DOM دايماً: ☰ EN 🛒 — عربي بيعكسهم بـ flex-direction:row-reverse */
-.nav-actions{
-  display:flex;align-items:center;height:100%;flex-shrink:0;
-}
-html[lang=ar] .nav-actions{order:3;border-left:1px solid var(--line);flex-direction:row-reverse}
-html[lang=en] .nav-actions{order:1;border-right:1px solid var(--line);flex-direction:row}
+/* إنجليزي: قائمة+لغة شمال، بحث+عربة يمين — عربي: بالعكس */
+.nav-menu-lang,.nav-search-cart{display:flex;align-items:center;height:100%}
+.nav-menu-lang{order:1}
+.nav-search-cart{order:2}
+html[lang=ar] .nav-menu-lang{order:2;flex-direction:row-reverse}
+html[lang=ar] .nav-search-cart{order:1;flex-direction:row-reverse}
 .menu-btn{
   background:none;border:none;padding:0 16px;height:100%;
   display:flex;align-items:center;color:var(--ink);transition:background .15s;
-  border-right:1px solid var(--line);
 }
-html[lang=ar] .menu-btn{border-right:none;border-left:1px solid var(--line)}
 .menu-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.5;fill:none}
 .menu-btn:hover{background:var(--dust)}
 .lang-btn{
   background:none;border:none;padding:0 14px;font-size:.7rem;
   font-weight:600;letter-spacing:.12em;height:100%;color:var(--mid);
-  transition:all .2s;border-right:1px solid var(--line);
+  transition:all .2s;
 }
-html[lang=ar] .lang-btn{border-right:none;border-left:1px solid var(--line)}
 .lang-btn:hover{background:var(--ink);color:var(--white)}
 .cart-btn{
   position:relative;background:none;border:none;padding:0 14px;
@@ -734,21 +719,16 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo-wrap">
-    <button onclick="goHome()">
-      <img id="logoImgAr" src="imgs/logo.ar.png" alt="ليكا"/>
-      <img id="logoImgEn" src="imgs/logo.eng.png" alt="Leka" style="display:none"/>
-    </button>
-  </div>
-  <div class="nav-spacer"></div>
-  <div class="nav-actions" id="navActions">
+  <div class="nav-menu-lang">
     <button class="menu-btn" id="menuBtn" onclick="openSidebar()">
       <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+  </div>
+  <div class="nav-search-cart">
     <button class="menu-btn" id="searchBtn" onclick="openSearch()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </button>
-    <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
     <button class="cart-btn" id="cartBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
