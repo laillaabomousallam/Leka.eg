@@ -231,6 +231,7 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
   font-size:.55rem;padding:3px 8px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
 }
 .card-badge.badge-new{background:#0a7c0a}
+.card-badge.badge-sale{background:var(--sale)}
 .card-name{font-size:.88rem;font-weight:500;margin-bottom:3px;line-height:1.3}
 .card-cat{font-size:.65rem;color:var(--muted);letter-spacing:.05em;margin-bottom:.6rem}
 .card-bottom{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem}
@@ -1125,7 +1126,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="order-box-title t" data-ar="ملخص الطلب" data-en="Order Summary"></div>
           <div class="order-items" id="osItems"></div>
           <div class="order-row"><span class="t" data-ar="المجموع" data-en="Subtotal"></span><span id="osSubtotal">0 EGP</span></div>
-          <div class="order-row"><span class="t" data-ar="الشحن" data-en="Shipping"></span><span class="t" data-ar="يُحسب حسب المنطقة" data-en="Calculated by area"></span></div>
+          <div class="order-row"><span class="t" data-ar="الشحن" data-en="Shipping"></span><span id="osShipping"></span></div>
           <div class="order-row total"><span class="t" data-ar="الإجمالي" data-en="Total"></span><span id="osTotal">0 EGP</span></div>
           <div class="order-notice t"
                data-ar="يمكن معاينة المنتج عند الاستلام "
@@ -1433,6 +1434,12 @@ function navGoBack(){
   window.scrollTo(0,0);
 }
 let inventory={};  // {productId_size: quantity}
+let shippingCosts={};  // {governorate: cost}
+async function loadShippingCosts(){
+  const {data}=await sb.from('settings').select('value').eq('key','shipping_costs').single();
+  shippingCosts=(data&&data.value)||{};
+  renderCheckout();
+}
 let favorites=JSON.parse(localStorage.getItem('leka_favs')||'[]');
 
 // ── جلب المخزون من Supabase ──
@@ -1593,8 +1600,9 @@ function makeCard(p,colorIdx=0){
   const isFav=favorites.includes(p.id+'_'+colorKey);
   const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
   const soldOverlay=!available?`<div class="card-sold-overlay"><span>${lang==='ar'?'نفذت الكمية':'Sold Out'}</span></div>`:'';
-  const badgeTxt=p.badge==='new'?(lang==='ar'?'جديد':'New'):p.badge==='bestseller'?(lang==='ar'?'الأكثر مبيعاً':'Best Seller'):'';
-  const badgeHtml=badgeTxt?`<div class="card-badge ${p.badge==='new'?'badge-new':''}">${badgeTxt}</div>`:'';
+  const badgeTxt=p.badge==='new'?(lang==='ar'?'جديد':'New'):p.badge==='bestseller'?(lang==='ar'?'الأكثر مبيعاً':'Best Seller'):p.badge==='sale'?(lang==='ar'?'خصم':'Sale'):'';
+  const badgeClass=p.badge==='new'?'badge-new':p.badge==='sale'?'badge-sale':'';
+  const badgeHtml=badgeTxt?`<div class="card-badge ${badgeClass}">${badgeTxt}</div>`:'';
   // دوايرة الألوان
   const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${col.hex};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i})"></div>`).join('');
   return `<div class="card" onclick="openProductWithColor(${p.id},${colorIdx})">
@@ -1973,6 +1981,11 @@ function closeCart(){document.getElementById('cDrawer').classList.remove('open')
 document.getElementById('cartBtn').onclick=openCart;
 
 function goCheckout(){closeCart();renderCheckout();showView('checkout')}
+function getShippingCost(){
+  const gov=document.getElementById('coGov')?document.getElementById('coGov').value:'';
+  const c=shippingCosts[gov];
+  return c!==undefined?c:null;
+}
 function renderCheckout(){
   const sub=cart.reduce((a,i)=>a+i.price*i.qty,0);
   document.getElementById('osItems').innerHTML=cart.map(item=>`
@@ -1982,7 +1995,10 @@ function renderCheckout(){
     <div class="order-item-price">${item.price*item.qty} EGP</div></div>`).join('')
     || `<p style="font-size:.78rem;color:var(--muted)">${lang==='ar'?'لا يوجد منتجات':'No items'}</p>`;
   document.getElementById('osSubtotal').textContent=sub+' EGP';
-  document.getElementById('osTotal').textContent=sub+' EGP';
+  const shipCost=getShippingCost();
+  const osShipping=document.getElementById('osShipping');
+  if(osShipping) osShipping.textContent=shipCost!==null?(shipCost+' EGP'):(lang==='ar'?'يُحسب حسب المنطقة':'Calculated by area');
+  document.getElementById('osTotal').textContent=(sub+(shipCost||0))+' EGP';
   document.querySelectorAll('#view-checkout .t[data-ar]').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   const btn=document.getElementById('placeOrderBtn');if(btn)btn.textContent=lang==='ar'?'تأكيد الطلب':'Place Order';
 }
@@ -2042,7 +2058,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   if(!valid) return;
   if(!cart.length){showToast({nameAr:lang==='ar'?'لا يوجد منتجات في عربة التسوق':'Cart is empty',nameEn:'Cart is empty'});return}
 
-  const total=cart.reduce((a,i)=>a+i.price*i.qty,0);
+  const total=cart.reduce((a,i)=>a+i.price*i.qty,0)+(getShippingCost()||0);
   const itemsData=cart.map(i=>({name:i.nameAr+' / '+i.nameEn,size:i.size,color:i.colorAr+' / '+i.colorEn,qty:i.qty,price:i.price}));
 
   // توليد رقم الأوردر
@@ -2533,6 +2549,7 @@ if(window.location.hash==='#admin'){
       panel.querySelectorAll('.cd-opt').forEach(o=>o.classList.remove('selected'));
       opt.classList.add('selected');
       wrap.classList.remove('open');
+      renderCheckout();
     });
   });
 
@@ -2565,6 +2582,7 @@ loadProducts().then(()=>{
   loadInventory();
   loadBestSeller();
 });
+loadShippingCosts();
 </script>
 </body>
 </html>
