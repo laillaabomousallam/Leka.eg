@@ -121,14 +121,35 @@ html[lang=ar] .lang-btn{border-right:none;border-left:1px solid var(--line)}
 .view.active{display:block}
 
 /* ─── HOME ─── */
+.home-hero-wrap{
+  margin:2rem auto;
+  max-width:860px;
+  padding:0 1.5rem;
+}
+.home-banner{
+  position:relative;overflow:hidden;cursor:pointer;background:var(--dust);
+  border-radius:2px;height:320px;margin-bottom:.75rem;
+}
+.home-banner-imgs{display:flex;width:100%;height:100%}
+.home-banner-imgs img{
+  width:50%;height:100%;object-fit:cover;object-position:center 15%;
+  filter:brightness(.6);
+  transition:transform .7s cubic-bezier(.25,.46,.45,.94);
+}
+.home-banner:hover .home-banner-imgs img{transform:scale(1.06)}
+.home-banner-overlay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:rgba(0,0,0,.15);
+  padding:1rem;
+}
+.home-banner-overlay .home-panel-label{margin-bottom:.5rem}
+.home-banner-overlay .home-panel-arrow{opacity:1;transform:none;margin-top:0}
 .home-hero{
   display:grid;grid-template-columns:1fr 1fr;
   height:calc(100vh - 52px);
   max-height:600px;
-  margin:2rem auto;
-  max-width:860px;
   gap:.75rem;
-  padding:0 1.5rem;
 }
 .home-panel{
   position:relative;overflow:hidden;cursor:pointer;background:var(--dust);
@@ -662,11 +683,16 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   /* nav */
   .nav-pages-wrap{display:none}
   /* home */
-  .home-hero{grid-template-columns:1fr;height:auto;max-height:none;gap:.5rem;padding:0 .75rem;margin:1rem auto}
+  .home-hero-wrap{padding:0 .75rem;margin:1rem auto}
+  .home-hero{grid-template-columns:1fr 1fr;height:auto;max-height:none;gap:.5rem}
   .home-panel{height:auto;aspect-ratio:2/3;max-height:620px}
-  .home-panel-overlay{padding:1rem}
-  .home-panel-label{font-size:1.2rem}
+  .home-panel-overlay{padding:.75rem}
+  .home-panel-label{font-size:.95rem}
+  .home-panel-sub{font-size:.5rem}
   .home-panel-arrow{display:none}
+  .home-banner{height:190px;margin-bottom:.5rem}
+  .home-banner-overlay{padding:.5rem}
+  .home-banner-overlay .home-panel-label{font-size:1rem;margin-bottom:0}
   /* shop grid */
   .products-grid{grid-template-columns:repeat(2,1fr);padding:0 .75rem 2rem;gap:.5rem}
   .card{padding:.5rem}
@@ -751,6 +777,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div><div class="sb-item-name t" data-ar="الرئيسية" data-en="Home"></div></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </div>
+    <div class="sb-item" onclick="showView('all');closeSidebar()">
+      <div><div class="sb-item-name t" data-ar="كل المنتجات" data-en="All Products"></div></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </div>
     <div class="sb-item" onclick="showView('oversized');closeSidebar()">
       <div>
         <div class="sb-item-name t" data-ar="تيشرتات أوڤر سايز" data-en="Oversized T-Shirts"></div>
@@ -801,23 +831,48 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- HOME -->
 <div class="view active" id="view-home">
   <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
-  <div class="home-hero">
-    <div class="home-panel" onclick="showView('oversized')">
-      <img src="imgs/Short sleeve.png" alt="Oversized"/>
-      <div class="home-panel-overlay">
-        <div class="home-panel-label t" data-ar="تيشرتات أوڤر سايز" data-en="Oversized T-Shirts"></div>
-        <div class="home-panel-sub t" data-ar="كم قصير — يونيسيكس" data-en="Short Sleeve — Unisex"></div>
+  <div class="home-hero-wrap">
+    <div class="home-banner" onclick="showView('all')">
+      <div class="home-banner-imgs">
+        <img src="imgs/Short sleeve.png" alt=""/>
+        <img src="imgs/Long sleeve.png" alt=""/>
+      </div>
+      <div class="home-panel-overlay home-banner-overlay">
+        <div class="home-panel-label t" data-ar="كل المنتجات" data-en="All Products"></div>
         <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
       </div>
     </div>
-    <div class="home-panel" onclick="showView('hijabi')">
-      <img src="imgs/Long sleeve.png" alt="Hijabi"/>
-      <div class="home-panel-overlay">
-        <div class="home-panel-label t" data-ar="كوليكشن الحجابي" data-en="Hijabi Collection"></div>
-        <div class="home-panel-sub t" data-ar="كم طويل — للمحجبات" data-en="Long Sleeve — Hijabi"></div>
-        <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
+    <div class="home-hero">
+      <div class="home-panel" onclick="showView('oversized')">
+        <img src="imgs/Short sleeve.png" alt="Oversized"/>
+        <div class="home-panel-overlay">
+          <div class="home-panel-label t" data-ar="تيشرتات أوڤر سايز" data-en="Oversized T-Shirts"></div>
+          <div class="home-panel-sub t" data-ar="كم قصير — يونيسيكس" data-en="Short Sleeve — Unisex"></div>
+          <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
+        </div>
+      </div>
+      <div class="home-panel" onclick="showView('hijabi')">
+        <img src="imgs/Long sleeve.png" alt="Hijabi"/>
+        <div class="home-panel-overlay">
+          <div class="home-panel-label t" data-ar="كوليكشن الحجابي" data-en="Hijabi Collection"></div>
+          <div class="home-panel-sub t" data-ar="كم طويل — للمحجبات" data-en="Long Sleeve — Hijabi"></div>
+          <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
+        </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ALL PRODUCTS -->
+<div class="view" id="view-all">
+
+  <div class="page-logo"><img src="imgs/main logo.png" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-label t" data-ar="تسوّق" data-en="Shop"></div>
+      <div class="shop-header-title t" data-ar="كل المنتجات" data-en="All Products"></div>
+    </div>
+    <div class="products-grid" id="grid-all"></div>
   </div>
 </div>
 
@@ -1611,6 +1666,7 @@ function renderGrids(){
   }
   document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.cat==='half'));
   document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.cat==='full'));
+  document.getElementById('grid-all').innerHTML=buildCards(PRODUCTS);
   renderFavs();
 }
 
