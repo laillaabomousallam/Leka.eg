@@ -238,7 +238,7 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 .card-price{font-size:.92rem;font-weight:600;display:flex;align-items:baseline;gap:6px}
 .price-old{font-size:.78em;font-weight:400;color:var(--muted);text-decoration:line-through}
 .price-now{color:var(--ink)}
-.card-price .price-now,.prod-price .price-now,.qs-info-price .price-now{color:var(--sale)}
+.price-now.on-sale{color:var(--sale)}
 .card-dots{display:flex;gap:4px}
 .cdot{width:10px;height:10px;border-radius:50%;border:1px solid var(--line);cursor:pointer;transition:border-color .15s}
 .cdot-active{border-color:var(--ink)!important;border-width:2px}
@@ -1082,11 +1082,12 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
         <div class="field-row full">
           <div class="field">
-            <label class="t" data-ar="نوع المبنى (اختياري)" data-en="Building Type (optional)"></label>
+            <label class="t" data-ar="نوع المبنى" data-en="Building Type"></label>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
               <button type="button" class="btype-btn" onclick="setBuildingType(this,'عمارة','Building')" data-ar="عمارة" data-en="Building"></button>
               <button type="button" class="btype-btn" onclick="setBuildingType(this,'شركة','Company')" data-ar="شركة" data-en="Company"></button>
             </div>
+            <span class="field-error t" id="errBuildingType" data-ar="من فضلك اختاري نوع المبنى" data-en="Please select a building type"></span>
             <input type="text" id="coBuilding" class="t" data-ar-placeholder="اسم المبنى / الشركة" data-en-placeholder="Building / Company name"/>
           </div>
         </div>
@@ -1588,7 +1589,7 @@ function closeSidebar(){
 
 function priceHTML(p){
   if(p.originalPrice&&p.originalPrice>p.price){
-    return `<span class="price-old">${p.originalPrice} EGP</span><span class="price-now">${p.price} EGP</span>`;
+    return `<span class="price-old">${p.originalPrice} EGP</span><span class="price-now on-sale">${p.price} EGP</span>`;
   }
   return `<span class="price-now">${p.price} EGP</span>`;
 }
@@ -2071,6 +2072,12 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     if(errGov) errGov.classList.add('show');
     valid=false;
   }
+  // لازم يختار عمارة أو شركة — من غير اختيار مش هيعرف يكمل
+  if(!document.querySelector('.btype-btn.active')){
+    const errBType=document.getElementById('errBuildingType');
+    if(errBType) errBType.classList.add('show');
+    valid=false;
+  }
   if(!valid) return;
   if(!cart.length){showToast({nameAr:lang==='ar'?'لا يوجد منتجات في عربة التسوق':'Cart is empty',nameEn:'Cart is empty'});return}
 
@@ -2207,6 +2214,8 @@ document.getElementById('ctSubmit').addEventListener('click',submitContact);
 function setBuildingType(btn,ar,en){
   document.querySelectorAll('.btype-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  const errBType=document.getElementById('errBuildingType');
+  if(errBType) errBType.classList.remove('show');
   const isCompany=(ar==='شركة');
   const input=document.getElementById('coBuilding');
   const type=lang==='ar'?ar:en;
