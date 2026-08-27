@@ -456,11 +456,13 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .x-btn{background:none;border:none;font-size:1rem;color:var(--mid)}
 .c-body{flex:1;overflow-y:auto;padding:1rem 1.4rem;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .c-empty{color:var(--muted);font-size:.82rem;text-align:center;margin-top:3rem}
-.ci{display:grid;grid-template-columns:60px 1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:start}
+.ci{display:grid;grid-template-columns:60px 1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:stretch}
+.ci-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between}
 .ci img{width:60px;height:74px;object-fit:cover;background:var(--dust)}
 .ci-name{font-size:.8rem;font-weight:500;margin-bottom:3px}
 .ci-sub{font-size:.68rem;color:var(--muted)}
-.ci-rm{background:none;border:none;color:var(--muted);font-size:.65rem;margin-top:4px;text-decoration:underline}
+.ci-rm{background:none;border:none;color:var(--muted);padding:2px;display:inline-flex;cursor:pointer}
+.ci-rm svg{width:15px;height:15px}
 .ci-price{font-size:.8rem;font-weight:600}
 .c-foot{padding:1.1rem 1.4rem;border-top:1px solid var(--line)}
 .c-total{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;margin-bottom:.85rem}
@@ -2007,9 +2009,11 @@ function renderCart(){
   body.innerHTML=cart.map((item,i)=>`
     <div class="ci"><img src="${item.img}" alt=""/>
     <div><div class="ci-name">${lang==='ar'?item.nameAr:item.nameEn}</div>
-    <div class="ci-sub">${item.size} · ${lang==='ar'?item.colorAr:item.colorEn} · ×${item.qty}</div>
-    <button class="ci-rm" onclick="removeItem(${i})">${lang==='ar'?'إزالة':'Remove'}</button></div>
-    <div class="ci-price">${item.price*item.qty} EGP</div></div>`).join('');
+    <div class="ci-sub">${item.size} · ${lang==='ar'?item.colorAr:item.colorEn} · ×${item.qty}</div></div>
+    <div class="ci-right">
+      <div class="ci-price">${item.price*item.qty} EGP</div>
+      <button class="ci-rm" onclick="removeItem(${i})" aria-label="${lang==='ar'?'إزالة':'Remove'}" title="${lang==='ar'?'إزالة':'Remove'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M4 6h16"/><path d="M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/><line x1="10" y1="10" x2="10" y2="18"/><line x1="12" y1="10" x2="12" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/></svg></button>
+    </div></div>`).join('');
   document.getElementById('cTotal').textContent=cart.reduce((a,i)=>a+i.price*i.qty,0)+' EGP';
 }
 function removeItem(i){cart.splice(i,1);saveCart();updateBadge();renderCart()}
