@@ -1,0 +1,4 @@
+done: 40 skipped: 2
+SKIPPED 8 White imgs/White English Hj/1.png
+SKIPPED 9 Burgundy imgs/Red Leka/1.png
+TOTAL: 55.31 MB -> 3.02 MB
