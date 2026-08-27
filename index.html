@@ -1088,7 +1088,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
               <button type="button" class="btype-btn" onclick="setBuildingType(this,'شركة','Company')" data-ar="شركة" data-en="Company"></button>
             </div>
             <span class="field-error t" id="errBuildingType" data-ar="من فضلك اختاري نوع المبنى" data-en="Please select a building type"></span>
-            <input type="text" id="coBuilding" class="t" data-ar-placeholder="اسم المبنى / الشركة" data-en-placeholder="Building / Company name"/>
           </div>
         </div>
         <!-- حقول العمارة -->
@@ -1516,7 +1515,7 @@ function isColorAvailable(p,colorKey){
 function applyLang(){
   document.documentElement.lang=lang;
   document.documentElement.dir=lang==='ar'?'rtl':'ltr';
-  document.querySelectorAll('.t[data-ar]').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
+  document.querySelectorAll('.t[data-ar]:not(#govLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   document.querySelectorAll('.btype-btn').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   document.getElementById('langBtn').textContent=lang==='ar'?'ENG':'عربي';
   ['logoImgAr','shopLogoAr1','shopLogoAr2','shopLogoAr4','shopLogoAr5','shopLogoAr6','shopLogoAr7'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=lang==='ar'?'block':'none'});
@@ -2016,7 +2015,7 @@ function renderCheckout(){
   const osShipping=document.getElementById('osShipping');
   if(osShipping) osShipping.textContent=shipCost!==null?(shipCost+' EGP'):(lang==='ar'?'يُحسب حسب المنطقة':'Calculated by area');
   document.getElementById('osTotal').textContent=(sub+(shipCost||0))+' EGP';
-  document.querySelectorAll('#view-checkout .t[data-ar]').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
+  document.querySelectorAll('#view-checkout .t[data-ar]:not(#govLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   const btn=document.getElementById('placeOrderBtn');if(btn)btn.textContent=lang==='ar'?'تأكيد الطلب':'Place Order';
 }
 
@@ -2028,7 +2027,8 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   const gov=document.getElementById('coGov').value;
   const district=document.getElementById('coDistrict').value.trim();
   const street=document.getElementById('coStreet').value.trim();
-  const buildName=document.getElementById('coBuilding').value.trim();
+  const activeBType=document.querySelector('.btype-btn.active');
+  const buildName=activeBType?activeBType.textContent.trim():'';
   const buildNum=document.getElementById('coBuildNum').value.trim();
   const floor=document.getElementById('coFloor').value.trim();
   const apt=document.getElementById('coApt').value.trim();
@@ -2217,10 +2217,6 @@ function setBuildingType(btn,ar,en){
   const errBType=document.getElementById('errBuildingType');
   if(errBType) errBType.classList.remove('show');
   const isCompany=(ar==='شركة');
-  const input=document.getElementById('coBuilding');
-  const type=lang==='ar'?ar:en;
-  const types=['عمارة','شركة','Building','Company'];
-  if(!input.value.trim()||types.some(t=>input.value.trim()===t)) input.value=type;
 
   // أظهر/أخفي الخانات
   const aptRow=document.getElementById('aptRow');
@@ -2244,7 +2240,7 @@ function setBuildingType(btn,ar,en){
     if(lblFloor) lblFloor.setAttribute('data-en','Floor No.');
   }
   // تحديث النصوص
-  document.querySelectorAll('.t[data-ar]').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
+  document.querySelectorAll('.t[data-ar]:not(#govLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
 }
 
 // ── TRACK ORDER ──
