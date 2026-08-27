@@ -1580,7 +1580,7 @@ function makeCard(p,colorIdx=0){
   const colorKey=getColorKey(c);
   const name=lang==='ar'?p.nameAr:p.nameEn;
   const colorName=lang==='ar'?c.nameAr:c.nameEn;
-  const cat=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':'كم طويل — موديست'):(p.cat==='half'?'Half Sleeve — Unisex':'Long Sleeve — Modest');
+  const cat=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':p.cat==='full'?'كم طويل — موديست':'كل المنتجات'):(p.cat==='half'?'Half Sleeve — Unisex':p.cat==='full'?'Long Sleeve — Modest':'All Products');
   const available=isColorAvailable(p,colorKey);
   const isFav=favorites.includes(p.id+'_'+colorKey);
   const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
@@ -1744,7 +1744,7 @@ function renderProd(p){
   const col=p.colors[selColor];
   document.getElementById('prodName').textContent=lang==='ar'?p.nameAr:p.nameEn;
   document.getElementById('prodPrice').innerHTML=priceHTML(p);
-  document.getElementById('prodCat').textContent=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':'كم طويل — موديست'):(p.cat==='half'?'Half Sleeve — Unisex':'Long Sleeve — Modest');
+  document.getElementById('prodCat').textContent=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':p.cat==='full'?'كم طويل — موديست':'كل المنتجات'):(p.cat==='half'?'Half Sleeve — Unisex':p.cat==='full'?'Long Sleeve — Modest':'All Products');
   document.getElementById('prodDesc').textContent=lang==='ar'?p.descAr:p.descEn;
   document.getElementById('colorLabel').textContent=lang==='ar'?col.nameAr:col.nameEn;
   document.getElementById('qtyVal').value=qty;
