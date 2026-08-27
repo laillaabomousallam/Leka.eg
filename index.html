@@ -1518,7 +1518,7 @@ function applyLang(){
   document.documentElement.dir=lang==='ar'?'rtl':'ltr';
   document.querySelectorAll('.t[data-ar]').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   document.querySelectorAll('.btype-btn').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
-  document.getElementById('langBtn').textContent=lang==='ar'?'EN':'عربي';
+  document.getElementById('langBtn').textContent=lang==='ar'?'ENG':'عربي';
   ['logoImgAr','shopLogoAr1','shopLogoAr2','shopLogoAr4','shopLogoAr5','shopLogoAr6','shopLogoAr7'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=lang==='ar'?'block':'none'});
   ['logoImgEn','shopLogoEn1','shopLogoEn2','shopLogoEn4','shopLogoEn5','shopLogoEn6','shopLogoEn7'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=lang==='en'?'block':'none'});
   document.querySelectorAll('.t[data-ar-placeholder]').forEach(el=>{el.placeholder=lang==='ar'?el.dataset.arPlaceholder:el.dataset.enPlaceholder});
