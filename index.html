@@ -1364,6 +1364,7 @@ function mapProductRow(row){
   return {
     id:row.id,
     cat:row.cat,
+    categories:(row.categories&&row.categories.length)?row.categories:[row.cat],
     nameAr:row.name_ar,
     nameEn:row.name_en,
     descAr:row.desc_ar||'',
@@ -1575,12 +1576,19 @@ function priceHTML(p){
   }
   return `<span class="price-now">${p.price} EGP</span>`;
 }
+function catLabel(p){
+  const hasHalf=p.categories.includes('half'),hasFull=p.categories.includes('full');
+  if(hasHalf&&hasFull) return lang==='ar'?'نص كم وموديست':'Half Sleeve & Modest';
+  if(hasHalf) return lang==='ar'?'كم قصير — يونيسكس':'Half Sleeve — Unisex';
+  if(hasFull) return lang==='ar'?'كم طويل — موديست':'Long Sleeve — Modest';
+  return lang==='ar'?'كل المنتجات':'All Products';
+}
 function makeCard(p,colorIdx=0){
   const c=p.colors[colorIdx];
   const colorKey=getColorKey(c);
   const name=lang==='ar'?p.nameAr:p.nameEn;
   const colorName=lang==='ar'?c.nameAr:c.nameEn;
-  const cat=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':p.cat==='full'?'كم طويل — موديست':'كل المنتجات'):(p.cat==='half'?'Half Sleeve — Unisex':p.cat==='full'?'Long Sleeve — Modest':'All Products');
+  const cat=catLabel(p);
   const available=isColorAvailable(p,colorKey);
   const isFav=favorites.includes(p.id+'_'+colorKey);
   const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
@@ -1643,8 +1651,8 @@ function renderGrids(){
     while(oi<otherCards.length){result.push(makeCard(otherCards[oi].p,otherCards[oi].i));oi++;}
     return result.join('');
   }
-  document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.cat==='half'));
-  document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.cat==='full'));
+  document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')));
+  document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('full')));
   document.getElementById('grid-all').innerHTML=buildCards(PRODUCTS);
   renderFavs();
 }
@@ -1744,12 +1752,12 @@ function renderProd(p){
   const col=p.colors[selColor];
   document.getElementById('prodName').textContent=lang==='ar'?p.nameAr:p.nameEn;
   document.getElementById('prodPrice').innerHTML=priceHTML(p);
-  document.getElementById('prodCat').textContent=lang==='ar'?(p.cat==='half'?'كم قصير — يونيسكس':p.cat==='full'?'كم طويل — موديست':'كل المنتجات'):(p.cat==='half'?'Half Sleeve — Unisex':p.cat==='full'?'Long Sleeve — Modest':'All Products');
+  document.getElementById('prodCat').textContent=catLabel(p);
   document.getElementById('prodDesc').textContent=lang==='ar'?p.descAr:p.descEn;
   document.getElementById('colorLabel').textContent=lang==='ar'?col.nameAr:col.nameEn;
   document.getElementById('qtyVal').value=qty;
   document.getElementById('buyNow').textContent=lang==='ar'?'اشتر الآن':'Buy Now';
-  renderInlineSizeChart(p.cat);
+  renderInlineSizeChart(p.categories.includes('full')?'full':'half');
   document.getElementById('addCartBtn').textContent=lang==='ar'?'أضف لعربة التسوق':'Add to Cart';
   const notice=document.querySelector('#view-product .prod-notice');
   notice.textContent=lang==='ar'?notice.dataset.ar:notice.dataset.en;
@@ -1774,8 +1782,8 @@ function renderProd(p){
 function renderRelated(p){
   const strip=document.getElementById('relatedStrip');
   if(!strip) return;
-  const sameCat=shuffle(PRODUCTS.filter(x=>x.id!==p.id&&x.cat===p.cat));
-  const otherCat=shuffle(PRODUCTS.filter(x=>x.id!==p.id&&x.cat!==p.cat));
+  const sameCat=shuffle(PRODUCTS.filter(x=>x.id!==p.id&&x.categories.some(c=>p.categories.includes(c))));
+  const otherCat=shuffle(PRODUCTS.filter(x=>x.id!==p.id&&!x.categories.some(c=>p.categories.includes(c))));
   const list=[...sameCat,...otherCat].slice(0,10);
   strip.innerHTML=list.map(item=>{
     const col=item.colors[0];
