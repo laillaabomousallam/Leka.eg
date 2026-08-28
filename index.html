@@ -343,7 +343,7 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 .related-wrap{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--line);min-width:0}
 .related-title{font-family:var(--display);font-size:1.1rem;font-weight:400;margin-bottom:1rem;letter-spacing:-.01em}
 .related-strip{display:flex;gap:.85rem;overflow-x:auto;padding-bottom:.5rem;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-snap-type:x proximity}
-.related-card{flex:0 0 150px;scroll-snap-align:start;cursor:pointer;display:flex;flex-direction:column}
+.related-card{flex:0 0 150px;min-width:0;scroll-snap-align:start;cursor:pointer;display:flex;flex-direction:column}
 .related-card-img{aspect-ratio:3/4;background:var(--dust);overflow:hidden;margin-bottom:.5rem;border-radius:2px;position:relative}
 .related-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s cubic-bezier(.25,.46,.45,.94)}
 .related-card:hover .related-card-img img{transform:scale(1.05)}
@@ -1417,7 +1417,8 @@ function mapProductRow(row){
     colors:(row.colors||[]).filter(c=>c.images&&c.images.length).map(c=>({
       nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,
       images:c.images,
-      img:c.images[0]
+      img:c.images[0],
+      badge:c.badge||null
     }))
   };
 }
@@ -1510,26 +1511,59 @@ async function loadInventory(){
 }
 
 async function loadBestSeller(){
-  const {data:orders,error}=await sb.from('orders').select('items');
-  if(error||!orders) return;
-  const productCount={};
-  orders.forEach(o=>{
+  const {data:ordersData,error}=await sb.from('orders').select('items');
+  if(error||!ordersData) return;
+  // بنجمع الكمية المباعة لكل (منتج + لون) مع بعض، مش لكل منتج لوحده —
+  // عشان لو لون واحد باع كتير، هو بس اللي ياخد بادج "الأكثر مبيعاً" مش كل الألوان
+  const salesByKey={};
+  ordersData.forEach(o=>{
     let itemsArr=[];
     try{itemsArr=Array.isArray(o.items)?o.items:(typeof o.items==='string'?JSON.parse(o.items):[]);}catch(e){}
     itemsArr.forEach(i=>{
-      const name=i.name||'';
-      productCount[name]=(productCount[name]||0)+(i.qty||1);
+      const product=PRODUCTS.find(p=>(p.nameAr+' / '+p.nameEn)===(i.name||''));
+      if(!product) return;
+      const colorNameEn=(i.color||'').split('/')[1]?.trim();
+      const col=product.colors.find(c=>c.nameEn===colorNameEn||c.key===colorNameEn);
+      if(!col) return;
+      const key=product.id+'|'+getColorKey(col);
+      salesByKey[key]=(salesByKey[key]||0)+(i.qty||1);
     });
   });
-  const sorted=Object.entries(productCount).sort((a,b)=>b[1]-a[1]);
-  let topProduct=null;
-  for(const [name] of sorted){
-    topProduct=PRODUCTS.find(p=>(p.nameAr+' / '+p.nameEn)===name);
-    if(topProduct) break;
+  const sorted=Object.entries(salesByKey).sort((a,b)=>b[1]-a[1]);
+  if(!sorted.length) return;
+  const sep=sorted[0][0].indexOf('|');
+  const topProductId=parseInt(sorted[0][0].slice(0,sep));
+  const topColorKey=sorted[0][0].slice(sep+1);
+
+  // كل المنتجات اللي محتاجة تتحدّث في قاعدة البيانات: المنتج الجديد + أي منتج فيه لون كان "الأكثر مبيعاً" قبل كده
+  const idsToCheck=new Set([topProductId]);
+  PRODUCTS.forEach(p=>{ if(p.badge==='bestseller'||p.colors.some(c=>c.badge==='bestseller')) idsToCheck.add(p.id); });
+
+  for(const pid of idsToCheck){
+    const {data:row}=await sb.from('products').select('colors,badge').eq('id',pid).single();
+    if(!row) continue;
+    let changed=false;
+    const newDbColors=(row.colors||[]).map(c=>{
+      const key=c.key||c.nameEn;
+      const shouldBeBest=pid===topProductId&&key===topColorKey;
+      const newBadge=shouldBeBest?'bestseller':(c.badge==='bestseller'?null:c.badge||null);
+      if(newBadge!==(c.badge||null)) changed=true;
+      return {...c, badge:newBadge};
+    });
+    const newTopBadge=row.badge==='bestseller'?null:row.badge;
+    if(newTopBadge!==row.badge) changed=true;
+    if(changed){
+      await sb.from('products').update({colors:newDbColors,badge:newTopBadge}).eq('id',pid);
+      const localP=PRODUCTS.find(p=>p.id===pid);
+      if(localP){
+        localP.badge=newTopBadge;
+        localP.colors.forEach(c=>{
+          const key=c.key||c.nameEn;
+          c.badge=(pid===topProductId&&key===topColorKey)?'bestseller':(c.badge==='bestseller'?null:c.badge);
+        });
+      }
+    }
   }
-  if(!topProduct) return;
-  PRODUCTS.forEach(p=>{if(p.badge==='bestseller')p.badge=null});
-  topProduct.badge='bestseller';
   renderGrids();
   if(cur)renderProd(cur);
   doSearch();
