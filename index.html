@@ -828,6 +828,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div><div class="sb-item-name t" data-ar="تواصل معنا" data-en="Contact Us"></div></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
     </div>
+    <div class="sb-item" onclick="showView('about');closeSidebar()">
+      <div><div class="sb-item-name t" data-ar="مين إحنا" data-en="About Us"></div></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    </div>
   </div>
 </div>
 
@@ -993,6 +997,44 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   </div>
 </div>
 
+<!-- ABOUT US -->
+<div class="view" id="view-about">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="chart-wrap">
+    <h1 class="t" data-ar="مين إحنا" data-en="About Us"></h1>
+    <div class="chart-section">
+      <p style="font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.9" class="t"
+        data-ar="هاي، إحنا LEKA."
+        data-en="Hey, we're LEKA."></p>
+    </div>
+    <div class="chart-section">
+      <p style="font-size:.85rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="براند ستريت وير مصري 100%، لكل واحد بيحب يبقى simple ومريح ومختلف شوية."
+        data-en="A local Egyptian streetwear brand made for people who like to keep it simple, comfortable, and different."></p>
+    </div>
+    <div class="chart-section">
+      <p style="font-size:.85rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="بدأنا LEKA عشان عايزين هدوم تحسسك كويس، وشكلها حلو، وتخليك تبقى نفسك بس."
+        data-en="We started LEKA because we wanted to create clothes that feel good, look good, and let you be yourself."></p>
+    </div>
+    <div class="chart-section">
+      <p style="font-size:.85rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="بادئين بتيشرتات أوفر سايز وكم طويل، وجاي قريب حاجات أكتر."
+        data-en="We're starting with oversized T-shirts &amp; long sleeves, with more pieces coming soon."></p>
+    </div>
+    <div class="chart-section">
+      <p style="font-size:.85rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="دي بس البداية. 🖤"
+        data-en="This is just the beginning. 🖤"></p>
+    </div>
+    <div class="chart-section">
+      <p style="font-size:.85rem;font-weight:700;color:var(--ink);line-height:1.9" class="t"
+        data-ar="LEKA — اعمل ستايلك. عيش بطريقتك."
+        data-en="LEKA — Define Your Style. Live Your Way."></p>
+    </div>
+  </div>
+</div>
+
 <!-- SIZE CHART -->
 <div class="view" id="view-sizechart">
   
@@ -1154,6 +1196,9 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="order-notice t"
                data-ar="يمكن معاينة المنتج عند الاستلام "
                data-en="✅ Inspect on delivery"></div>
+          <div class="order-notice t" style="margin-top:.4rem;padding-top:0;border-top:none"
+               data-ar="🚚 التوصيل خلال 5 أيام"
+               data-en="🚚 Delivery within 5 days"></div>
         </div>
       </div>
     </div>
@@ -1292,17 +1337,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <span class="field-error t" id="errCtEmail" data-ar="من فضلك أدخل إيميلك" data-en="Please enter your email"></span>
         </div>
       </div>
-      <div class="contact-row">
-        <div class="contact-field">
-          <label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label>
-          <input type="text" id="ctPhone" class="t" data-ar-placeholder="رقم الموبايل" data-en-placeholder="Phone Number"/>
-          <span class="field-error t" id="errCtPhone" data-ar="من فضلك أدخل رقم موبايلك" data-en="Please enter your phone number"></span>
-        </div>
-        <div class="contact-field">
+      <div class="contact-field">
           <label class="t" data-ar="رقم الطلب *" data-en="Order Number *"></label>
           <input type="text" id="ctOrder" class="t" data-ar-placeholder="رقم الطلب" data-en-placeholder="Order Number"/>
           <span class="field-error t" id="errCtOrder" data-ar="من فضلك أدخل رقم الطلب" data-en="Please enter your order number"></span>
-        </div>
       </div>
       <div class="contact-field">
         <label class="t" data-ar="رسالتك" data-en="Your message"></label>
@@ -2178,6 +2216,8 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     const label=lang==='ar'?'رقم الطلب: ':'Order #: ';
     onEl.textContent=label+orderNum;
   }
+  // رجّعي الزرار لحالته الطبيعية عشان لو العميل عمل أوردر تاني في نفس الجلسة يشتغل تاني
+  btn.disabled=false;btn.textContent=lang==='ar'?'تأكيد الطلب':'Place Order';
 };
 
 function showToast(p){
@@ -2193,13 +2233,12 @@ function closeToast(){document.getElementById('toast').classList.remove('show')}
 async function submitContact(){
   const name=document.getElementById('ctName').value.trim();
   const email=document.getElementById('ctEmail').value.trim();
-  const phone=document.getElementById('ctPhone').value.trim();
   const message=document.getElementById('ctMessage').value.trim();
   const btn=document.getElementById('ctSubmit');
   const success=document.getElementById('ctSuccess');
 
   // clear errors
-  ['ctName','ctEmail','ctPhone','ctMessage'].forEach(id=>{
+  ['ctName','ctEmail','ctMessage'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.classList.remove('error');
   });
@@ -2209,7 +2248,6 @@ async function submitContact(){
   const requiredFields=[
     {id:'ctName',err:'errCtName'},
     {id:'ctEmail',err:'errCtEmail'},
-    {id:'ctPhone',err:'errCtPhone'},
     {id:'ctOrder',err:'errCtOrder'},
     {id:'ctMessage',err:'errCtMessage'},
   ];
@@ -2228,7 +2266,7 @@ async function submitContact(){
   btn.textContent=lang==='ar'?'جاري الإرسال...':'Sending...';
 
   // حفظ في Supabase
-  await sb.from('messages').insert([{name,email,phone,message,status:'new'}]);
+  await sb.from('messages').insert([{name,email,message,status:'new'}]);
 
   // إرسال إيميل
   try{
@@ -2238,7 +2276,7 @@ async function submitContact(){
       body:JSON.stringify({
         table:'messages',
         type:'INSERT',
-        record:{name,email,phone,message}
+        record:{name,email,message}
       })
     });
   }catch(e){console.error(e)}
@@ -2249,7 +2287,6 @@ async function submitContact(){
   success.textContent=lang==='ar'?'✓ تم إرسال رسالتك، سيتم الرد عليك قريباً':'✓ Message sent! We\'ll get back to you soon.';
   document.getElementById('ctName').value='';
   document.getElementById('ctEmail').value='';
-  document.getElementById('ctPhone').value='';
   document.getElementById('ctMessage').value='';
 }
 
