@@ -1648,8 +1648,9 @@ function makeCard(p,colorIdx=0){
   const isFav=favorites.includes(p.id+'_'+colorKey);
   const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
   const soldOverlay=!available?`<div class="card-sold-overlay"><span>${lang==='ar'?'نفذت الكمية':'Sold Out'}</span></div>`:'';
-  const badgeTxt=p.badge==='new'?(lang==='ar'?'جديد':'New'):p.badge==='bestseller'?(lang==='ar'?'الأكثر مبيعاً':'Best Seller'):p.badge==='sale'?(lang==='ar'?'خصم':'Sale'):'';
-  const badgeClass=p.badge==='new'?'badge-new':p.badge==='sale'?'badge-sale':'';
+  const badge=c.badge||p.badge;
+  const badgeTxt=badge==='new'?(lang==='ar'?'جديد':'New'):badge==='bestseller'?(lang==='ar'?'الأكثر مبيعاً':'Best Seller'):badge==='sale'?(lang==='ar'?'خصم':'Sale'):'';
+  const badgeClass=badge==='new'?'badge-new':badge==='sale'?'badge-sale':'';
   const badgeHtml=badgeTxt?`<div class="card-badge ${badgeClass}">${badgeTxt}</div>`:'';
   // دوايرة الألوان
   const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${col.hex};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i})"></div>`).join('');
@@ -1699,12 +1700,11 @@ function renderGrids(){
   function buildCards(prods){
     const lekaCards=shuffleCardsNoAdjacentRepeat(prods.filter(p=>p.id===1||p.id===5).flatMap(p=>p.colors.map((_,i)=>({p,i}))));
     const others=prods.filter(p=>p.id!==1&&p.id!==5);
-    // منتجات "جديد" و"الأكثر مبيعاً" تطلع الأول
-    const featured=others.filter(p=>p.badge==='new'||p.badge==='bestseller');
-    const normal=others.filter(p=>p.badge!=='new'&&p.badge!=='bestseller');
     // خلط حقيقي على مستوى المنتج واللون مع بعض — مش دفعة كل لون لوحده
-    const featuredCards=shuffleCardsNoAdjacentRepeat(featured.flatMap(p=>p.colors.map((_,i)=>({p,i}))));
-    const normalCards=shuffleCardsNoAdjacentRepeat(normal.flatMap(p=>p.colors.map((_,i)=>({p,i}))));
+    const allOtherCards=others.flatMap(p=>p.colors.map((col,i)=>({p,i,badge:col.badge||p.badge})));
+    // كروت عندها بادج "جديد" أو "الأكثر مبيعاً" (على مستوى اللون أو المنتج) تطلع الأول
+    const featuredCards=shuffleCardsNoAdjacentRepeat(allOtherCards.filter(c=>c.badge==='new'||c.badge==='bestseller'));
+    const normalCards=shuffleCardsNoAdjacentRepeat(allOtherCards.filter(c=>c.badge!=='new'&&c.badge!=='bestseller'));
     const otherCards=[...featuredCards,...normalCards];
 
     const result=[];
