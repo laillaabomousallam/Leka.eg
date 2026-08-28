@@ -246,9 +246,9 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
 .card:hover .card-img img{transform:scale(1.05)}
 .card-badge{
-  position:absolute;top:10px;right:10px;z-index:2;
+  position:absolute;top:8px;right:8px;z-index:2;
   background:var(--ink);color:#fff;
-  font-size:.55rem;padding:3px 8px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  font-size:.48rem;padding:2px 6px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
 }
 .card-badge.badge-new{background:#0a7c0a}
 .card-badge.badge-sale{background:var(--sale)}
@@ -1662,21 +1662,34 @@ function shuffle(arr){
   for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
   return a;
 }
+// بتاخد مجموعة كروت (منتج+لون) وترجعها متلخبطة، وتتأكد كمان إن نفس المنتج أو نفس اللون
+// ميجيش ورا بعضه على طول
+function shuffleCardsNoAdjacentRepeat(cards){
+  const arr=shuffle(cards);
+  const clashes=(a,b)=>a.p.id===b.p.id||a.i===b.i;
+  for(let i=1;i<arr.length;i++){
+    if(clashes(arr[i],arr[i-1])){
+      for(let j=i+1;j<arr.length;j++){
+        if(!clashes(arr[j],arr[i-1])&&!clashes(arr[j],arr[i])){
+          [arr[i],arr[j]]=[arr[j],arr[i]];
+          break;
+        }
+      }
+    }
+  }
+  return arr;
+}
 function renderGrids(){
   function buildCards(prods){
-    const lekaCards=prods.filter(p=>p.id===1||p.id===5).flatMap(p=>p.colors.map((_,i)=>({p,i}))).sort((a,b)=>a.i-b.i);
+    const lekaCards=shuffleCardsNoAdjacentRepeat(prods.filter(p=>p.id===1||p.id===5).flatMap(p=>p.colors.map((_,i)=>({p,i}))));
     const others=prods.filter(p=>p.id!==1&&p.id!==5);
-    // تناوب تلقائي — كل لون بالتناوب عبر كل المنتجات
-    const otherCards=[];
-    const maxColors=Math.max(...others.map(p=>p.colors.length),0);
-    const colorOrder=[0,2,1]; // أسود، برجاندي، أبيض — متلخبطين
-    colorOrder.forEach(ci=>{
-      // لكل لون، خد من كل منتج بس مش بالترتيب
-      const shuffledOthers=[...others].sort(()=>0); // ثابت
-      shuffledOthers.forEach(p=>{
-        if(p.colors[ci]) otherCards.push({p,i:ci});
-      });
-    });
+    // منتجات "جديد" و"الأكثر مبيعاً" تطلع الأول
+    const featured=others.filter(p=>p.badge==='new'||p.badge==='bestseller');
+    const normal=others.filter(p=>p.badge!=='new'&&p.badge!=='bestseller');
+    // خلط حقيقي على مستوى المنتج واللون مع بعض — مش دفعة كل لون لوحده
+    const featuredCards=shuffleCardsNoAdjacentRepeat(featured.flatMap(p=>p.colors.map((_,i)=>({p,i}))));
+    const normalCards=shuffleCardsNoAdjacentRepeat(normal.flatMap(p=>p.colors.map((_,i)=>({p,i}))));
+    const otherCards=[...featuredCards,...normalCards];
 
     const result=[];
     const gap=2;let oi=0;
@@ -2141,14 +2154,19 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     });
   }catch(e){console.error('Email:',e)}
 
-  // تقليل المخزون بعد الطلب
+  // تقليل المخزون بعد الطلب — تنقيص آمن (atomic) جوه قاعدة البيانات نفسها عشان
+  // لو اتنين اشتروا في نفس اللحظة تقريبًا، الكمية تتحسب صح دايمًا (مش تتكتب فوق بعض)
   for(const item of cart){
     const colorKey=item.colorEn||item.colorKey||'Black';
-    const key=`${item.id}_${colorKey}_${item.size}`;
-    const newQty=Math.max(0,(inventory[key]||0)-item.qty);
-    inventory[key]=newQty;
-    await sb.from('inventory').update({quantity:newQty})
-      .eq('product_id',item.id).eq('color',colorKey).eq('size',item.size);
+    const boughtProduct=PRODUCTS.find(p=>p.id===item.id);
+    const sameTypeIds=boughtProduct?PRODUCTS.filter(p=>p.cat===boughtProduct.cat).map(p=>p.id):[item.id];
+    const {data:newQtyData}=await sb.rpc('decrement_shared_stock',{
+      p_color:colorKey,p_size:item.size,p_product_ids:sameTypeIds,p_qty:item.qty
+    });
+    const newQty=newQtyData!==null&&newQtyData!==undefined?newQtyData:Math.max(0,(inventory[`${item.id}_${colorKey}_${item.size}`]||0)-item.qty);
+    Object.keys(inventory).forEach(k=>{
+      if(k.endsWith(`_${colorKey}_${item.size}`) && sameTypeIds.includes(parseInt(k.split('_')[0]))) inventory[k]=newQty;
+    });
   }
 
   showView('success');
