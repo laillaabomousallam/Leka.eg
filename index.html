@@ -454,7 +454,7 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .c-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 .c-head-title{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 .x-btn{background:none;border:none;font-size:1rem;color:var(--mid)}
-.c-body{flex:1;overflow-y:auto;padding:1rem 1.4rem;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.c-body{flex:1;overflow-y:auto;padding:1rem 1.4rem;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column}
 .c-empty{color:var(--muted);font-size:.82rem;text-align:center;margin-top:3rem}
 .ci{display:grid;grid-template-columns:60px 1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:stretch}
 .ci-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between}
@@ -464,7 +464,7 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .ci-rm{background:none;border:none;color:var(--muted);padding:2px;display:inline-flex;cursor:pointer}
 .ci-rm svg{width:15px;height:15px}
 .ci-price{font-size:.8rem;font-weight:600}
-.c-foot{padding:1.1rem 1.4rem calc(8rem + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.c-foot{padding:1.1rem 0 calc(6rem + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
 .c-total{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;margin-bottom:.85rem}
 .co-btn-drawer{
   display:block;width:100%;background:#0a0a0a;color:#fff;border:none;
@@ -1353,7 +1353,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <button class="x-btn" onclick="closeCart()">✕</button>
   </div>
   <div class="c-body" id="cBody">
-    <div id="cItemsList"></div>
+    <div id="cItemsList" style="flex:1"></div>
     <div class="c-foot" id="cFoot" style="display:none">
       <div class="c-total">
         <span class="t" data-ar="الإجمالي" data-en="Total"></span>
