@@ -464,7 +464,7 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .ci-rm{background:none;border:none;color:var(--muted);padding:2px;display:inline-flex;cursor:pointer}
 .ci-rm svg{width:15px;height:15px}
 .ci-price{font-size:.8rem;font-weight:600}
-.c-foot{padding:1.1rem 0 calc(1.5rem + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.c-foot{position:sticky;bottom:0;background:var(--paper);padding:1.1rem 0 calc(1.1rem + env(safe-area-inset-bottom));border-top:1px solid var(--line);flex-shrink:0;max-height:45vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .c-total{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;margin-bottom:.85rem}
 .co-btn-drawer{
   display:block;width:100%;background:#0a0a0a;color:#fff;border:none;
@@ -1361,6 +1361,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       </div>
       <button class="co-btn-drawer t" data-ar="إتمام الشراء" data-en="Checkout" onclick="goCheckout()"></button>
     </div>
+    <div id="cScrollSpacer" style="height:0;flex-shrink:0"></div>
   </div>
 </div>
 
@@ -2080,6 +2081,12 @@ function renderCart(){
       <button class="ci-rm" onclick="removeItem(${i})" aria-label="${lang==='ar'?'إزالة':'Remove'}" title="${lang==='ar'?'إزالة':'Remove'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M4 6h16"/><path d="M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/><line x1="10" y1="10" x2="10" y2="18"/><line x1="12" y1="10" x2="12" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/></svg></button>
     </div></div>`).join('');
   document.getElementById('cTotal').textContent=cart.reduce((a,i)=>a+i.price*i.qty,0)+' EGP';
+  // لو المنتجات كتير وفيه سكرول فعلي، ضيفي مساحة إضافية بعد الزرار عشان لما توصلي لآخر السكرول
+  // يسيب الزرار مكانه الثابت (sticky) ويطلع فوق ويسيب فراغ تحته — لو مفيش سكرول أصلاً المساحة دي صفر
+  const spacer=document.getElementById('cScrollSpacer');
+  spacer.style.height='0px';
+  const hasScroll=body.parentElement.scrollHeight>body.parentElement.clientHeight;
+  spacer.style.height=hasScroll?'8rem':'0px';
 }
 function removeItem(i){cart.splice(i,1);saveCart();updateBadge();renderCart()}
 function openCart(){renderCart();document.getElementById('cDrawer').classList.add('open');document.getElementById('cOverlay').classList.add('open');lockBodyScroll()}
