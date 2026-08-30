@@ -1078,18 +1078,18 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <h2 class="co-page-title t" data-ar="إتمام الشراء" data-en="Checkout"></h2>
         <div class="co-section-label t" data-ar="بيانات التوصيل" data-en="Delivery Details"></div>
         <div class="field-row">
-          <div class="field"><label class="t" data-ar="الاسم الأول" data-en="First Name"></label><input type="text" id="coFirst"/><span class="field-error t" id="errFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
-          <div class="field"><label class="t" data-ar="الاسم الأخير" data-en="Last Name"></label><input type="text" id="coLast"/><span class="field-error t" id="errLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
+          <div class="field"><label class="t" data-ar="الاسم الأول *" data-en="First Name *"></label><input type="text" id="coFirst"/><span class="field-error t" id="errFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
+          <div class="field"><label class="t" data-ar="الاسم الأخير *" data-en="Last Name *"></label><input type="text" id="coLast"/><span class="field-error t" id="errLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
         </div>
         <div class="field-row full">
-          <div class="field"><label class="t" data-ar="رقم الموبايل" data-en="Phone Number"></label><input type="text" id="coPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="errPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
+          <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="coPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="errPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
         </div>
         <div class="field-row full">
           <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="coEmail" placeholder="example@email.com"/><span class="field-error t" id="errEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
         </div>
         <div class="field-row full">
           <div class="field">
-            <label class="t" data-ar="المحافظة" data-en="Governorate"></label>
+            <label class="t" data-ar="المحافظة *" data-en="Governorate *"></label>
             <div class="cd-wrap" id="govDrop">
               <button type="button" class="cd-trigger placeholder" id="govTrigger">
                 <span id="govLabel" class="t" data-ar="اختر المحافظة" data-en="Select Governorate"></span>
@@ -1130,14 +1130,14 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           </div>
         </div>
         <div class="field-row full">
-          <div class="field"><label class="t" data-ar="المنطقة / الحي" data-en="District / Area"></label><input type="text" id="coDistrict"/><span class="field-error t" id="errDistrict" data-ar="المنطقة مطلوبة" data-en="District is required"></span></div>
+          <div class="field"><label class="t" data-ar="المنطقة / الحي *" data-en="District / Area *"></label><input type="text" id="coDistrict"/><span class="field-error t" id="errDistrict" data-ar="المنطقة مطلوبة" data-en="District is required"></span></div>
         </div>
         <div class="field-row full">
-          <div class="field"><label class="t" data-ar="اسم الشارع" data-en="Street Name"></label><input type="text" id="coStreet"/><span class="field-error t" id="errStreet" data-ar="اسم الشارع مطلوب" data-en="Street name is required"></span></div>
+          <div class="field"><label class="t" data-ar="اسم الشارع *" data-en="Street Name *"></label><input type="text" id="coStreet"/><span class="field-error t" id="errStreet" data-ar="اسم الشارع مطلوب" data-en="Street name is required"></span></div>
         </div>
         <div class="field-row full">
           <div class="field">
-            <label class="t" data-ar="نوع المبنى" data-en="Building Type"></label>
+            <label class="t" data-ar="نوع المبنى *" data-en="Building Type *"></label>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
               <button type="button" class="btype-btn" onclick="setBuildingType(this,'عمارة','Building')" data-ar="عمارة" data-en="Building"></button>
               <button type="button" class="btype-btn" onclick="setBuildingType(this,'شركة','Company')" data-ar="شركة" data-en="Company"></button>
@@ -1148,11 +1148,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <!-- حقول العمارة -->
         <div id="buildingFields">
           <div class="field-row">
-            <div class="field"><label id="lblBuildNum" class="t" data-ar="رقم المبنى" data-en="Building No."></label><input type="text" id="coBuildNum"/><span class="field-error t" id="errBuildNum" data-ar="رقم المبنى مطلوب" data-en="Building number is required"></span></div>
-            <div class="field"><label id="lblFloor" class="t" data-ar="رقم الدور" data-en="Floor No."></label><input type="text" id="coFloor"/><span class="field-error t" id="errFloor" data-ar="رقم الدور مطلوب" data-en="Floor number is required"></span></div>
+            <div class="field"><label id="lblBuildNum" class="t" data-ar="رقم المبنى *" data-en="Building No. *"></label><input type="text" id="coBuildNum"/><span class="field-error t" id="errBuildNum" data-ar="رقم المبنى مطلوب" data-en="Building number is required"></span></div>
+            <div class="field"><label id="lblFloor" class="t" data-ar="رقم الدور *" data-en="Floor No. *"></label><input type="text" id="coFloor"/><span class="field-error t" id="errFloor" data-ar="رقم الدور مطلوب" data-en="Floor number is required"></span></div>
           </div>
           <div class="field-row" id="aptRow">
-            <div class="field"><label class="t" data-ar="رقم الشقة" data-en="Apartment No."></label><input type="text" id="coApt"/><span class="field-error t" id="errApt" data-ar="رقم الشقة مطلوب" data-en="Apartment number is required"></span></div>
+            <div class="field"><label class="t" data-ar="رقم الشقة *" data-en="Apartment No. *"></label><input type="text" id="coApt"/><span class="field-error t" id="errApt" data-ar="رقم الشقة مطلوب" data-en="Apartment number is required"></span></div>
             <div class="field"><label class="t" data-ar="علامة مميزة " data-en="Landmark "></label><input type="text" id="coLandmark"/></div>
           </div>
           <div class="field-row full" id="companyRow" style="display:none">
@@ -2327,16 +2327,16 @@ function setBuildingType(btn,ar,en){
     aptRow.style.display='none';
     companyRow.style.display='block';
     document.getElementById('coFloor').closest('.field').style.display='none';
-    if(lblBuildNum) lblBuildNum.setAttribute('data-ar','رقم المبنى');
-    if(lblBuildNum) lblBuildNum.setAttribute('data-en','Building No.');
+    if(lblBuildNum) lblBuildNum.setAttribute('data-ar','رقم المبنى *');
+    if(lblBuildNum) lblBuildNum.setAttribute('data-en','Building No. *');
   } else {
     aptRow.style.display='';
     companyRow.style.display='none';
     document.getElementById('coFloor').closest('.field').style.display='';
-    if(lblBuildNum) lblBuildNum.setAttribute('data-ar','رقم المبنى');
-    if(lblBuildNum) lblBuildNum.setAttribute('data-en','Building No.');
-    if(lblFloor) lblFloor.setAttribute('data-ar','رقم الدور');
-    if(lblFloor) lblFloor.setAttribute('data-en','Floor No.');
+    if(lblBuildNum) lblBuildNum.setAttribute('data-ar','رقم المبنى *');
+    if(lblBuildNum) lblBuildNum.setAttribute('data-en','Building No. *');
+    if(lblFloor) lblFloor.setAttribute('data-ar','رقم الدور *');
+    if(lblFloor) lblFloor.setAttribute('data-en','Floor No. *');
   }
   // تحديث النصوص
   document.querySelectorAll('.t[data-ar]:not(#govLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
