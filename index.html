@@ -1497,7 +1497,8 @@ function mapProductRow(row){
       images:c.images,
       img:c.images[0],
       badge:c.badge||null,
-      locked:!!c.locked
+      locked:!!c.locked,
+      homeBestSeller:!!c.homeBestSeller
     }))
   };
 }
@@ -1953,18 +1954,19 @@ function renderHomeBestSellers(){
   const section=document.getElementById('homeBestSellerSection');
   const divider=document.getElementById('homeBestSellerDivider');
   if(!strip||!section||!divider) return;
-  const items=PRODUCTS.filter(p=>p.categories.includes('homebestseller'));
-  if(!items.length){section.style.display='none';divider.style.display='none';return}
+  // بتتحكمي فيها من الداشبورد على مستوى اللون نفسه، مش المنتج كله — عشان تقدري تختاري لون معين بالظبط
+  const entries=[];
+  PRODUCTS.forEach(p=>{ p.colors.forEach((c,i)=>{ if(c.homeBestSeller) entries.push({p,colorIdx:i,col:c}); }); });
+  if(!entries.length){section.style.display='none';divider.style.display='none';return}
   section.style.display='';divider.style.display='';
-  // نفس شكل كروت "قد يعجبك أيضاً" — سكرول بالعرض، كارت بسيط لكل منتج
-  strip.innerHTML=items.map(item=>{
-    const col=item.colors[0];
+  // نفس شكل كروت "قد يعجبك أيضاً" — سكرول بالعرض، كارت بسيط لكل لون متعلم عليه
+  strip.innerHTML=entries.map(({p:item,colorIdx,col})=>{
     const colorKey=getColorKey(col);
     const name=lang==='ar'?item.nameAr:item.nameEn;
     const available=isColorAvailable(item,colorKey);
     const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
     const soldOverlay=!available?`<div class="card-sold-overlay"><span>${lang==='ar'?'نفذت الكمية':'Sold Out'}</span></div>`:'';
-    return `<div class="related-card" onclick="openProductWithColor(${item.id},0)">
+    return `<div class="related-card" onclick="openProductWithColor(${item.id},${colorIdx})">
       <div class="related-card-img">
         <img src="${col.img}" alt="${name}" loading="lazy"/>
         ${soldOverlay}
@@ -1972,8 +1974,8 @@ function renderHomeBestSellers(){
       <div class="related-card-name">${name}</div>
       <div class="related-card-price">${priceHTML(item)}</div>
       <div class="related-card-btns">
-        <button class="related-btn-buy" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`cardBuyNowColor(${item.id},0)`:''}">${buyTxt}</button>
-        <button class="related-btn-add" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`quickAddColor(${item.id},0)`:''}">${lang==='ar'?'أضف للعربة':'Add to Cart'}</button>
+        <button class="related-btn-buy" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`cardBuyNowColor(${item.id},${colorIdx})`:''}">${buyTxt}</button>
+        <button class="related-btn-add" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`quickAddColor(${item.id},${colorIdx})`:''}">${lang==='ar'?'أضف للعربة':'Add to Cart'}</button>
       </div>
     </div>`;
   }).join('');
