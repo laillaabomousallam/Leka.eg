@@ -191,6 +191,11 @@ html[lang=ar] .nav-search-cart{order:1;flex-direction:row-reverse}
   transform:translateY(8px);transition:all .3s;
 }
 .home-panel:hover .home-panel-arrow{opacity:1;transform:translateY(0)}
+.home-brand-divider{width:48px;height:1px;background:var(--line);margin:2.5rem auto 0}
+.home-brand-statement{background:var(--paper);color:var(--ink);text-align:center;padding:3rem 1.5rem}
+.home-brand-name{font-family:var(--display);font-size:1.5rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.5rem;color:var(--ink)}
+.home-brand-statement p{font-size:.82rem;line-height:1.7;font-weight:600;max-width:640px;margin:0 auto .65rem;color:var(--mid)}
+.home-brand-statement p:last-child{margin-bottom:0}
 
 /* ─── SIDEBAR ─── */
 .sb-overlay{position:fixed;inset:0;background:rgba(10,10,10,.4);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -870,6 +875,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       </div>
     </div>
   </div>
+  <div class="home-brand-divider"></div>
+  <div class="home-brand-statement">
+    <div class="home-brand-name">LEKA</div>
+    <div id="homeBrandText"></div>
+  </div>
 </div>
 
 <!-- ALL PRODUCTS -->
@@ -1002,26 +1012,9 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <!-- ABOUT US (إنجليزي بس دايمًا، مش بتترجم مع تبديل اللغة) -->
 <div class="view" id="view-about">
   <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
-  <div class="chart-wrap" dir="ltr" style="text-align:left">
-    <h1>About Us</h1>
-    <div class="chart-section">
-      <p style="font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.9">Hey, we're LEKA.</p>
-    </div>
-    <div class="chart-section">
-      <p style="font-size:.85rem;color:var(--mid);line-height:1.9">A local Egyptian streetwear brand made for people who like to keep it simple, comfortable, and different.</p>
-    </div>
-    <div class="chart-section">
-      <p style="font-size:.85rem;color:var(--mid);line-height:1.9">We started LEKA because we wanted to create clothes that feel good, look good, and let you be yourself.</p>
-    </div>
-    <div class="chart-section">
-      <p style="font-size:.85rem;color:var(--mid);line-height:1.9">We're starting with oversized T-shirts &amp; long sleeves, with more pieces coming soon.</p>
-    </div>
-    <div class="chart-section">
-      <p style="font-size:.85rem;color:var(--mid);line-height:1.9">This is just the beginning. 🖤</p>
-    </div>
-    <div class="chart-section">
-      <p style="font-size:.85rem;font-weight:700;color:var(--ink);line-height:1.9">LEKA — Define Your Style. Live Your Way.</p>
-    </div>
+  <div class="chart-wrap">
+    <h1 class="t" data-ar="مين إحنا" data-en="About Us"></h1>
+    <div id="aboutContent"></div>
   </div>
 </div>
 
@@ -1425,7 +1418,8 @@ function mapProductRow(row){
       nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,
       images:c.images,
       img:c.images[0],
-      badge:c.badge||null
+      badge:c.badge||null,
+      locked:!!c.locked
     }))
   };
 }
@@ -1569,11 +1563,23 @@ async function loadBestSeller(){
       salesByKey[key]=(salesByKey[key]||0)+(i.qty||1);
     });
   });
+  // لو لون معين مقفول (locked) يبقى المديرة حطّت/شالت بادج "الأكثر مبيعاً" منه يدوي —
+  // متتحسبش كمرشح تلقائي، والنظام مايلمسهوش خالص حتى لو هو فعليًا الأكثر مبيعاً
+  const isLocked=(pid,colorKey)=>{
+    const p=PRODUCTS.find(x=>x.id===pid);
+    const col=p&&p.colors.find(c=>(c.key||c.nameEn)===colorKey);
+    return !!(col&&col.locked);
+  };
   const sorted=Object.entries(salesByKey).sort((a,b)=>b[1]-a[1]);
-  if(!sorted.length) return;
-  const sep=sorted[0][0].indexOf('|');
-  const topProductId=parseInt(sorted[0][0].slice(0,sep));
-  const topColorKey=sorted[0][0].slice(sep+1);
+  let topProductId=null,topColorKey=null;
+  for(const [k] of sorted){
+    const sep=k.indexOf('|');
+    const pid=parseInt(k.slice(0,sep));
+    const colorKey=k.slice(sep+1);
+    if(isLocked(pid,colorKey)) continue;
+    topProductId=pid; topColorKey=colorKey; break;
+  }
+  if(topProductId===null) return;
 
   // كل المنتجات اللي محتاجة تتحدّث في قاعدة البيانات: المنتج الجديد + أي منتج فيه لون كان "الأكثر مبيعاً" قبل كده
   const idsToCheck=new Set([topProductId]);
@@ -1584,6 +1590,7 @@ async function loadBestSeller(){
     if(!row) continue;
     let changed=false;
     const newDbColors=(row.colors||[]).map(c=>{
+      if(c.locked) return c;  // لون مقفول — نسيبه زي ما هو من غير ما نلمسه
       const key=c.key||c.nameEn;
       const shouldBeBest=pid===topProductId&&key===topColorKey;
       const newBadge=shouldBeBest?'bestseller':(c.badge==='bestseller'?null:c.badge||null);
@@ -1598,6 +1605,7 @@ async function loadBestSeller(){
       if(localP){
         localP.badge=newTopBadge;
         localP.colors.forEach(c=>{
+          if(c.locked) return;
           const key=c.key||c.nameEn;
           c.badge=(pid===topProductId&&key===topColorKey)?'bestseller':(c.badge==='bestseller'?null:c.badge);
         });
@@ -1636,12 +1644,73 @@ function applyLang(){
   document.querySelectorAll('.t[data-ar-placeholder]').forEach(el=>{el.placeholder=lang==='ar'?el.dataset.arPlaceholder:el.dataset.enPlaceholder});
   const ctBtn=document.getElementById('ctSubmit');if(ctBtn)ctBtn.textContent=lang==='ar'?'إرسال':'Send Message';
   const ba=document.getElementById('backArrow');if(ba)ba.textContent=lang==='ar'?'←':'→';
-  renderGrids();if(cur)renderProd(cur);renderCart();renderCheckout();doSearch();
+  renderGrids();if(cur)renderProd(cur);renderCart();renderCheckout();doSearch();renderAbout();renderHomeBrandText();
   // إعادة رسم نتايج الطلبات لو موجودة
   if(document.getElementById('trackResult')&&document.getElementById('trackResult').innerHTML.trim()) trackOrder();
 }
 function toggleLang(){lang=lang==='ar'?'en':'ar';applyLang()}
 
+const ABOUT_TEXT={
+  en:[
+    "Hey, we're LEKA.",
+    "A local Egyptian streetwear brand made for people who like to keep it simple, comfortable, and different.",
+    "We started LEKA because we wanted to create clothes that feel good, look good, and let you be yourself.",
+    "Every piece is 100% premium Egyptian cotton—crafted locally for maximum durability, everyday comfort, and a clean fit.",
+    "Designed for daily movement, our signature relaxed and oversized cuts offer the perfect balance between structure, breathability, and comfort.",
+    "We're starting with oversized T-shirts & long sleeves. We proudly design versatile, modest-friendly pieces for girls that combine full coverage with effortlessness and style—with more pieces coming soon.",
+    "Easy exchanges, fast shipping across Egypt, and dedicated customer support make sure your fit is always right.",
+    "This is just the beginning. 🖤",
+    "LEKA — Define Your Style. Live Your Way."
+  ],
+  ar:[
+    "أهلاً بيك في لِيكا (LEKA).",
+    "علامة تجارية مصرية محليّة لملابس الشارع، صُممت لمن يفضل البساطة، الراحة، والتميز.",
+    "بدأنا \"لِيكا\" برغبة صادقة في تقديم ملابس تمنحك شعوراً رائعاً، ومظهراً أنيقاً، وتتيح لك التعبير عن شخصيتك بكل حُرية.",
+    "كل قطعة مصنوعة بحرفية فائقة من القطن المصري الفاخر 100%، لتوفر أعلى درجات المتانة والراحة اليومية والتناسق.",
+    "صُممت قطعنا لتناسب حركة يومك، حيث تمنحك قصّاتنا المريحة والواسعة المزيج المثالي بين جودة التصميم، خفة الخامة، والراحة.",
+    "نبدأ رحلتنا بتشكيلة من التيشرتات الواسعة (Oversized) والقمصان ذات الأكمام الطويلة. كما نفخر بتصميم قطع مريحة وأنيقة تناسب إطلالات الموديست للبنات، تجمع بين التغطية الكاملة والأناقة العصرية دون أي عناء — مع المزيد من القطع القادمة قريباً.",
+    "نوفر لك تجربة تسوق سهلة من خلال خدمة استبدال مرنة، شحن سريع لجميع أنحاء مصر، ودعم متواصل للعملاء لنضمن دائماً اختيارك للمقاس والمظهر المناسب.",
+    "هذه مجرد البداية. 🖤",
+    "لِيكا — حدد أسلوبك. عش بطريقتك."
+  ]
+};
+function renderAbout(){
+  const el=document.getElementById('aboutContent');
+  if(!el) return;
+  const items=ABOUT_TEXT[lang]||ABOUT_TEXT.en;
+  el.innerHTML=items.map((t,i)=>{
+    const isFirst=i===0, isLast=i===items.length-1;
+    const style=isFirst?'font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.9'
+      :isLast?'font-size:.85rem;font-weight:700;color:var(--ink);line-height:1.9'
+      :'font-size:.85rem;color:var(--mid);line-height:1.9';
+    return `<div class="chart-section"><p style="${style}">${t}</p></div>`;
+  }).join('');
+}
+
+const HOME_BRAND_TEXT={
+  en:[
+    "A local Egyptian streetwear brand made for simple, comfortable, and unique style.",
+    "Every piece is crafted from 100% premium Egyptian cotton with signature oversized fits, built for maximum comfort and daily movement.",
+    "Starting with T-shirts & long sleeves—including effortless modest pieces for girls—with much more coming soon.",
+    "Fast shipping across Egypt and easy exchanges to keep your fit perfect.",
+    "This is just the beginning.",
+    "LEKA — Define Your Style. Live Your Way."
+  ],
+  ar:[
+    "براند مصري لملابس الشارع، صُمم للي بيحبوا البساطة، الراحة، والتميز.",
+    "كل قطعنا مصنوعة 100% من القطن المصري الفاخر، بقصّات واسعة (Oversized) تضمن لك أعلى جودة وحرية حركة في يومك.",
+    "بندأ بتشكيلة من التيشرتات واللونج سليف، وبنقدم كمان قطع موديست للبنات تجمع بين الستايل والعصرية بسهولة — مع قطع أكتر جاية قريب.",
+    "بنوفرلك شحن سريع لكل مصر واستبدال سهل عشان تطمن إن المقاس مضاعف تمام.",
+    "دي مجرد البداية.",
+    "لِيكا — حدد أسلوبك. عش بطريقتك."
+  ]
+};
+function renderHomeBrandText(){
+  const el=document.getElementById('homeBrandText');
+  if(!el) return;
+  const items=HOME_BRAND_TEXT[lang]||HOME_BRAND_TEXT.en;
+  el.innerHTML=items.map(t=>`<p>${t}</p>`).join('');
+}
 function goHome(){showView('home')}
 function openSearch(){
   showView('search');
