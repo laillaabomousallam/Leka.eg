@@ -1440,6 +1440,7 @@ async function loadProducts(){
 
 let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,selColor=0,selSize=null,qty=1,prevView='home',toastTimer=null;
 let viewHistory=[];  // تاريخ الصفحات
+if('scrollRestoration' in history) history.scrollRestoration='manual';
 
 let scrollPositions={};  // بتحفظ مكان السكرول في كل صفحة عشان لما ترجعي تلاقي نفسك في نفس المكان
 function saveCurrentScroll(){
