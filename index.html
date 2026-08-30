@@ -2,19 +2,6 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8"/>
-<script>
-// لو حد فاتح اللينك من جوه أبلكيشن (انستجرام/فيسبوك/تيك توك...) على أندرويد،
-// بنستخدم آلية intent:// الأصلية بتاعة أندرويد نفسها، فالموبايل هو اللي بيسأل
-// (زي رسالة "افتح باستخدام Chrome؟" اللي بتظهر من النظام نفسه) مش صفحة مننا.
-// على الآيفون بنسيبها تفضل شغالة جوه الأبلكيشن عادي من غير أي تدخل من الموقع.
-(function(){
-  var ua=navigator.userAgent||'';
-  var isInApp=/FBAN|FBAV|Instagram|Line\/|MicroMessenger|TikTok|BytedanceWebview|Twitter/i.test(ua);
-  if(!isInApp||!/Android/i.test(ua)) return;
-  var target=location.href.replace(/^https?:\/\//,'');
-  location.href='intent://'+target+'#Intent;scheme=https;end';
-})();
-</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#fafaf8"/>
 <title>ليكا | Leka</title>
