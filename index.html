@@ -1474,7 +1474,7 @@ window.addEventListener('scroll',()=>{
 },{passive:true});
 // بتحفظ آخر صفحة كانت فاتحة عشان لو عملت ريفرش ترجعلها بدل ما تطلع الهوم
 function persistLastView(n){
-  sessionStorage.setItem('leka_last_view',JSON.stringify({view:n,productId:(n==='product'&&cur)?cur.id:null}));
+  sessionStorage.setItem('leka_last_view',JSON.stringify({view:n,productId:(n==='product'&&cur)?cur.id:null,colorIdx:(n==='product'&&cur)?selColor:null}));
 }
 
 function showView(n){
@@ -1956,9 +1956,15 @@ function buildSlider(imgs){
   const slides=document.getElementById('gallerySlides');
   const dots=document.getElementById('galleryDots');
   if(!slides||!dots) return;
-  slides.innerHTML=imgs.map(src=>`<div class="gallery-slide"><img src="${src}" alt=""/></div>`).join('');
+  // لو فيه أكتر من صورة، بنضيف نسخة من أول صورة في الآخر ونسخة من آخر صورة في الأول
+  // عشان لما توصلي للنهاية وتكملي تقليب، يبان وكأنه بيكمل عادي (لوب لا نهائي) بدل ما يرجع فجأة
+  const extended=imgs.length>1?[imgs[imgs.length-1],...imgs,imgs[0]]:imgs;
+  slides.innerHTML=extended.map(src=>`<div class="gallery-slide"><img src="${src}" alt=""/></div>`).join('');
   dots.innerHTML=imgs.length>1?imgs.map((_,i)=>`<div class="gallery-dot ${i===0?'active':''}" onclick="goSlide(${i})"></div>`).join(''):'';
-  slides.style.transform='translateX(0)';
+  slides.style.transition='none';
+  slides.style.transform=`translateX(-${imgs.length>1?100:0}%)`;
+  void slides.offsetWidth;
+  slides.style.transition='';
 
   const slider=document.getElementById('gallerySlider');
   // Touch swipe (متجاهل لمسة الزوم بإصبعين — لازم إصبع واحد بس عشان يتحسب سحب)
@@ -2005,11 +2011,34 @@ document.addEventListener('DOMContentLoaded',()=>{
 function goSlide(n){
   const slides=document.getElementById('gallerySlides');
   const dots=document.querySelectorAll('.gallery-dot');
-  const total=slides.children.length;
-  currentSlide=(n+total)%total;
-  slides.style.transform=`translateX(-${currentSlide*100}%)`;
-  dots.forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
+  const total=dots.length;
+  if(total<=1) return;
+  currentSlide=n;  // ممكن يبقى مؤقتًا برا النطاق (-1 أو total) وهو بيتحرك للنسخة الإضافية
+  slides.style.transform=`translateX(-${(currentSlide+1)*100}%)`;
+  const realIndex=(n+total)%total;
+  dots.forEach((d,i)=>d.classList.toggle('active',i===realIndex));
 }
+// لما السحب يوصل لنسخة الصورة الإضافية في الآخر أو الأول، بعد ما يخلص الأنيميشن
+// بنرجع فورًا (من غير أنيميشن) للصورة الحقيقية اللي شكلها نفس النسخة، فميظهرش أي قفزة
+document.getElementById('gallerySlides').addEventListener('transitionend',()=>{
+  const slides=document.getElementById('gallerySlides');
+  const dots=document.querySelectorAll('.gallery-dot');
+  const total=dots.length;
+  if(total<=1) return;
+  if(currentSlide>=total){
+    currentSlide=0;
+    slides.style.transition='none';
+    slides.style.transform='translateX(-100%)';
+    void slides.offsetWidth;
+    slides.style.transition='';
+  } else if(currentSlide<0){
+    currentSlide=total-1;
+    slides.style.transition='none';
+    slides.style.transform=`translateX(-${total*100}%)`;
+    void slides.offsetWidth;
+    slides.style.transition='';
+  }
+});
 
 function galleryNext(){goSlide(currentSlide+1)}
 function galleryPrev(){goSlide(currentSlide-1)}
@@ -2021,6 +2050,7 @@ function switchGalleryImg(thumb,src){
 function switchColor(i){
   selColor=i;
   renderProd(cur);
+  persistLastView('product');
 }
 function selectSize(s){selSize=s;document.querySelectorAll('.sz').forEach(el=>el.classList.toggle('active',el.textContent===s))}
 document.getElementById('qtyMinus').onclick=()=>{if(qty>1){qty--;document.getElementById('qtyVal').value=qty}};
@@ -2742,7 +2772,8 @@ function restoreLastView(){
   if(saved.view==='product'){
     const p=PRODUCTS.find(x=>x.id===saved.productId);
     if(!p) return;
-    openProduct(p.id);
+    const colorIdx=(saved.colorIdx!=null&&p.colors[saved.colorIdx])?saved.colorIdx:0;
+    openProductWithColor(p.id,colorIdx);
   } else {
     if(!document.getElementById('view-'+saved.view)) return;
     showView(saved.view);
