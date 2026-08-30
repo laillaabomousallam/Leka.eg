@@ -880,6 +880,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div class="home-brand-name">LEKA</div>
     <div id="homeBrandText"></div>
   </div>
+  <div class="home-brand-divider" id="homeBestSellerDivider" style="display:none"></div>
+  <div id="homeBestSellerSection" style="display:none;padding:3rem 1.5rem 2.5rem">
+    <div class="shop-header-title t" style="text-align:center;margin-bottom:1.5rem" data-ar="الأكثر مبيعاً" data-en="Best Sellers"></div>
+    <div class="related-strip" id="grid-homebestseller"></div>
+  </div>
 </div>
 
 <!-- ALL PRODUCTS -->
@@ -1866,7 +1871,39 @@ function renderGrids(){
   document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')));
   document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('full')));
   document.getElementById('grid-all').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('all')));
+  renderHomeBestSellers();
   renderFavs();
+}
+// سكشن "الأكثر مبيعاً" في الهوم — بتتحكمي فيها من الداشبورد (اختيار "Home Best Seller" لأي منتج)
+function renderHomeBestSellers(){
+  const strip=document.getElementById('grid-homebestseller');
+  const section=document.getElementById('homeBestSellerSection');
+  const divider=document.getElementById('homeBestSellerDivider');
+  if(!strip||!section||!divider) return;
+  const items=PRODUCTS.filter(p=>p.categories.includes('homebestseller'));
+  if(!items.length){section.style.display='none';divider.style.display='none';return}
+  section.style.display='';divider.style.display='';
+  // نفس شكل كروت "قد يعجبك أيضاً" — سكرول بالعرض، كارت بسيط لكل منتج
+  strip.innerHTML=items.map(item=>{
+    const col=item.colors[0];
+    const colorKey=getColorKey(col);
+    const name=lang==='ar'?item.nameAr:item.nameEn;
+    const available=isColorAvailable(item,colorKey);
+    const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
+    const soldOverlay=!available?`<div class="card-sold-overlay"><span>${lang==='ar'?'نفذت الكمية':'Sold Out'}</span></div>`:'';
+    return `<div class="related-card" onclick="openProductWithColor(${item.id},0)">
+      <div class="related-card-img">
+        <img src="${col.img}" alt="${name}" loading="lazy"/>
+        ${soldOverlay}
+      </div>
+      <div class="related-card-name">${name}</div>
+      <div class="related-card-price">${priceHTML(item)}</div>
+      <div class="related-card-btns">
+        <button class="related-btn-buy" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`cardBuyNowColor(${item.id},0)`:''}">${buyTxt}</button>
+        <button class="related-btn-add" ${!available?'disabled':''} onclick="event.stopPropagation();${available?`quickAddColor(${item.id},0)`:''}">${lang==='ar'?'أضف للعربة':'Add to Cart'}</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function cardBuyNowColor(id,colorIdx){
