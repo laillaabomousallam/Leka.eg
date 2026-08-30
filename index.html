@@ -464,7 +464,7 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .ci-rm{background:none;border:none;color:var(--muted);padding:2px;display:inline-flex;cursor:pointer}
 .ci-rm svg{width:15px;height:15px}
 .ci-price{font-size:.8rem;font-weight:600}
-.c-foot{background:var(--paper);padding:1.1rem 1.4rem calc(3.5rem + env(safe-area-inset-bottom));border-top:1px solid var(--line);flex-shrink:0;max-height:106px;margin-bottom:2rem;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.c-foot{background:var(--paper);padding:1.1rem 1.4rem calc(1.1rem + env(safe-area-inset-bottom));border-top:1px solid var(--line);flex-shrink:0;max-height:106px;margin-bottom:2rem;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
 .c-foot::-webkit-scrollbar{display:none}
 .c-total{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;margin-bottom:.85rem}
 .co-btn-drawer{
@@ -1191,7 +1191,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
       </div>
     </div>
-    <div style="max-width:980px;margin:2rem 0 3rem">
+    <div style="max-width:980px;margin:2rem 0 8rem">
       <button class="place-btn t" data-ar="تأكيد الطلب" data-en="Place Order" id="placeOrderBtn" style="width:calc(100% - 360px - 3rem)"></button>
     </div>
   </div>
@@ -1362,6 +1362,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <span id="cTotal">0 EGP</span>
     </div>
     <button class="co-btn-drawer t" data-ar="إتمام الشراء" data-en="Checkout" onclick="goCheckout()"></button>
+    <div style="height:7rem"></div>
   </div>
 </div>
 
