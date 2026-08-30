@@ -1442,10 +1442,20 @@ let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,
 let viewHistory=[];  // تاريخ الصفحات
 if('scrollRestoration' in history) history.scrollRestoration='manual';
 
-let scrollPositions={};  // بتحفظ مكان السكرول في كل صفحة عشان لما ترجعي تلاقي نفسك في نفس المكان
+let scrollPositions=JSON.parse(sessionStorage.getItem('leka_scroll')||'{}');  // بتحفظ مكان السكرول في كل صفحة عشان لما ترجعي تلاقي نفسك في نفس المكان
 function saveCurrentScroll(){
   const active=document.querySelector('.view.active');
-  if(active) scrollPositions[active.id]=window.scrollY;
+  if(active){
+    scrollPositions[active.id]=window.scrollY;
+    sessionStorage.setItem('leka_scroll',JSON.stringify(scrollPositions));
+  }
+}
+// نحفظ مكان السكرول قبل ما الصفحة تتقفل/تتعمل ريفرش، عشان لو حصل ريفرش من غير ما تتغير الصفحة
+window.addEventListener('pagehide',saveCurrentScroll);
+window.addEventListener('beforeunload',saveCurrentScroll);
+// بتحفظ آخر صفحة كانت فاتحة عشان لو عملت ريفرش ترجعلها بدل ما تطلع الهوم
+function persistLastView(n){
+  sessionStorage.setItem('leka_last_view',JSON.stringify({view:n,productId:(n==='product'&&cur)?cur.id:null}));
 }
 
 function showView(n){
@@ -1453,6 +1463,7 @@ function showView(n){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+n).classList.add('active');
   if(!['product','checkout','success'].includes(n))prevView=n;
+  persistLastView(n);
   const btn=document.getElementById('backBtn');
   if(n==='home') btn.classList.remove('show');
   else btn.classList.add('show');
@@ -1472,6 +1483,7 @@ window.addEventListener('popstate',function(e){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+prev).classList.add('active');
   if(!['product','checkout','success'].includes(prev))prevView=prev;
+  persistLastView(prev);
   const btn=document.getElementById('backBtn');
   if(prev==='home') btn.classList.remove('show');
   else btn.classList.add('show');
@@ -1488,6 +1500,7 @@ function navGoBack(){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+prev).classList.add('active');
   if(!['product','checkout','success'].includes(prev))prevView=prev;
+  persistLastView(prev);
   window.scrollTo(0,scrollPositions['view-'+prev]||0);
 }
 let inventory={};  // {productId_size: quantity}
@@ -2699,9 +2712,28 @@ sb.from('analytics').insert([{event:'page_view'}]).then(()=>{});
 function trackPurchase(){
   sb.from('analytics').insert([{event:'purchase'}]).then(()=>{});
 }
-loadProducts().then(()=>{
-  loadInventory();
+// لو المستخدمة عملت ريفرش وهي في صفحة معينة، رجعها لنفس الصفحة بدل ما تطلع الهوم
+function restoreLastView(){
+  let saved;
+  try{ saved=JSON.parse(sessionStorage.getItem('leka_last_view')||'null'); }catch(e){ saved=null; }
+  if(!saved||!saved.view) return;
+  const excluded=['home','checkout','success','admin','search'];
+  if(excluded.includes(saved.view)) return;
+  if(saved.view==='product'){
+    const p=PRODUCTS.find(x=>x.id===saved.productId);
+    if(!p) return;
+    openProduct(p.id);
+  } else {
+    if(!document.getElementById('view-'+saved.view)) return;
+    showView(saved.view);
+  }
+  const y=scrollPositions['view-'+saved.view];
+  if(y) requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,y)));
+}
+loadProducts().then(async ()=>{
+  await loadInventory();
   loadBestSeller();
+  restoreLastView();
 });
 loadShippingCosts();
 </script>
