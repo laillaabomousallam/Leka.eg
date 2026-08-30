@@ -1442,6 +1442,21 @@ let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,
 let viewHistory=[];  // تاريخ الصفحات
 if('scrollRestoration' in history) history.scrollRestoration='manual';
 
+// بدّل الفيو فورًا من غير ما تستني تحميل البيانات، عشان صفحة الهوم متظهرش ولا لحظة قبل الصفحة المحفوظة
+(function instantViewSwap(){
+  let saved;
+  try{ saved=JSON.parse(sessionStorage.getItem('leka_last_view')||'null'); }catch(e){ saved=null; }
+  if(!saved||!saved.view) return;
+  const excluded=['home','checkout','success','admin','search'];
+  if(excluded.includes(saved.view)) return;
+  const target=document.getElementById('view-'+saved.view);
+  if(!target) return;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  target.classList.add('active');
+  const btn=document.getElementById('backBtn');
+  if(btn) btn.classList.add('show');
+})();
+
 let scrollPositions=JSON.parse(sessionStorage.getItem('leka_scroll')||'{}');  // بتحفظ مكان السكرول في كل صفحة عشان لما ترجعي تلاقي نفسك في نفس المكان
 function saveCurrentScroll(){
   const active=document.querySelector('.view.active');
@@ -1450,9 +1465,13 @@ function saveCurrentScroll(){
     sessionStorage.setItem('leka_scroll',JSON.stringify(scrollPositions));
   }
 }
-// نحفظ مكان السكرول قبل ما الصفحة تتقفل/تتعمل ريفرش، عشان لو حصل ريفرش من غير ما تتغير الصفحة
-window.addEventListener('pagehide',saveCurrentScroll);
-window.addEventListener('beforeunload',saveCurrentScroll);
+// بنحفظ مكان السكرول أول ما المستخدمة تبطل سكرول (مش وقت الخروج، لأن المتصفح بيصفر السكرول
+// قبل ما يبعت حدث الخروج فبيبوظ القيمة) عشان لو عملت ريفرش يكون مكان السكرول محفوظ أصلاً من قبل كده
+let scrollSaveTimer=null;
+window.addEventListener('scroll',()=>{
+  clearTimeout(scrollSaveTimer);
+  scrollSaveTimer=setTimeout(saveCurrentScroll,300);
+},{passive:true});
 // بتحفظ آخر صفحة كانت فاتحة عشان لو عملت ريفرش ترجعلها بدل ما تطلع الهوم
 function persistLastView(n){
   sessionStorage.setItem('leka_last_view',JSON.stringify({view:n,productId:(n==='product'&&cur)?cur.id:null}));
@@ -2719,6 +2738,7 @@ function restoreLastView(){
   if(!saved||!saved.view) return;
   const excluded=['home','checkout','success','admin','search'];
   if(excluded.includes(saved.view)) return;
+  const y=scrollPositions['view-'+saved.view];
   if(saved.view==='product'){
     const p=PRODUCTS.find(x=>x.id===saved.productId);
     if(!p) return;
@@ -2727,8 +2747,7 @@ function restoreLastView(){
     if(!document.getElementById('view-'+saved.view)) return;
     showView(saved.view);
   }
-  const y=scrollPositions['view-'+saved.view];
-  if(y) requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,y)));
+  if(y) setTimeout(()=>window.scrollTo(0,y),50);
 }
 loadProducts().then(async ()=>{
   await loadInventory();
