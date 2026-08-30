@@ -191,11 +191,21 @@ html[lang=ar] .nav-search-cart{order:1;flex-direction:row-reverse}
   transform:translateY(8px);transition:all .3s;
 }
 .home-panel:hover .home-panel-arrow{opacity:1;transform:translateY(0)}
-.home-brand-divider{width:150px;height:1px;background:var(--line);margin:4rem auto 0}
-.home-brand-statement{background:var(--paper);color:var(--ink);text-align:center;padding:3rem 1.5rem}
+.home-brand-divider{width:150px;height:1px;background:var(--line);margin:1.75rem auto 0}
+#homeBestSellerDivider{margin-top:1.25rem}
+.home-brand-statement{background:var(--paper);color:var(--ink);text-align:center;padding:1.75rem 1.5rem 1rem}
 .home-brand-name{font-family:var(--display);font-size:1.5rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.5rem;color:var(--ink)}
 .home-brand-statement p{font-size:.82rem;line-height:1.45;font-weight:600;max-width:760px;margin:0 auto .4rem;color:var(--mid)}
 .home-brand-statement p:last-child{margin-bottom:0}
+.home-footer{display:flex;justify-content:space-between;align-items:flex-start;direction:ltr;max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 3rem;flex-wrap:wrap;gap:2rem}
+.home-footer-links{display:flex;flex-direction:column;gap:.9rem}
+.home-footer-link{font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);cursor:pointer;text-align:left}
+.home-footer-link:hover{color:var(--ink)}
+.home-footer-right{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}
+.home-footer-social-label{font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
+.home-footer-socials{display:flex;gap:.9rem}
+.home-footer-social-link{color:var(--mid);display:inline-flex;transition:color .2s}
+.home-footer-social-link:hover{color:var(--ink)}
 
 /* ─── SIDEBAR ─── */
 .sb-overlay{position:fixed;inset:0;background:rgba(10,10,10,.4);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -809,10 +819,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div><div class="sb-item-name t" data-ar="جدول المقاسات" data-en="Size Chart"></div></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
     </div>
-    <div class="sb-item" onclick="showView('returns');closeSidebar()">
-      <div><div class="sb-item-name t" data-ar="سياسة الاستبدال" data-en="Return Policy"></div></div>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-    </div>
     <div class="sb-item" onclick="openCart();closeSidebar()">
       <div>
         <div class="sb-item-name t" data-ar="عربة التسوق" data-en=" Cart"></div>
@@ -838,6 +844,14 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div class="sb-item" onclick="showView('about');closeSidebar()">
       <div><div class="sb-item-name t" data-ar="مين إحنا" data-en="About Us"></div></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    </div>
+    <div class="sb-item" onclick="showView('returns');closeSidebar()">
+      <div><div class="sb-item-name t" data-ar="سياسة الاستبدال" data-en="Return Policy"></div></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    </div>
+    <div class="sb-item" onclick="showView('shipping');closeSidebar()">
+      <div><div class="sb-item-name t" data-ar="سياسة الشحن" data-en="Shipping Policy"></div></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
     </div>
   </div>
 </div>
@@ -884,6 +898,32 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   <div id="homeBestSellerSection" style="display:none;padding:3rem 1.5rem 2.5rem">
     <div class="shop-header-title t" style="text-align:center;margin-bottom:1.5rem" data-ar="الأكثر مبيعاً" data-en="Best Sellers"></div>
     <div class="related-strip" id="grid-homebestseller"></div>
+  </div>
+  <div class="home-brand-divider"></div>
+  <div class="home-footer">
+    <div class="home-footer-links">
+      <div class="home-footer-link t" data-ar="بحث" data-en="Search" onclick="openSearch()"></div>
+      <div class="home-footer-link t" data-ar="سياسة الشحن" data-en="Shipping Policy" onclick="showView('shipping')"></div>
+      <div class="home-footer-link t" data-ar="سياسة الاسترجاع" data-en="Refund Policy" onclick="showView('returns')"></div>
+      <div class="home-footer-link t" data-ar="جدول المقاسات" data-en="Size Chart" onclick="showView('sizechart')"></div>
+      <div class="home-footer-link t" data-ar="مين إحنا" data-en="About Us" onclick="showView('about')"></div>
+    </div>
+    <div class="home-footer-right">
+      <div class="home-footer-link t" data-ar="تواصل معنا" data-en="Contact Us" onclick="showView('contact')"></div>
+      <a href="mailto:order.leka.eg@gmail.com" style="font-size:.7rem;color:var(--mid);text-decoration:none">order.leka.eg@gmail.com</a>
+      <div class="home-footer-social-label t" data-ar="مواقع التواصل الاجتماعي" data-en="Social Media"></div>
+      <div class="home-footer-socials">
+        <a class="home-footer-social-link" href="https://www.instagram.com/leka.eg/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.98-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a class="home-footer-social-link" href="https://www.tiktok.com/@leka.eg" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg>
+        </a>
+        <a class="home-footer-social-link" href="https://www.facebook.com/share/1DJmZ8xDD8/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1010,6 +1050,38 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <p style="font-size:.82rem;color:var(--mid);line-height:1.9" class="t"
         data-ar="تواصلي معانا على واتساب أو الإيميل من صفحة تواصل معنا، وهنساعدك تكملي عملية الاستبدال."
         data-en="Reach out to us via WhatsApp or email from the Contact Us page, and we'll help you complete the exchange."></p>
+    </div>
+  </div>
+</div>
+
+<!-- SHIPPING POLICY -->
+<div class="view" id="view-shipping">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="chart-wrap">
+    <h1 class="t" data-ar="سياسة الشحن والتوصيل" data-en="Shipping &amp; Delivery Policy"></h1>
+    <div class="chart-section">
+      <p style="font-size:.85rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="بنوصّل طلبك لأي مكان في مصر، وبيتم حساب تكلفة الشحن تلقائيًا حسب محافظتك وقت إتمام الطلب."
+        data-en="We deliver your order anywhere in Egypt, and the shipping cost is calculated automatically based on your governorate at checkout."></p>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title t" data-ar="مدة التوصيل" data-en="Delivery Time"></div>
+      <p style="font-size:.82rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="التوصيل بياخد من 3 إلى 7 أيام عمل حسب المحافظة."
+        data-en="Delivery takes 3 to 7 business days depending on your governorate."></p>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title t" data-ar="طرق الدفع" data-en="Payment Methods"></div>
+      <ul style="font-size:.82rem;color:var(--mid);line-height:2.1;padding-inline-start:1.2rem">
+        <li class="t" data-ar="الدفع كاش عند الاستلام" data-en="Cash on Delivery"></li>
+        <li class="t" data-ar="الدفع أونلاين عن طريق InstaPay قبل الشحن" data-en="Online payment via InstaPay before shipping"></li>
+      </ul>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title t" data-ar="تتبع طلبك" data-en="Track Your Order"></div>
+      <p style="font-size:.82rem;color:var(--mid);line-height:1.9" class="t"
+        data-ar="تقدري تتابعي حالة طلبك في أي وقت من صفحة الطلبات."
+        data-en="You can check your order status anytime from the Orders page."></p>
     </div>
   </div>
 </div>
