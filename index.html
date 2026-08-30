@@ -464,8 +464,9 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .ci-rm{background:none;border:none;color:var(--muted);padding:2px;display:inline-flex;cursor:pointer}
 .ci-rm svg{width:15px;height:15px}
 .ci-price{font-size:.8rem;font-weight:600}
-.c-foot{background:var(--paper);padding:1.1rem 1.4rem calc(1.1rem + env(safe-area-inset-bottom));border-top:1px solid var(--line);flex-shrink:0;max-height:45vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.c-total{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;margin-top:.85rem}
+.c-foot{background:var(--paper);padding:1.1rem 1.4rem calc(3.5rem + env(safe-area-inset-bottom));border-top:1px solid var(--line);flex-shrink:0;max-height:88px;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.c-foot::-webkit-scrollbar{display:none}
+.c-total{display:flex;justify-content:space-between;font-size:.88rem;font-weight:600;margin-bottom:.85rem}
 .co-btn-drawer{
   display:block;width:100%;background:#0a0a0a;color:#fff;border:none;
   padding:13px;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
@@ -1356,11 +1357,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div id="cItemsList"></div>
   </div>
   <div class="c-foot" id="cFoot" style="display:none">
-    <button class="co-btn-drawer t" data-ar="إتمام الشراء" data-en="Checkout" onclick="goCheckout()"></button>
     <div class="c-total">
       <span class="t" data-ar="الإجمالي" data-en="Total"></span>
       <span id="cTotal">0 EGP</span>
     </div>
+    <button class="co-btn-drawer t" data-ar="إتمام الشراء" data-en="Checkout" onclick="goCheckout()"></button>
   </div>
 </div>
 
