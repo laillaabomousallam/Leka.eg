@@ -517,7 +517,15 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .qs-sizes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
 .qs-sz{border:none;background:#f2f2f2;padding:8px 16px;font-size:.75rem;font-weight:500;color:var(--ink);border-radius:20px;cursor:pointer;transition:all .15s}
 .qs-sz:hover,.qs-sz.active{background:var(--ink);color:#fff}
-.qs-sz.sold-out{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.qs-sz.sold-out{opacity:.6;cursor:not-allowed;text-decoration:none;position:relative;overflow:hidden}
+.qs-sz.sold-out::after{
+  content:'';
+  position:absolute;
+  top:50%;left:50%;
+  width:140%;height:1.5px;
+  background:currentColor;
+  transform:translate(-50%,-50%) rotate(-45deg);
+}
 .qs-btn{display:block;width:100%;background:#0a0a0a;color:#fff;border:none;padding:14px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:background .2s}
 .qs-btn:hover{background:#333}
 .qs-btn-sec{display:block;width:100%;background:#f2f2f2;color:var(--ink);border:none;padding:13px;font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:background .2s;margin-bottom:.75rem}
@@ -589,7 +597,15 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
   font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
   padding:6px 16px;
 }
-.sz.sold-out{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+.sz.sold-out{opacity:.6;cursor:not-allowed;text-decoration:none;position:relative;overflow:hidden}
+.sz.sold-out::after{
+  content:'';
+  position:absolute;
+  top:50%;left:50%;
+  width:140%;height:1.5px;
+  background:currentColor;
+  transform:translate(-50%,-50%) rotate(-45deg);
+}
 .sold-out-banner{
   background:var(--dust);color:var(--mid);
   font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
@@ -1711,6 +1727,14 @@ function getColorKey(color){
   return color.key || color.nameEn;
 }
 
+// بيرجع true لو المخزون المفروض يبقى مشترك بين كل منتجات نفس النوع، وfalse لو المفروض
+// يبقى كل منتج بمخزونه الخاص بيه لوحده (استثناءات محددة طلبتها المديرة) — نفس المنطق في admin.html بالظبط
+function isPooledInventory(cat,color,size){
+  const c=(color||'').toLowerCase();
+  if(c==='burgundy') return false;
+  if(size==='L'||size==='M') return false;
+  return true;
+}
 function getQty(productId,colorKey,size){
   const k=`${productId}_${colorKey}_${size}`;
   return inventory[k]!==undefined ? inventory[k] : 99;
@@ -2471,9 +2495,8 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   for(const item of cart){
     const colorKey=item.colorEn||item.colorKey||'Black';
     const boughtProduct=PRODUCTS.find(p=>p.id===item.id);
-    // لون البرجاندي مستثنى من المخزون المشترك — كل منتج بمخزونه لوحده مش مشترك مع باقي المنتجات
-    const isSharedColor=colorKey.toLowerCase()!=='burgundy';
-    const sameTypeIds=(boughtProduct&&isSharedColor)?PRODUCTS.filter(p=>p.cat===boughtProduct.cat).map(p=>p.id):[item.id];
+    const isShared=boughtProduct&&isPooledInventory(boughtProduct.cat,colorKey,item.size);
+    const sameTypeIds=isShared?PRODUCTS.filter(p=>p.cat===boughtProduct.cat).map(p=>p.id):[item.id];
     const {data:newQtyData}=await sb.rpc('decrement_shared_stock',{
       p_color:colorKey,p_size:item.size,p_product_ids:sameTypeIds,p_qty:item.qty
     });
