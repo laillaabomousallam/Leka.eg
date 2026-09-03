@@ -306,7 +306,7 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 .thumb.active{border-color:var(--ink);opacity:1}
 .prod-info{padding:3rem 2.5rem 3rem 5rem;overflow-y:auto;max-height:calc(100vh - var(--nav-h));position:relative;-webkit-overflow-scrolling:touch;min-width:0}
 .back-btn{
-  position:fixed;top:62px;left:12px;
+  position:fixed;top:calc(var(--nav-h) + 4px);left:12px;
   display:none;align-items:center;justify-content:center;
   width:38px;height:38px;border-radius:50%;
   background:#f2f2f2;border:none;cursor:pointer;
@@ -389,6 +389,7 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 
 /* ─── SIZE CHART ─── */
 .chart-wrap{max-width:700px;padding:3rem 2.5rem}
+#view-sizechart .chart-wrap{margin:0 auto}
 .chart-wrap h1{font-family:var(--display);font-size:2rem;font-weight:400;margin-bottom:2.5rem;letter-spacing:-.01em}
 .chart-section{margin-bottom:2.5rem}
 #aboutContent .chart-section{margin-bottom:.9rem}
@@ -1031,6 +1032,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
 <!-- PRODUCT -->
 <div class="view" id="view-product">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
   <div class="prod-wrap">
     <div class="prod-gallery">
       <div class="gallery-slider" id="gallerySlider">
