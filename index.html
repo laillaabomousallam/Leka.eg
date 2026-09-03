@@ -124,7 +124,7 @@ html[lang=ar] .nav-search-cart{order:1;flex-direction:row-reverse}
 .nav-pages-wrap{display:none}
 
 /* ─── VIEWS ─── */
-.view{display:none;padding-top:var(--nav-h);width:100%;overflow-x:hidden}
+.view{display:none;padding-top:calc(var(--nav-h) + var(--banner-h));width:100%;overflow-x:hidden}
 .view.active{display:block}
 
 /* ─── HOME ─── */
@@ -506,6 +506,29 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 }
 .co-btn-drawer:hover{background:#333}
 
+/* ─── WELCOME / SIGN IN POPUP ─── */
+.welcome-overlay{position:fixed;inset:0;background:rgba(10,10,10,.5);z-index:700;opacity:0;pointer-events:none;transition:opacity .25s}
+.welcome-overlay.open{opacity:1;pointer-events:all}
+.welcome-modal{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.96);
+  background:var(--paper);border-radius:16px;
+  padding:2rem 1.75rem;z-index:701;width:min(360px,90vw);box-sizing:border-box;
+  opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+}
+.welcome-modal.open{opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1)}
+:root{--banner-h:0px}
+.welcome-banner{
+  position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;
+  background:#0a0a0a;color:#fff;
+  display:none;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;
+  padding:.65rem 2.5rem .65rem 1rem;font-size:.72rem;text-align:center;
+}
+.welcome-banner.show{display:flex}
+.welcome-banner button{background:#fff;color:#0a0a0a;border:none;border-radius:14px;padding:5px 14px;font-size:.68rem;font-weight:700;cursor:pointer;letter-spacing:.05em}
+.welcome-banner-close{position:absolute;right:.85rem;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:.9rem;cursor:pointer;padding:0}
+html[lang=ar] .welcome-banner-close{right:auto;left:.85rem}
+
 /* ─── QUICK SELECT MODAL ─── */
 .qs-overlay{position:fixed;inset:0;background:rgba(10,10,10,.4);z-index:600;opacity:0;pointer-events:none;transition:opacity .25s}
 .qs-overlay.open{opacity:1;pointer-events:all}
@@ -882,6 +905,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div class="sb-item" onclick="showView('track');closeSidebar()">
       <div><div class="sb-item-name t" data-ar="الطلبات" data-en="My Orders"></div></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    </div>
+    <div class="sb-item" onclick="showView('account');renderAccountView();closeSidebar()">
+      <div><div class="sb-item-name t" data-ar="حسابي" data-en="My Account"></div></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
     <div class="sb-item" onclick="showView('contact');closeSidebar()">
       <div><div class="sb-item-name t" data-ar="تواصل معنا" data-en="Contact Us"></div></div>
@@ -1479,6 +1506,50 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   </div>
 </div>
 
+<!-- MY ACCOUNT -->
+<div class="view" id="view-account">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div style="max-width:480px;margin:0 auto;padding:3rem 1.5rem 2rem;width:100%;box-sizing:border-box">
+    <div style="font-family:var(--display);font-size:1.8rem;font-weight:400;margin-bottom:.4rem" class="t" data-ar="حسابي" data-en="My Account"></div>
+
+    <div id="acctNoProfile">
+      <p style="font-size:.82rem;color:var(--mid);margin-bottom:1.5rem;line-height:1.6" class="t" data-ar="اعملي حساب عشان بياناتك تتحفظ ومتدخليهاش تاني كل مرة تطلبي فيها" data-en="Create an account so your details are saved and you don't have to re-enter them every time you order"></p>
+      <div class="field"><label class="t" data-ar="الاسم *" data-en="Name *"></label><input type="text" id="acctName"/><span class="field-error t" id="acctErrName" data-ar="الاسم مطلوب" data-en="Name is required"></span></div>
+      <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="acctPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="acctErrPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
+      <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="acctEmail" placeholder="example@email.com"/><span class="field-error t" id="acctErrEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
+      <button onclick="createAccount()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;width:100%;margin-top:.5rem" class="t" data-ar="إنشاء حساب" data-en="Create Account"></button>
+      <p id="acctCreateMsg" style="font-size:.75rem;margin-top:.6rem;text-align:center"></p>
+
+      <div style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line)">
+        <p style="font-size:.78rem;color:var(--mid);margin-bottom:.6rem" class="t" data-ar="عندك حساب بالفعل؟ ادخلي إيميلك عشان نرجّعلك بياناتك" data-en="Already have an account? Enter your email to restore your details"></p>
+        <div style="display:flex;gap:.5rem">
+          <input type="text" id="acctRestoreEmail" style="flex:1;min-width:0;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none" placeholder="example@email.com"/>
+          <button onclick="restoreAccount()" style="background:#f2f2f2;color:#0a0a0a;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;white-space:nowrap;flex-shrink:0" class="t" data-ar="استرجاع" data-en="Restore"></button>
+        </div>
+        <p id="acctRestoreMsg" style="font-size:.75rem;margin-top:.6rem"></p>
+      </div>
+    </div>
+
+    <div id="acctHasProfile" style="display:none">
+      <p style="font-size:.85rem;font-weight:600;margin-bottom:1.2rem" id="acctWelcome"></p>
+      <div style="background:#f7f7f7;border-radius:12px;padding:1.2rem;margin-bottom:1rem">
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="الاسم" data-en="Name"></div>
+        <div id="acctViewName" style="font-size:.85rem;margin-bottom:.8rem"></div>
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="رقم الموبايل" data-en="Phone"></div>
+        <div id="acctViewPhone" style="font-size:.85rem;margin-bottom:.8rem"></div>
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="الإيميل" data-en="Email"></div>
+        <div id="acctViewEmail" style="font-size:.85rem;margin-bottom:.8rem"></div>
+        <div id="acctAddressBlock" style="display:none">
+          <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="العنوان المحفوظ" data-en="Saved Address"></div>
+          <div id="acctViewAddress" style="font-size:.85rem;line-height:1.6"></div>
+        </div>
+        <p id="acctNoAddress" style="font-size:.78rem;color:var(--mid);margin-top:.4rem" class="t" data-ar="لسه معملتيش أول أوردر — العنوان هيتحفظ تلقائي أول ما تطلبي" data-en="No order yet — your address will be saved automatically after your first order"></p>
+      </div>
+      <button onclick="forgetAccount()" style="background:none;border:none;color:var(--mid);font-size:.75rem;text-decoration:underline;cursor:pointer;padding:0" class="t" data-ar="مش أنا / نسّي البيانات دي" data-en="Not me / Forget this account"></button>
+    </div>
+  </div>
+</div>
+
 <!-- CART DRAWER -->
 <div class="c-overlay" id="cOverlay" onclick="closeCart()"></div>
 <div class="c-drawer" id="cDrawer">
@@ -1499,6 +1570,27 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     </div>
     <div style="height:7rem"></div>
   </div>
+</div>
+
+<!-- WELCOME / SIGN IN POPUP -->
+<div class="welcome-overlay" id="welcomeOverlay"></div>
+<div class="welcome-modal" id="welcomeModal" onclick="event.stopPropagation()">
+  <div style="font-family:var(--display);font-size:1.3rem;text-align:center;margin-bottom:.3rem" class="t" data-ar="أهلاً بيكِ في ليكا" data-en="Welcome to LEKA"></div>
+  <p style="font-size:.78rem;color:var(--mid);text-align:center;margin-bottom:1.5rem" class="t" data-ar="سجّلي دخولك عشان بياناتك تكون جاهزة" data-en="Sign in to have your details ready"></p>
+  <input type="text" id="welcomeEmail" placeholder="example@email.com" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none;margin-bottom:.75rem"/>
+  <p id="welcomeMsg" style="font-size:.72rem;margin:0 0 .5rem;display:none"></p>
+  <button onclick="welcomeSignIn()" style="width:100%;background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;margin-bottom:.6rem" class="t" data-ar="تسجيل الدخول" data-en="Sign In"></button>
+  <button onclick="cancelWelcomeModal()" style="width:100%;background:none;border:1px solid var(--line);border-radius:20px;padding:12px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;color:var(--ink)" class="t" data-ar="إلغاء" data-en="Cancel"></button>
+  <div style="text-align:center;margin-top:1.2rem">
+    <a onclick="openCreateAccountFromWelcome()" style="font-size:.75rem;color:var(--mid);text-decoration:underline;cursor:pointer" class="t" data-ar="عايزة تعملي حساب جديد؟" data-en="Create a new account"></a>
+  </div>
+</div>
+
+<!-- WELCOME REMINDER BANNER (بتظهر بدل البوب أب بعد أول Cancel) -->
+<div class="welcome-banner" id="welcomeBanner">
+  <span class="t" data-ar="سجّلي دخولك عشان بياناتك تكون جاهزة في كل مرة" data-en="Sign in to have your details ready every time"></span>
+  <button onclick="openWelcomeModal()" class="t" data-ar="تسجيل الدخول" data-en="Sign In"></button>
+  <button class="welcome-banner-close" onclick="closeWelcomeBanner()">✕</button>
 </div>
 
 <!-- QUICK SELECT MODAL -->
@@ -1676,6 +1768,182 @@ async function loadShippingCosts(){
   renderCheckout();
 }
 let favorites=JSON.parse(localStorage.getItem('leka_favs')||'[]');
+
+// ── حساب العميلة (اسم، رقم، إيميل — والعنوان بيتحفظ لوحده أول ما تعمل أوردر) ──
+let customerProfile=JSON.parse(localStorage.getItem('leka_customer')||'null');
+if(customerProfile&&customerProfile.address&&typeof customerProfile.address==='string'){
+  try{customerProfile.address=JSON.parse(customerProfile.address);}catch(e){customerProfile.address=null;}
+}
+function saveCustomerProfileLocal(profile){
+  customerProfile=profile;
+  localStorage.setItem('leka_customer',JSON.stringify(profile));
+}
+async function upsertCustomer(profile){
+  const payload={
+    email:profile.email,
+    name:profile.name,
+    phone:profile.phone,
+    address:profile.address?JSON.stringify(profile.address):null
+  };
+  const {data,error}=await sb.from('customers').upsert(payload,{onConflict:'email'}).select();
+  return {data,error};
+}
+async function fetchCustomerByEmail(email){
+  const {data,error}=await sb.from('customers').select('*').eq('email',email).maybeSingle();
+  if(data&&data.address){
+    try{data.address=JSON.parse(data.address);}catch(e){data.address=null;}
+  }
+  return {data,error};
+}
+function formatAddressLines(addr){
+  if(!addr) return '';
+  const parts=[
+    addr.gov,
+    [addr.district,addr.street].filter(Boolean).join(' - '),
+    addr.buildName==='شركة'?[addr.buildName,addr.buildNum].filter(Boolean).join(' '):[addr.buildName,addr.buildNum,addr.floor?('Floor '+addr.floor):'',addr.apt?('Apt '+addr.apt):''].filter(Boolean).join(', '),
+    addr.landmark
+  ].filter(Boolean);
+  return parts.join('<br/>');
+}
+function renderAccountView(){
+  const noProfile=document.getElementById('acctNoProfile');
+  const hasProfile=document.getElementById('acctHasProfile');
+  if(!noProfile||!hasProfile) return;
+  if(customerProfile){
+    noProfile.style.display='none';
+    hasProfile.style.display='block';
+    document.getElementById('acctWelcome').textContent=(lang==='ar'?'أهلاً، ':'Welcome, ')+customerProfile.name;
+    document.getElementById('acctViewName').textContent=customerProfile.name;
+    document.getElementById('acctViewPhone').textContent=customerProfile.phone;
+    document.getElementById('acctViewEmail').textContent=customerProfile.email;
+    const addrBlock=document.getElementById('acctAddressBlock');
+    const noAddr=document.getElementById('acctNoAddress');
+    if(customerProfile.address){
+      addrBlock.style.display='block';
+      noAddr.style.display='none';
+      document.getElementById('acctViewAddress').innerHTML=formatAddressLines(customerProfile.address);
+    } else {
+      addrBlock.style.display='none';
+      noAddr.style.display='block';
+    }
+  } else {
+    noProfile.style.display='block';
+    hasProfile.style.display='none';
+    document.getElementById('acctCreateMsg').textContent='';
+    document.getElementById('acctRestoreMsg').textContent='';
+  }
+}
+async function createAccount(){
+  const name=document.getElementById('acctName').value.trim();
+  const phone=document.getElementById('acctPhone').value.trim();
+  const email=document.getElementById('acctEmail').value.trim();
+  let valid=true;
+  document.querySelectorAll('#acctNoProfile .field input').forEach(el=>el.classList.remove('error'));
+  document.querySelectorAll('#acctNoProfile .field-error').forEach(el=>el.classList.remove('show'));
+  if(!name){document.getElementById('acctName').classList.add('error');document.getElementById('acctErrName').classList.add('show');valid=false}
+  if(!phone){document.getElementById('acctPhone').classList.add('error');document.getElementById('acctErrPhone').classList.add('show');valid=false}
+  if(!email||!email.includes('@')){document.getElementById('acctEmail').classList.add('error');document.getElementById('acctErrEmail').classList.add('show');valid=false}
+  if(!valid) return;
+  const msg=document.getElementById('acctCreateMsg');
+  msg.style.color='var(--mid)';
+  msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
+  const profile={name,phone,email,address:null};
+  const {error}=await upsertCustomer(profile);
+  if(error){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'حدث خطأ، حاول مرة أخرى':'Something went wrong, please try again';
+    return;
+  }
+  saveCustomerProfileLocal(profile);
+  closeWelcomeBanner();
+  msg.textContent='';
+  renderAccountView();
+}
+async function restoreAccount(){
+  const email=document.getElementById('acctRestoreEmail').value.trim();
+  const msg=document.getElementById('acctRestoreMsg');
+  if(!email){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'اكتبي إيميلك الأول':'Please enter your email first';
+    return;
+  }
+  msg.style.color='var(--mid)';
+  msg.textContent=lang==='ar'?'جاري البحث...':'Looking up...';
+  const {data,error}=await fetchCustomerByEmail(email);
+  if(error||!data){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'مفيش حساب بالإيميل ده':'No account found with this email';
+    return;
+  }
+  saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,address:data.address||null});
+  closeWelcomeBanner();
+  msg.textContent='';
+  renderAccountView();
+}
+function forgetAccount(){
+  customerProfile=null;
+  localStorage.removeItem('leka_customer');
+  renderAccountView();
+}
+
+// ── بوب أب الترحيب/تسجيل الدخول اللي بتظهر أول ما حد يفتح الموقع لو معملوش دخول قبل كده ──
+function openWelcomeModal(){
+  closeWelcomeBanner();
+  document.getElementById('welcomeOverlay').classList.add('open');
+  document.getElementById('welcomeModal').classList.add('open');
+  lockBodyScroll();
+}
+function closeWelcomeModal(){
+  document.getElementById('welcomeOverlay').classList.remove('open');
+  document.getElementById('welcomeModal').classList.remove('open');
+  unlockBodyScroll();
+}
+// لما تدوس Cancel — نقفل البوب أب وميظهرش تاني، بس بدال منه يظهر مستطيل صغير فوق يفكّرها
+function cancelWelcomeModal(){
+  closeWelcomeModal();
+  localStorage.setItem('leka_welcome_seen','1');
+  showWelcomeBanner();
+}
+function showWelcomeBanner(){
+  document.getElementById('welcomeBanner').classList.add('show');
+  document.documentElement.style.setProperty('--banner-h','40px');
+}
+function closeWelcomeBanner(){
+  document.getElementById('welcomeBanner').classList.remove('show');
+  document.documentElement.style.setProperty('--banner-h','0px');
+}
+async function welcomeSignIn(){
+  const email=document.getElementById('welcomeEmail').value.trim();
+  const msg=document.getElementById('welcomeMsg');
+  if(!email){
+    msg.style.display='block';msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'اكتبي إيميلك الأول':'Please enter your email first';
+    return;
+  }
+  msg.style.display='block';msg.style.color='var(--mid)';
+  msg.textContent=lang==='ar'?'جاري البحث...':'Looking up...';
+  const {data,error}=await fetchCustomerByEmail(email);
+  if(error||!data){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'مفيش حساب بالإيميل ده':'No account found with this email';
+    return;
+  }
+  saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,address:data.address||null});
+  closeWelcomeModal();
+}
+function openCreateAccountFromWelcome(){
+  closeWelcomeModal();
+  showView('account');
+  renderAccountView();
+}
+function maybeShowWelcomeModal(){
+  if(customerProfile) return;
+  if(localStorage.getItem('leka_welcome_seen')){
+    showWelcomeBanner();
+  } else {
+    openWelcomeModal();
+  }
+}
 
 // ── جلب المخزون من Supabase ──
 async function loadInventory(){
@@ -2445,7 +2713,47 @@ function openCart(){renderCart();document.getElementById('cDrawer').classList.ad
 function closeCart(){document.getElementById('cDrawer').classList.remove('open');document.getElementById('cOverlay').classList.remove('open');unlockBodyScroll()}
 document.getElementById('cartBtn').onclick=openCart;
 
-function goCheckout(){closeCart();renderCheckout();showView('checkout')}
+function goCheckout(){closeCart();renderCheckout();prefillCheckoutFromProfile();showView('checkout')}
+// لو العميلة عاملة حساب، بنملى بيانات التوصيل بالبيانات المحفوظة عشان متدخلش نفس الكلام تاني
+function prefillCheckoutFromProfile(){
+  if(!customerProfile) return;
+  const nameParts=(customerProfile.name||'').trim().split(/\s+/);
+  const first=nameParts[0]||'';
+  const last=nameParts.slice(1).join(' ')||'';
+  const coFirst=document.getElementById('coFirst');
+  const coLast=document.getElementById('coLast');
+  const coPhone=document.getElementById('coPhone');
+  const coEmail=document.getElementById('coEmail');
+  if(coFirst&&!coFirst.value) coFirst.value=first;
+  if(coLast&&!coLast.value) coLast.value=last;
+  if(coPhone&&!coPhone.value) coPhone.value=customerProfile.phone||'';
+  if(coEmail&&!coEmail.value) coEmail.value=customerProfile.email||'';
+  const addr=customerProfile.address;
+  if(addr){
+    const govInput=document.getElementById('coGov');
+    if(govInput&&!govInput.value&&addr.gov){
+      const opt=document.querySelector('#govPanel .cd-opt[data-val="'+CSS.escape(addr.gov)+'"]');
+      if(opt) opt.click();
+    }
+    const coDistrict=document.getElementById('coDistrict');
+    const coStreet=document.getElementById('coStreet');
+    if(coDistrict&&!coDistrict.value) coDistrict.value=addr.district||'';
+    if(coStreet&&!coStreet.value) coStreet.value=addr.street||'';
+    if(addr.buildName&&!document.querySelector('.btype-btn.active')){
+      document.querySelectorAll('.btype-btn').forEach(b=>{ if(b.textContent.trim()===addr.buildName) b.click(); });
+    }
+    const coBuildNum=document.getElementById('coBuildNum');
+    const coFloor=document.getElementById('coFloor');
+    const coApt=document.getElementById('coApt');
+    const coLandmark=document.getElementById('coLandmark');
+    const coRecipient=document.getElementById('coRecipient');
+    if(coBuildNum&&!coBuildNum.value) coBuildNum.value=addr.buildNum||'';
+    if(coFloor&&!coFloor.value) coFloor.value=addr.floor||'';
+    if(coApt&&!coApt.value) coApt.value=addr.apt||'';
+    if(coLandmark&&!coLandmark.value) coLandmark.value=addr.landmark||'';
+    if(coRecipient&&!coRecipient.value) coRecipient.value=addr.recipient||'';
+  }
+}
 function getShippingCost(){
   const gov=document.getElementById('coGov')?document.getElementById('coGov').value:'';
   const c=shippingCosts[gov];
@@ -2555,6 +2863,16 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     btn.parentNode.insertBefore(errEl,btn.nextSibling);
     setTimeout(()=>errEl.remove(),3000);
     btn.disabled=false;btn.textContent=lang==='ar'?'تأكيد الطلب':'Place Order';return;
+  }
+
+  // لو العميلة عندها حساب ومحفظتش عنوانها لسه، أول أوردر بتعمله يتحفظله العنوان تلقائي
+  if(customerProfile&&!customerProfile.address){
+    const addressObj={gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
+    const updatedProfile={...customerProfile,name:(first+' '+last).trim()||customerProfile.name,phone:phone||customerProfile.phone,email:email||customerProfile.email,address:addressObj};
+    try{
+      const {error:custErr}=await upsertCustomer(updatedProfile);
+      if(!custErr) saveCustomerProfileLocal(updatedProfile);
+    }catch(e){console.error('Save address:',e)}
   }
 
   try{
@@ -3077,6 +3395,7 @@ loadProducts().then(async ()=>{
   await loadInventory();
   loadBestSeller();
   restoreLastView();
+  maybeShowWelcomeModal();
 });
 loadShippingCosts();
 </script>
