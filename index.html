@@ -1722,19 +1722,25 @@ async function loadBestSeller(){
     const col=p&&p.colors.find(c=>(c.key||c.nameEn)===colorKey);
     return !!(col&&col.locked);
   };
+  // بنحسب الأكثر مبيعاً لكل قسم (نص كم / كم طويل) لوحده — عشان كل قسم يبان فيه البيست سيلر بتاعه
+  // حتى لو الأكثر مبيعاً عالميًا كان من القسم التاني
   const sorted=Object.entries(salesByKey).sort((a,b)=>b[1]-a[1]);
-  let topProductId=null,topColorKey=null;
+  const winners={};
   for(const [k] of sorted){
     const sep=k.indexOf('|');
     const pid=parseInt(k.slice(0,sep));
     const colorKey=k.slice(sep+1);
     if(isLocked(pid,colorKey)) continue;
-    topProductId=pid; topColorKey=colorKey; break;
+    const p=PRODUCTS.find(x=>x.id===pid);
+    if(!p||winners[p.cat]) continue;
+    winners[p.cat]={pid,colorKey};
   }
-  if(topProductId===null) return;
+  const winnerList=Object.values(winners);
+  if(!winnerList.length) return;
+  const isWinner=(pid,colorKey)=>winnerList.some(w=>w.pid===pid&&w.colorKey===colorKey);
 
-  // كل المنتجات اللي محتاجة تتحدّث في قاعدة البيانات: المنتج الجديد + أي منتج فيه لون كان "الأكثر مبيعاً" قبل كده
-  const idsToCheck=new Set([topProductId]);
+  // كل المنتجات اللي محتاجة تتحدّث في قاعدة البيانات: الفايزين الجداد + أي منتج فيه لون كان "الأكثر مبيعاً" قبل كده
+  const idsToCheck=new Set(winnerList.map(w=>w.pid));
   PRODUCTS.forEach(p=>{ if(p.badge==='bestseller'||p.colors.some(c=>c.badge==='bestseller')) idsToCheck.add(p.id); });
 
   for(const pid of idsToCheck){
@@ -1744,7 +1750,7 @@ async function loadBestSeller(){
     const newDbColors=(row.colors||[]).map(c=>{
       if(c.locked) return c;  // لون مقفول — نسيبه زي ما هو من غير ما نلمسه
       const key=c.key||c.nameEn;
-      const shouldBeBest=pid===topProductId&&key===topColorKey;
+      const shouldBeBest=isWinner(pid,key);
       const newBadge=shouldBeBest?'bestseller':(c.badge==='bestseller'?null:c.badge||null);
       if(newBadge!==(c.badge||null)) changed=true;
       return {...c, badge:newBadge};
@@ -1759,7 +1765,7 @@ async function loadBestSeller(){
         localP.colors.forEach(c=>{
           if(c.locked) return;
           const key=c.key||c.nameEn;
-          c.badge=(pid===topProductId&&key===topColorKey)?'bestseller':(c.badge==='bestseller'?null:c.badge);
+          c.badge=isWinner(pid,key)?'bestseller':(c.badge==='bestseller'?null:c.badge);
         });
       }
     }
