@@ -1236,6 +1236,25 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <div class="field-row full">
           <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="coEmail" placeholder="example@email.com"/><span class="field-error t" id="errEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
         </div>
+        <div id="coAddressChoice" style="display:none;margin-bottom:1.5rem">
+          <div class="co-section-label t" data-ar="عنوان التوصيل" data-en="Delivery Address"></div>
+          <div id="coSavedAddrOption" onclick="selectCoAddressMode('saved')" style="border:1px solid var(--line);border-radius:10px;padding:1rem;margin-bottom:.6rem;cursor:pointer">
+            <div style="display:flex;align-items:flex-start;gap:.6rem">
+              <input type="radio" name="coAddrMode" id="coAddrModeSaved" style="margin-top:3px;flex-shrink:0"/>
+              <div>
+                <div style="font-size:.78rem;font-weight:600;margin-bottom:.3rem" class="t" data-ar="استخدمي عنوانك المحفوظ" data-en="Use your saved address"></div>
+                <div id="coSavedAddrSummary" style="font-size:.75rem;color:var(--mid);line-height:1.6"></div>
+              </div>
+            </div>
+          </div>
+          <div onclick="selectCoAddressMode('new')" style="border:1px solid var(--line);border-radius:10px;padding:1rem;cursor:pointer">
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <input type="radio" name="coAddrMode" id="coAddrModeNew" style="margin:0;flex-shrink:0"/>
+              <div style="font-size:.78rem;font-weight:600" class="t" data-ar="اكتبي عنوان جديد" data-en="Enter a new address"></div>
+            </div>
+          </div>
+        </div>
+        <div id="coAddressFields">
         <div class="field-row full">
           <div class="field">
             <label class="t" data-ar="المحافظة *" data-en="Governorate *"></label>
@@ -1307,6 +1326,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="field-row full" id="companyRow" style="display:none">
             <div class="field"><label class="t" data-ar="اسم الشخص المستلم" data-en="Recipient Name"></label><input type="text" id="coRecipient"/></div>
           </div>
+        </div>
         </div>
         <div class="field-row full" style="margin-bottom:1.5rem">
           <div class="field"><label class="t" data-ar="ملاحظات (اختياري)" data-en="Notes (optional)"></label><textarea id="coNotes"></textarea></div>
@@ -1517,6 +1537,67 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div class="field"><label class="t" data-ar="الاسم *" data-en="Name *"></label><input type="text" id="acctName"/><span class="field-error t" id="acctErrName" data-ar="الاسم مطلوب" data-en="Name is required"></span></div>
       <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="acctPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="acctErrPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
       <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="acctEmail" placeholder="example@email.com"/><span class="field-error t" id="acctErrEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
+
+      <button type="button" onclick="toggleAcctAddress()" id="acctAddrToggleBtn" style="background:none;border:1px solid var(--line);border-radius:20px;padding:10px 16px;font-size:.72rem;font-weight:600;cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <span class="t" data-ar="ضيفي عنوانك (اختياري)" data-en="Add your address (optional)"></span>
+        <span id="acctAddrToggleIcon">+</span>
+      </button>
+      <div id="acctAddressFields" style="display:none">
+        <div class="field">
+          <label class="t" data-ar="المحافظة" data-en="Governorate"></label>
+          <select id="acctGov" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none">
+            <option value="">—</option>
+            <option value="القاهرة / Cairo">القاهرة / Cairo</option>
+            <option value="الجيزة / Giza">الجيزة / Giza</option>
+            <option value="الإسكندرية / Alexandria">الإسكندرية / Alexandria</option>
+            <option value="المنصورة / Mansoura">المنصورة / Mansoura</option>
+            <option value="طنطا / Tanta">طنطا / Tanta</option>
+            <option value="أسيوط / Asyut">أسيوط / Asyut</option>
+            <option value="أسوان / Aswan">أسوان / Aswan</option>
+            <option value="الأقصر / Luxor">الأقصر / Luxor</option>
+            <option value="الإسماعيلية / Ismailia">الإسماعيلية / Ismailia</option>
+            <option value="بورسعيد / Port Said">بورسعيد / Port Said</option>
+            <option value="السويس / Suez">السويس / Suez</option>
+            <option value="الشرقية / Sharkia">الشرقية / Sharkia</option>
+            <option value="الدقهلية / Dakahlia">الدقهلية / Dakahlia</option>
+            <option value="البحيرة / Beheira">البحيرة / Beheira</option>
+            <option value="كفر الشيخ / Kafr El Sheikh">كفر الشيخ / Kafr El Sheikh</option>
+            <option value="الغربية / Gharbia">الغربية / Gharbia</option>
+            <option value="المنوفية / Monufia">المنوفية / Monufia</option>
+            <option value="الفيوم / Fayoum">الفيوم / Fayoum</option>
+            <option value="بني سويف / Beni Suef">بني سويف / Beni Suef</option>
+            <option value="المنيا / Minya">المنيا / Minya</option>
+            <option value="قنا / Qena">قنا / Qena</option>
+            <option value="سوهاج / Sohag">سوهاج / Sohag</option>
+            <option value="شمال سيناء / North Sinai">شمال سيناء / North Sinai</option>
+            <option value="جنوب سيناء / South Sinai">جنوب سيناء / South Sinai</option>
+            <option value="البحر الأحمر / Red Sea">البحر الأحمر / Red Sea</option>
+            <option value="مطروح / Matrouh">مطروح / Matrouh</option>
+            <option value="الوادي الجديد / New Valley">الوادي الجديد / New Valley</option>
+          </select>
+        </div>
+        <div class="field"><label class="t" data-ar="المنطقة / الحي" data-en="District / Area"></label><input type="text" id="acctDistrict"/></div>
+        <div class="field"><label class="t" data-ar="اسم الشارع" data-en="Street Name"></label><input type="text" id="acctStreet"/></div>
+        <div class="field">
+          <label class="t" data-ar="نوع المبنى" data-en="Building Type"></label>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+            <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Building')" data-ar="عمارة" data-en="Building"></button>
+            <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Company')" data-ar="شركة" data-en="Company"></button>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label id="acctLblBuildNum" class="t" data-ar="رقم المبنى" data-en="Building No."></label><input type="text" id="acctBuildNum"/></div>
+          <div class="field" id="acctFloorField"><label class="t" data-ar="رقم الدور" data-en="Floor No."></label><input type="text" id="acctFloor"/></div>
+        </div>
+        <div class="field-row" id="acctAptRow">
+          <div class="field"><label class="t" data-ar="رقم الشقة" data-en="Apartment No."></label><input type="text" id="acctApt"/></div>
+          <div class="field"><label class="t" data-ar="علامة مميزة" data-en="Landmark"></label><input type="text" id="acctLandmark"/></div>
+        </div>
+        <div class="field-row full" id="acctCompanyRow" style="display:none">
+          <div class="field"><label class="t" data-ar="اسم الشخص المستلم" data-en="Recipient Name"></label><input type="text" id="acctRecipient"/></div>
+        </div>
+      </div>
+
       <button onclick="createAccount()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;width:100%;margin-top:.5rem" class="t" data-ar="إنشاء حساب" data-en="Create Account"></button>
       <p id="acctCreateMsg" style="font-size:.75rem;margin-top:.6rem;text-align:center"></p>
 
@@ -1800,7 +1881,7 @@ function formatAddressLines(addr){
   const parts=[
     addr.gov,
     [addr.district,addr.street].filter(Boolean).join(' - '),
-    addr.buildName==='شركة'?[addr.buildName,addr.buildNum].filter(Boolean).join(' '):[addr.buildName,addr.buildNum,addr.floor?('Floor '+addr.floor):'',addr.apt?('Apt '+addr.apt):''].filter(Boolean).join(', '),
+    (addr.buildName==='شركة'||addr.buildName==='Company')?[addr.buildName,addr.buildNum].filter(Boolean).join(' '):[addr.buildName,addr.buildNum,addr.floor?('Floor '+addr.floor):'',addr.apt?('Apt '+addr.apt):''].filter(Boolean).join(', '),
     addr.landmark
   ].filter(Boolean);
   return parts.join('<br/>');
@@ -1833,6 +1914,35 @@ function renderAccountView(){
     document.getElementById('acctRestoreMsg').textContent='';
   }
 }
+function toggleAcctAddress(){
+  const fields=document.getElementById('acctAddressFields');
+  const icon=document.getElementById('acctAddrToggleIcon');
+  const isOpen=fields.style.display!=='none';
+  fields.style.display=isOpen?'none':'block';
+  icon.textContent=isOpen?'+':'−';
+}
+function setAcctBuildingType(btn,type){
+  document.querySelectorAll('#acctAddressFields .btype-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const isCompany=(type==='Company');
+  document.getElementById('acctAptRow').style.display=isCompany?'none':'';
+  document.getElementById('acctCompanyRow').style.display=isCompany?'block':'none';
+  document.getElementById('acctFloorField').style.display=isCompany?'none':'';
+}
+function buildAcctAddressFromForm(){
+  const gov=document.getElementById('acctGov').value;
+  const district=document.getElementById('acctDistrict').value.trim();
+  const street=document.getElementById('acctStreet').value.trim();
+  const activeBType=document.querySelector('#acctAddressFields .btype-btn.active');
+  const buildName=activeBType?activeBType.dataset.en:'';
+  const buildNum=document.getElementById('acctBuildNum').value.trim();
+  const floor=document.getElementById('acctFloor').value.trim();
+  const apt=document.getElementById('acctApt').value.trim();
+  const landmark=document.getElementById('acctLandmark').value.trim();
+  const recipient=document.getElementById('acctRecipient').value.trim();
+  if(!gov&&!district&&!street&&!buildNum) return null;
+  return {gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
+}
 async function createAccount(){
   const name=document.getElementById('acctName').value.trim();
   const phone=document.getElementById('acctPhone').value.trim();
@@ -1847,7 +1957,8 @@ async function createAccount(){
   const msg=document.getElementById('acctCreateMsg');
   msg.style.color='var(--mid)';
   msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
-  const profile={name,phone,email,address:null};
+  const address=buildAcctAddressFromForm();
+  const profile={name,phone,email,address};
   const {error}=await upsertCustomer(profile);
   if(error){
     msg.style.color='#c00';
@@ -2714,7 +2825,8 @@ function closeCart(){document.getElementById('cDrawer').classList.remove('open')
 document.getElementById('cartBtn').onclick=openCart;
 
 function goCheckout(){closeCart();renderCheckout();prefillCheckoutFromProfile();showView('checkout')}
-// لو العميلة عاملة حساب، بنملى بيانات التوصيل بالبيانات المحفوظة عشان متدخلش نفس الكلام تاني
+// لو العميلة عاملة حساب، بنملى الاسم/الرقم/الإيميل تلقائي — ولو عندها عنوان محفوظ
+// بنديها اختيار: تستخدم العنوان المحفوظ (متكتبوش تاني) أو تكتب عنوان جديد
 function prefillCheckoutFromProfile(){
   if(!customerProfile) return;
   const nameParts=(customerProfile.name||'').trim().split(/\s+/);
@@ -2729,30 +2841,60 @@ function prefillCheckoutFromProfile(){
   if(coPhone&&!coPhone.value) coPhone.value=customerProfile.phone||'';
   if(coEmail&&!coEmail.value) coEmail.value=customerProfile.email||'';
   const addr=customerProfile.address;
+  const choiceBlock=document.getElementById('coAddressChoice');
   if(addr){
-    const govInput=document.getElementById('coGov');
-    if(govInput&&!govInput.value&&addr.gov){
-      const opt=document.querySelector('#govPanel .cd-opt[data-val="'+CSS.escape(addr.gov)+'"]');
-      if(opt) opt.click();
-    }
-    const coDistrict=document.getElementById('coDistrict');
-    const coStreet=document.getElementById('coStreet');
-    if(coDistrict&&!coDistrict.value) coDistrict.value=addr.district||'';
-    if(coStreet&&!coStreet.value) coStreet.value=addr.street||'';
-    if(addr.buildName&&!document.querySelector('.btype-btn.active')){
-      document.querySelectorAll('.btype-btn').forEach(b=>{ if(b.textContent.trim()===addr.buildName) b.click(); });
-    }
-    const coBuildNum=document.getElementById('coBuildNum');
-    const coFloor=document.getElementById('coFloor');
-    const coApt=document.getElementById('coApt');
-    const coLandmark=document.getElementById('coLandmark');
-    const coRecipient=document.getElementById('coRecipient');
-    if(coBuildNum&&!coBuildNum.value) coBuildNum.value=addr.buildNum||'';
-    if(coFloor&&!coFloor.value) coFloor.value=addr.floor||'';
-    if(coApt&&!coApt.value) coApt.value=addr.apt||'';
-    if(coLandmark&&!coLandmark.value) coLandmark.value=addr.landmark||'';
-    if(coRecipient&&!coRecipient.value) coRecipient.value=addr.recipient||'';
+    choiceBlock.style.display='block';
+    document.getElementById('coSavedAddrSummary').innerHTML=formatAddressLines(addr);
+    selectCoAddressMode('saved');
+  } else {
+    choiceBlock.style.display='none';
+    document.getElementById('coAddressFields').style.display='';
   }
+}
+function fillCoAddressFields(addr){
+  if(addr.gov){
+    const opt=document.querySelector('#govPanel .cd-opt[data-val="'+CSS.escape(addr.gov)+'"]');
+    if(opt) opt.click();
+  }
+  document.getElementById('coDistrict').value=addr.district||'';
+  document.getElementById('coStreet').value=addr.street||'';
+  if(addr.buildName){
+    document.querySelectorAll('#coAddressFields .btype-btn').forEach(b=>{ if(b.dataset.en===addr.buildName) b.click(); });
+  }
+  document.getElementById('coBuildNum').value=addr.buildNum||'';
+  document.getElementById('coFloor').value=addr.floor||'';
+  document.getElementById('coApt').value=addr.apt||'';
+  document.getElementById('coLandmark').value=addr.landmark||'';
+  const coRecipient=document.getElementById('coRecipient');
+  if(coRecipient) coRecipient.value=addr.recipient||'';
+}
+function clearCoAddressFields(){
+  document.getElementById('coGov').value='';
+  document.getElementById('govLabel').textContent=lang==='ar'?'اختر المحافظة':'Select Governorate';
+  document.getElementById('govTrigger').classList.add('placeholder');
+  document.querySelectorAll('#govPanel .cd-opt').forEach(o=>o.classList.remove('selected'));
+  document.getElementById('coDistrict').value='';
+  document.getElementById('coStreet').value='';
+  document.querySelectorAll('#coAddressFields .btype-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('coBuildNum').value='';
+  document.getElementById('coFloor').value='';
+  document.getElementById('coApt').value='';
+  document.getElementById('coLandmark').value='';
+  const coRecipient=document.getElementById('coRecipient');
+  if(coRecipient) coRecipient.value='';
+}
+function selectCoAddressMode(mode){
+  document.getElementById('coAddrModeSaved').checked=(mode==='saved');
+  document.getElementById('coAddrModeNew').checked=(mode==='new');
+  const fields=document.getElementById('coAddressFields');
+  if(mode==='saved'){
+    fields.style.display='none';
+    if(customerProfile&&customerProfile.address) fillCoAddressFields(customerProfile.address);
+  } else {
+    fields.style.display='';
+    clearCoAddressFields();
+  }
+  renderCheckout();
 }
 function getShippingCost(){
   const gov=document.getElementById('coGov')?document.getElementById('coGov').value:'';
@@ -2784,8 +2926,8 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   const gov=document.getElementById('coGov').value;
   const district=document.getElementById('coDistrict').value.trim();
   const street=document.getElementById('coStreet').value.trim();
-  const activeBType=document.querySelector('.btype-btn.active');
-  const buildName=activeBType?activeBType.textContent.trim():'';
+  const activeBType=document.querySelector('#coAddressFields .btype-btn.active');
+  const buildName=activeBType?activeBType.dataset.en:'';
   const buildNum=document.getElementById('coBuildNum').value.trim();
   const floor=document.getElementById('coFloor').value.trim();
   const apt=document.getElementById('coApt').value.trim();
@@ -2830,7 +2972,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     valid=false;
   }
   // لازم يختار عمارة أو شركة — من غير اختيار مش هيعرف يكمل
-  if(!document.querySelector('.btype-btn.active')){
+  if(!document.querySelector('#coAddressFields .btype-btn.active')){
     const errBType=document.getElementById('errBuildingType');
     if(errBType) errBType.classList.add('show');
     valid=false;
@@ -2984,7 +3126,7 @@ async function submitContact(){
 
 document.getElementById('ctSubmit').addEventListener('click',submitContact);
 function setBuildingType(btn,ar,en){
-  document.querySelectorAll('.btype-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#coAddressFields .btype-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   const errBType=document.getElementById('errBuildingType');
   if(errBType) errBType.classList.remove('show');
