@@ -391,7 +391,7 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 .chart-wrap{max-width:700px;padding:3rem 2.5rem}
 .chart-wrap h1{font-family:var(--display);font-size:2rem;font-weight:400;margin-bottom:2.5rem;letter-spacing:-.01em}
 .chart-section{margin-bottom:2.5rem}
-#aboutContent .chart-section{margin-bottom:1.4rem}
+#aboutContent .chart-section{margin-bottom:.9rem}
 .chart-section-title{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
 .size-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .size-table th{text-align:center;padding:10px 14px;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
@@ -874,7 +874,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     </div>
     <div class="sb-item" onclick="showView('favorites');closeSidebar()">
       <div>
-        <div class="sb-item-name t" data-ar="المفضلة" data-en="Favorites"></div>
+        <div class="sb-item-name t" data-ar="المفضلة" data-en="Wishlist"></div>
         <div class="sb-item-sub" id="sbFavCount">0 items</div>
       </div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -1343,10 +1343,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   <div class="favs-page">
     <div class="shop-header">
       <div class="shop-header-label t" data-ar="قائمتك" data-en="Your List"></div>
-      <div class="shop-header-title t" data-ar="المفضلة" data-en="Favorites"></div>
+      <div class="shop-header-title t" data-ar="المفضلة" data-en="Wishlist"></div>
     </div>
     <div class="products-grid" id="grid-favs"></div>
-    <p class="favs-empty" id="favsEmpty" style="display:none" data-ar="لا يوجد منتجات في المفضلة" data-en="No favorites yet"></p>
+    <p class="favs-empty" id="favsEmpty" style="display:none" data-ar="لا يوجد منتجات في المفضلة" data-en="No items in your wishlist yet"></p>
   </div>
 </div>
 
@@ -1839,9 +1839,9 @@ function renderAbout(){
   const items=ABOUT_TEXT[lang]||ABOUT_TEXT.en;
   el.innerHTML=items.map((t,i)=>{
     const isFirst=i===0, isLast=i===items.length-1;
-    const style=isFirst?'font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.6'
-      :isLast?'font-size:.85rem;font-weight:700;color:var(--ink);line-height:1.6'
-      :'font-size:.85rem;color:var(--mid);line-height:1.6';
+    const style=isFirst?'font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.45'
+      :isLast?'font-size:.85rem;font-weight:700;color:var(--ink);line-height:1.45'
+      :'font-size:.85rem;color:var(--mid);line-height:1.45';
     return `<div class="chart-section"><p style="${style}">${t}</p></div>`;
   }).join('');
 }
@@ -1974,8 +1974,8 @@ function makeCard(p,colorIdx=0){
   const buyTxt=lang==='ar'?(available?'اشتر الآن':'نفذت الكمية'):(available?'Buy Now':'Sold Out');
   const soldOverlay=!available?`<div class="card-sold-overlay"><span>${lang==='ar'?'نفذت الكمية':'Sold Out'}</span></div>`:'';
   const badge=c.badge||p.badge;
-  const badgeTxt=badge==='new'?(lang==='ar'?'جديد':'New'):badge==='bestseller'?(lang==='ar'?'الأكثر مبيعاً':'Best Seller'):badge==='sale'?(lang==='ar'?'خصم':'Sale'):'';
-  const badgeClass=badge==='new'?'badge-new':badge==='sale'?'badge-sale':'';
+  const badgeTxt=badge==='new'?(lang==='ar'?'جديد':'New'):badge==='bestseller'?(lang==='ar'?'الأكثر مبيعاً':'Best Seller'):badge==='sale'?(lang==='ar'?'خصم':'Sale'):badge==='sale13'?(lang==='ar'?'خصم 13%':'13% OFF'):'';
+  const badgeClass=badge==='new'?'badge-new':(badge==='sale'||badge==='sale13')?'badge-sale':'';
   const badgeHtml=badgeTxt?`<div class="card-badge ${badgeClass}">${badgeTxt}</div>`:'';
   // دوايرة الألوان
   const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${col.hex};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i})"></div>`).join('');
@@ -2150,7 +2150,7 @@ function renderFavs(){
   const favProds=PRODUCTS.filter(p=>favorites.includes(p.id));
   if(!favProds.length){
     grid.innerHTML='';
-    if(empty){empty.style.display='block';empty.textContent=lang==='ar'?'لا يوجد منتجات في المفضلة':'No favorites yet'}
+    if(empty){empty.style.display='block';empty.textContent=lang==='ar'?'لا يوجد منتجات في المفضلة':'No items in your wishlist yet'}
   } else {
     if(empty) empty.style.display='none';
     grid.innerHTML=favProds.map(p=>makeCard(p,0)).join('');
