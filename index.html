@@ -583,8 +583,8 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .cd-opt:last-child{border-radius:0 0 16px 16px}
 .cd-opt:hover{background:#f2f2f2}
 .cd-opt.selected{font-weight:600;color:var(--ink);background:#f2f2f2}
-.page-logo{display:flex;justify-content:center;padding:.8rem 0 0;margin-bottom:0;cursor:pointer}
-.page-logo img{height:52px;width:auto}
+.page-logo{position:fixed;top:0;left:50%;transform:translateX(-50%);height:52px;display:flex;align-items:center;justify-content:center;padding:0;margin:0;cursor:pointer;z-index:201;pointer-events:none}
+.page-logo img{height:32px;width:auto;pointer-events:auto}
 
 .card-sold-overlay{
   position:absolute;inset:0;
@@ -1542,8 +1542,20 @@ let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,
 let viewHistory=[];  // تاريخ الصفحات
 if('scrollRestoration' in history) history.scrollRestoration='manual';
 
-// بدّل الفيو فورًا من غير ما تستني تحميل البيانات، عشان صفحة الهوم متظهرش ولا لحظة قبل الصفحة المحفوظة
+// بنفرق بين ريفرش حقيقي (F5/إعادة تحميل) وفتح جديد للموقع (تاب جديد، بوكماركد، فتح التطبيق من التاب) —
+// عشان الموبايل أحيانًا بيسيب التاب شغالة في الخلفية بدل ما يقفلها فعلاً، فبيحس إنه "فتح جديد"
+// بس الـ sessionStorage لسه موجودة، فكانت بترجع المستخدمة لآخر صفحة بدل الهوم غلط
+function isRealReload(){
+  try{
+    const nav=performance.getEntriesByType('navigation')[0];
+    if(nav) return nav.type==='reload';
+    return !!(performance.navigation&&performance.navigation.type===1);
+  }catch(e){ return false; }
+}
+// بدّل الفيو فورًا من غير ما تستني تحميل البيانات، عشان صفحة الهوم متظهرش ولا لحظة قبل الصفحة المحفوظة —
+// بس لو ريفرش حقيقي بس، مش فتح جديد للموقع
 (function instantViewSwap(){
+  if(!isRealReload()) return;
   let saved;
   try{ saved=JSON.parse(sessionStorage.getItem('leka_last_view')||'null'); }catch(e){ saved=null; }
   if(!saved||!saved.view) return;
@@ -2980,6 +2992,7 @@ function trackPurchase(){
 }
 // لو المستخدمة عملت ريفرش وهي في صفحة معينة، رجعها لنفس الصفحة بدل ما تطلع الهوم
 function restoreLastView(){
+  if(!isRealReload()) return;
   let saved;
   try{ saved=JSON.parse(sessionStorage.getItem('leka_last_view')||'null'); }catch(e){ saved=null; }
   if(!saved||!saved.view) return;
