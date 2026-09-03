@@ -246,6 +246,9 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
   padding-bottom:1.25rem;
 }
 .shop-header-label{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+@media(min-width:769px){
+  .shop-header-label{font-size:.72rem}
+}
 .shop-header-title{font-family:var(--display);font-size:clamp(1.8rem,4vw,3rem);font-weight:400;letter-spacing:-.02em}
 .products-grid{
   display:grid;
@@ -474,6 +477,9 @@ html[lang=en] .c-drawer{right:0;left:auto;transform:translateX(100%);border-inli
 html[lang=en] .c-drawer.open{transform:translateX(0)}
 .c-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
 .c-head-title{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+@media(min-width:769px){
+  .c-head-title{font-size:.72rem}
+}
 .x-btn{background:none;border:none;font-size:1rem;color:var(--mid)}
 .c-body{flex:1;overflow-y:auto;padding:1rem 1.4rem;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;min-height:0}
 .c-empty{color:var(--muted);font-size:.82rem;text-align:center;margin-top:3rem}
@@ -721,6 +727,19 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 .admin-login input:focus{border-color:var(--ink)}
 .admin-login button{background:var(--ink);color:#fff;border:none;padding:11px 28px;font-size:.78rem;font-weight:700;letter-spacing:.1em;cursor:pointer;width:260px}
 
+/* لابل الكلام الصغير (زي Shop, Cart) اللي تحت العناوين — كبير شويه على اللاب توب بس */
+@media(min-width:769px){
+  .card-cat{font-size:.76rem}
+  .prod-cat{font-size:.76rem}
+  .opt-label{font-size:.72rem}
+  .qty-label{font-size:.72rem}
+  .chart-section-title{font-size:.72rem}
+  .co-section-label{font-size:.72rem}
+  .order-box-title{font-size:.72rem}
+  .qs-section-label{font-size:.72rem}
+  .home-footer-social-label{font-size:.74rem}
+  .sb-head-label{font-size:.62rem}
+}
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
   .products-grid{grid-template-columns:repeat(3,1fr)}
