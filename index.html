@@ -1881,15 +1881,22 @@ function doSearch(){
   const q=document.getElementById('searchInput').value.trim().toLowerCase();
   const results=document.getElementById('searchResults');
   const empty=document.getElementById('searchEmpty');
-  const matches=q?PRODUCTS.filter(p=>p.nameAr.toLowerCase().includes(q)||p.nameEn.toLowerCase().includes(q)):PRODUCTS;
+  if(!q){
+    empty.style.display='none';
+    results.innerHTML=PRODUCTS.map(p=>makeCard(p,0)).join('');
+    return;
+  }
+  const matches=PRODUCTS.filter(p=>p.nameAr.toLowerCase().includes(q)||p.nameEn.toLowerCase().includes(q));
+  const matchIds=new Set(matches.map(p=>p.id));
+  const rest=PRODUCTS.filter(p=>!matchIds.has(p.id));
   if(!matches.length){
-    results.innerHTML='';
     empty.style.display='block';
     empty.textContent=lang==='ar'?'لا يوجد نتائج':'No results found';
   } else {
     empty.style.display='none';
-    results.innerHTML=matches.map(p=>makeCard(p,0)).join('');
   }
+  const restLabel=rest.length?`<div style="grid-column:1/-1;margin:1.5rem 0 .5rem;padding-top:1.5rem;border-top:1px solid var(--line)" class="shop-header-label">${lang==='ar'?'باقي المنتجات':'Other Products'}</div>`:'';
+  results.innerHTML=matches.map(p=>makeCard(p,0)).join('')+restLabel+rest.map(p=>makeCard(p,0)).join('');
 }
 function setActiveNav(b){document.querySelectorAll('.nav-page-btn').forEach(x=>x.classList.remove('active-nav'));if(b)b.classList.add('active-nav')}
 let scrollLockY=0,scrollLockCount=0;
