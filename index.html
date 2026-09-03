@@ -915,7 +915,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       </div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     </div>
-    <div class="sb-item" onclick="showView('track');closeSidebar()">
+    <div class="sb-item" onclick="showView('track');loadMyOrders();closeSidebar()">
       <div><div class="sb-item-name t" data-ar="الطلبات" data-en="My Orders"></div></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted)"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
     </div>
@@ -1529,8 +1529,8 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <div class="view" id="view-track">
   <div style="max-width:480px;margin:0 auto;padding:3rem 1.5rem 2rem;width:100%;box-sizing:border-box">
     <div style="font-family:var(--display);font-size:1.8rem;font-weight:400;margin-bottom:.4rem" class="t" data-ar="الطلبات" data-en="My Orders"></div>
-    <p style="font-size:.82rem;color:var(--mid);margin-bottom:2rem;line-height:1.6" class="t" data-ar="أدخل رقم الطلب أو رقم موبايلك" data-en="Enter your order number or phone number"></p>
-    <div style="display:flex;gap:.5rem;margin-bottom:1.5rem">
+    <p id="trackDesc" style="font-size:.82rem;color:var(--mid);margin-bottom:2rem;line-height:1.6" class="t" data-ar="أدخل رقم الطلب أو رقم موبايلك" data-en="Enter your order number or phone number"></p>
+    <div id="trackSearchBox" style="display:flex;gap:.5rem;margin-bottom:1.5rem">
       <input type="text" id="trackInput" style="flex:1;min-width:0;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none"
         placeholder="LKA-2026-XXXXX" onkeydown="if(event.key==='Enter')trackOrder()"/>
       <button onclick="trackOrder()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;white-space:nowrap;flex-shrink:0" class="t" data-ar="بحث" data-en="Search"></button>
@@ -3211,15 +3211,8 @@ function setBuildingType(btn,ar,en){
 }
 
 // ── TRACK ORDER ──
-async function trackOrder(){
-  let val=document.getElementById('trackInput').value.trim();
-  const result=document.getElementById('trackResult');
-  if(!val){result.innerHTML=`<p style="color:var(--muted);font-size:.82rem">${lang==='ar'?'من فضلك أدخل رقم الأوردر أو الموبايل':'Please enter your order number or phone'}</p>`;return}
-  result.innerHTML=`<p style="color:var(--muted);font-size:.82rem">${lang==='ar'?'جاري البحث...':'Searching...'}</p>`;
-
-  // تحويل الأرقام العربية لإنجليزية
+function buildPhoneVariants(val){
   val=val.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d).toString());
-  // شيل الكود الدولي لو موجود
   const digits=val.replace(/\D/g,'');
   const phoneVariants=new Set([val]);
   if(digits.length>0){
@@ -3240,23 +3233,26 @@ async function trackOrder(){
     // مع + في الأول
     phoneVariants.add('+'+digits);
   }
+  return phoneVariants;
+}
+const ORDER_SELECT_COLS='order_number,first_name,last_name,phone,status,total,items,created_at,governorate,district,street,building_name,building_number,floor_number,apartment_number';
+async function trackOrder(){
+  let val=document.getElementById('trackInput').value.trim();
+  const result=document.getElementById('trackResult');
+  if(!val){result.innerHTML=`<p style="color:var(--muted);font-size:.82rem">${lang==='ar'?'من فضلك أدخل رقم الأوردر أو الموبايل':'Please enter your order number or phone'}</p>`;return}
+  result.innerHTML=`<p style="color:var(--muted);font-size:.82rem">${lang==='ar'?'جاري البحث...':'Searching...'}</p>`;
+
+  const phoneVariants=buildPhoneVariants(val);
 
   let data=null,error=null;
   // ابحث بـ order_number الأول
-  const res1=await sb.from('orders')
-    .select('order_number,first_name,last_name,phone,status,total,items,created_at,governorate,district,street,building_name,building_number,floor_number,apartment_number')
-    .eq('order_number',val)
-    .limit(5);
+  const res1=await sb.from('orders').select(ORDER_SELECT_COLS).eq('order_number',val).limit(5);
   if(res1.data&&res1.data.length){data=res1.data}
   else{
     // ابحث بكل variants الموبايل
     let found=[];
     for(const p of phoneVariants){
-      const res=await sb.from('orders')
-        .select('order_number,first_name,last_name,phone,status,total,items,created_at,governorate,district,street,building_name,building_number,floor_number,apartment_number')
-        .eq('phone',p)
-        .order('created_at',{ascending:false})
-        .limit(5);
+      const res=await sb.from('orders').select(ORDER_SELECT_COLS).eq('phone',p).order('created_at',{ascending:false}).limit(5);
       if(res.data&&res.data.length){found=[...found,...res.data];error=null;}
     }
     // شيل duplicates
@@ -3268,6 +3264,44 @@ async function trackOrder(){
     result.innerHTML=`<p style="color:var(--muted);font-size:.82rem;padding:1rem;background:#f2f2f2;border-radius:12px;text-align:center">${lang==='ar'?'مفيش طلبات بالرقم ده':'No orders found'}</p>`;
     return;
   }
+  renderTrackResults(data);
+}
+// لو عندها حساب، بنجيبلها كل طلباتها تلقائي (بالرقم والإيميل المسجلين) من غير ما تكتب حاجة
+async function loadMyOrders(){
+  const result=document.getElementById('trackResult');
+  const searchBox=document.getElementById('trackSearchBox');
+  const desc=document.getElementById('trackDesc');
+  if(!customerProfile){
+    if(searchBox) searchBox.style.display='flex';
+    if(desc) desc.textContent=lang==='ar'?'أدخل رقم الطلب أو رقم موبايلك':'Enter your order number or phone number';
+    result.innerHTML='';
+    return;
+  }
+  if(searchBox) searchBox.style.display='none';
+  if(desc) desc.textContent=lang==='ar'?'كل طلباتك اللي عملتيها من حسابك':'All the orders you\'ve placed with your account';
+  result.innerHTML=`<p style="color:var(--muted);font-size:.82rem">${lang==='ar'?'جاري التحميل...':'Loading...'}</p>`;
+  let found=[];
+  if(customerProfile.phone){
+    const phoneVariants=buildPhoneVariants(customerProfile.phone);
+    for(const p of phoneVariants){
+      const res=await sb.from('orders').select(ORDER_SELECT_COLS).eq('phone',p).order('created_at',{ascending:false}).limit(20);
+      if(res.data&&res.data.length) found=[...found,...res.data];
+    }
+  }
+  if(customerProfile.email){
+    const res=await sb.from('orders').select(ORDER_SELECT_COLS).eq('customer_email',customerProfile.email).order('created_at',{ascending:false}).limit(20);
+    if(res.data&&res.data.length) found=[...found,...res.data];
+  }
+  const seen=new Set();
+  const data=found.filter(o=>{if(seen.has(o.order_number))return false;seen.add(o.order_number);return true;}).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(!data.length){
+    result.innerHTML=`<p style="color:var(--muted);font-size:.82rem;padding:1rem;background:#f2f2f2;border-radius:12px;text-align:center">${lang==='ar'?'لسه معملتيش أي أوردر':'You have no orders yet'}</p>`;
+    return;
+  }
+  renderTrackResults(data);
+}
+function renderTrackResults(data){
+  const result=document.getElementById('trackResult');
   const statusMap={
     'new':      {ar:'قيد المراجعة',en:'Under Review',color:'#e8a000'},
     'confirmed':{ar:'تم التأكيد',en:'Confirmed',color:'#0a7c0a'},
