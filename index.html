@@ -391,6 +391,7 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 .chart-wrap{max-width:700px;padding:3rem 2.5rem}
 .chart-wrap h1{font-family:var(--display);font-size:2rem;font-weight:400;margin-bottom:2.5rem;letter-spacing:-.01em}
 .chart-section{margin-bottom:2.5rem}
+#aboutContent .chart-section{margin-bottom:1.4rem}
 .chart-section-title{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
 .size-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .size-table th{text-align:center;padding:10px 14px;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
@@ -1838,9 +1839,9 @@ function renderAbout(){
   const items=ABOUT_TEXT[lang]||ABOUT_TEXT.en;
   el.innerHTML=items.map((t,i)=>{
     const isFirst=i===0, isLast=i===items.length-1;
-    const style=isFirst?'font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.9'
-      :isLast?'font-size:.85rem;font-weight:700;color:var(--ink);line-height:1.9'
-      :'font-size:.85rem;color:var(--mid);line-height:1.9';
+    const style=isFirst?'font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.6'
+      :isLast?'font-size:.85rem;font-weight:700;color:var(--ink);line-height:1.6'
+      :'font-size:.85rem;color:var(--mid);line-height:1.6';
     return `<div class="chart-section"><p style="${style}">${t}</p></div>`;
   }).join('');
 }
