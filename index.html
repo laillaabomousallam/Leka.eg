@@ -1874,14 +1874,14 @@ function renderHomeBrandText(){
 function goHome(){showView('home')}
 function openSearch(){
   showView('search');
+  doSearch();
   setTimeout(()=>{const el=document.getElementById('searchInput');if(el)el.focus()},150);
 }
 function doSearch(){
   const q=document.getElementById('searchInput').value.trim().toLowerCase();
   const results=document.getElementById('searchResults');
   const empty=document.getElementById('searchEmpty');
-  if(!q){results.innerHTML='';empty.style.display='none';return}
-  const matches=PRODUCTS.filter(p=>p.nameAr.toLowerCase().includes(q)||p.nameEn.toLowerCase().includes(q));
+  const matches=q?PRODUCTS.filter(p=>p.nameAr.toLowerCase().includes(q)||p.nameEn.toLowerCase().includes(q)):PRODUCTS;
   if(!matches.length){
     results.innerHTML='';
     empty.style.display='block';
