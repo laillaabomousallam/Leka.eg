@@ -1674,6 +1674,14 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   <button class="welcome-banner-close" onclick="closeWelcomeBanner()">✕</button>
 </div>
 
+<!-- BLOCKED ACCOUNT MESSAGE -->
+<div class="welcome-overlay" id="blockedOverlay"></div>
+<div class="welcome-modal" id="blockedModal" onclick="event.stopPropagation()">
+  <div style="font-family:var(--display);font-size:1.2rem;text-align:center;margin-bottom:.6rem;color:#c00" class="t" data-ar="تم حظر حسابك" data-en="Your Account Is Blocked"></div>
+  <p style="font-size:.8rem;color:var(--mid);text-align:center;line-height:1.6;margin-bottom:1.5rem" class="t" data-ar="تم حظرك من الطلب من هذا البراند. تواصلي معنا لو في أي استفسار." data-en="You've been blocked from ordering from this brand. Contact us if you have any questions."></p>
+  <button onclick="closeBlockedModal()" style="width:100%;background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer" class="t" data-ar="حسناً" data-en="OK"></button>
+</div>
+
 <!-- QUICK SELECT MODAL -->
 <div class="qs-overlay" id="qsOverlay" onclick="closeQS()"></div>
 <div class="qs-modal" id="qsModal">
@@ -1969,6 +1977,7 @@ async function createAccount(){
   closeWelcomeBanner();
   msg.textContent='';
   renderAccountView();
+  checkIfBlocked();
 }
 async function restoreAccount(){
   const email=document.getElementById('acctRestoreEmail').value.trim();
@@ -1990,9 +1999,11 @@ async function restoreAccount(){
   closeWelcomeBanner();
   msg.textContent='';
   renderAccountView();
+  checkIfBlocked();
 }
 function forgetAccount(){
   customerProfile=null;
+  isBlockedCustomer=false;
   localStorage.removeItem('leka_customer');
   renderAccountView();
 }
@@ -2041,6 +2052,7 @@ async function welcomeSignIn(){
   }
   saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,address:data.address||null});
   closeWelcomeModal();
+  checkIfBlocked();
 }
 function openCreateAccountFromWelcome(){
   closeWelcomeModal();
@@ -2054,6 +2066,25 @@ function maybeShowWelcomeModal(){
   } else {
     openWelcomeModal();
   }
+}
+
+// ── فحص الحظر — لو العميلة متحظرة من الداشبورد، بنوريها رسالة ومنسمحلهاش تكمل طلب ──
+let isBlockedCustomer=false;
+async function checkIfBlocked(){
+  if(!customerProfile||!customerProfile.email) return;
+  const {data}=await sb.from('customers').select('blocked').eq('email',customerProfile.email).maybeSingle();
+  isBlockedCustomer=!!(data&&data.blocked);
+  if(isBlockedCustomer) openBlockedModal();
+}
+function openBlockedModal(){
+  document.getElementById('blockedOverlay').classList.add('open');
+  document.getElementById('blockedModal').classList.add('open');
+  lockBodyScroll();
+}
+function closeBlockedModal(){
+  document.getElementById('blockedOverlay').classList.remove('open');
+  document.getElementById('blockedModal').classList.remove('open');
+  unlockBodyScroll();
 }
 
 // ── جلب المخزون من Supabase ──
@@ -2919,6 +2950,7 @@ function renderCheckout(){
 }
 
 document.getElementById('placeOrderBtn').onclick=async function(){
+  if(isBlockedCustomer){ openBlockedModal(); return; }
   const first=document.getElementById('coFirst').value.trim();
   const last=document.getElementById('coLast').value.trim();
   const phone=document.getElementById('coPhone').value.trim();
@@ -2979,6 +3011,14 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   }
   if(!valid) return;
   if(!cart.length){showToast({nameAr:lang==='ar'?'لا يوجد منتجات في عربة التسوق':'Cart is empty',nameEn:'Cart is empty'});return}
+
+  // فحص إضافي: حتى لو من غير حساب، لو رقم الموبايل أو الإيميل اللي دخلته دلوقتي متسجل عليه حظر منسمحلهاش تكمل —
+  // من غير ما نقول ليها إننا عرفنا من البيانات دي بالذات
+  const {data:blockCheck}=await sb.from('customers').select('id').eq('blocked',true).or(`phone.eq.${phone},email.eq.${email}`).limit(1);
+  if(blockCheck&&blockCheck.length){
+    openBlockedModal();
+    return;
+  }
 
   const total=cart.reduce((a,i)=>a+i.price*i.qty,0)+(getShippingCost()||0);
   const itemsData=cart.map(i=>({name:i.nameAr+' / '+i.nameEn,size:i.size,color:i.colorAr+' / '+i.colorEn,qty:i.qty,price:i.price}));
@@ -3538,6 +3578,7 @@ loadProducts().then(async ()=>{
   loadBestSeller();
   restoreLastView();
   maybeShowWelcomeModal();
+  checkIfBlocked();
 });
 loadShippingCosts();
 </script>
