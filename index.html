@@ -1888,7 +1888,7 @@ function doSearch(){
     empty.textContent=lang==='ar'?'لا يوجد نتائج':'No results found';
   } else {
     empty.style.display='none';
-    results.innerHTML=matches.map(p=>makeCard(p,0)).join('');
+    results.innerHTML=matches.flatMap(p=>p.colors.map((c,i)=>makeCard(p,i))).join('');
   }
 }
 function setActiveNav(b){document.querySelectorAll('.nav-page-btn').forEach(x=>x.classList.remove('active-nav'));if(b)b.classList.add('active-nav')}
