@@ -1619,7 +1619,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div id="acctAddressFormSection" style="display:none;margin-top:1.25rem">
       <div class="t" id="acctAddrFormTitle" data-ar="عنوان جديد" data-en="New Address" style="font-size:.8rem;font-weight:700;margin-bottom:1rem"></div>
       <div class="field">
-        <label class="t" data-ar="المحافظة" data-en="Governorate"></label>
+        <label class="t" data-ar="المحافظة *" data-en="Governorate *"></label>
         <select id="acctGov" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none">
           <option value="">—</option>
           <option value="القاهرة / Cairo">القاهرة / Cairo</option>
@@ -1650,22 +1650,24 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <option value="مطروح / Matrouh">مطروح / Matrouh</option>
           <option value="الوادي الجديد / New Valley">الوادي الجديد / New Valley</option>
         </select>
+        <span class="field-error t" id="acctErrGov" data-ar="المحافظة مطلوبة" data-en="Governorate is required"></span>
       </div>
-      <div class="field"><label class="t" data-ar="المنطقة / الحي" data-en="District / Area"></label><input type="text" id="acctDistrict"/></div>
-      <div class="field"><label class="t" data-ar="اسم الشارع" data-en="Street Name"></label><input type="text" id="acctStreet"/></div>
+      <div class="field"><label class="t" data-ar="المنطقة / الحي *" data-en="District / Area *"></label><input type="text" id="acctDistrict"/><span class="field-error t" id="acctErrDistrict" data-ar="المنطقة مطلوبة" data-en="District is required"></span></div>
+      <div class="field"><label class="t" data-ar="اسم الشارع *" data-en="Street Name *"></label><input type="text" id="acctStreet"/><span class="field-error t" id="acctErrStreet" data-ar="اسم الشارع مطلوب" data-en="Street name is required"></span></div>
       <div class="field">
-        <label class="t" data-ar="نوع المبنى" data-en="Building Type"></label>
+        <label class="t" data-ar="نوع المبنى *" data-en="Building Type *"></label>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
           <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Building')" data-ar="عمارة" data-en="Building"></button>
           <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Company')" data-ar="شركة" data-en="Company"></button>
         </div>
+        <span class="field-error t" id="acctErrBuildingType" data-ar="من فضلك اختاري نوع المبنى" data-en="Please select a building type"></span>
       </div>
       <div class="field-row">
-        <div class="field"><label id="acctLblBuildNum" class="t" data-ar="رقم المبنى" data-en="Building No."></label><input type="text" id="acctBuildNum"/></div>
-        <div class="field" id="acctFloorField"><label class="t" data-ar="رقم الدور" data-en="Floor No."></label><input type="text" id="acctFloor"/></div>
+        <div class="field"><label id="acctLblBuildNum" class="t" data-ar="رقم المبنى *" data-en="Building No. *"></label><input type="text" id="acctBuildNum"/><span class="field-error t" id="acctErrBuildNum" data-ar="رقم المبنى مطلوب" data-en="Building number is required"></span></div>
+        <div class="field" id="acctFloorField"><label class="t" data-ar="رقم الدور *" data-en="Floor No. *"></label><input type="text" id="acctFloor"/><span class="field-error t" id="acctErrFloor" data-ar="رقم الدور مطلوب" data-en="Floor number is required"></span></div>
       </div>
       <div class="field-row" id="acctAptRow">
-        <div class="field"><label class="t" data-ar="رقم الشقة" data-en="Apartment No."></label><input type="text" id="acctApt"/></div>
+        <div class="field"><label class="t" data-ar="رقم الشقة *" data-en="Apartment No. *"></label><input type="text" id="acctApt"/><span class="field-error t" id="acctErrApt" data-ar="رقم الشقة مطلوب" data-en="Apartment number is required"></span></div>
         <div class="field"><label class="t" data-ar="علامة مميزة" data-en="Landmark"></label><input type="text" id="acctLandmark"/></div>
       </div>
       <div class="field-row full" id="acctCompanyRow" style="display:none">
@@ -2089,14 +2091,49 @@ function closeAcctAddressForm(){
   if(icon) icon.textContent='+';
   clearAcctAddressForm();
 }
+// بتتأكد إن كل الحقول المطلوبة في العنوان متملية — نفس بالظبط المطلوب في الشيك أوت
+function validateAcctAddressForm(){
+  document.querySelectorAll('#acctAddressFormSection .field input,#acctAddressFormSection .field select').forEach(el=>el.classList.remove('error'));
+  document.querySelectorAll('#acctAddressFormSection .field-error').forEach(el=>el.classList.remove('show'));
+  let valid=true;
+  const requiredFields=[
+    {id:'acctDistrict',err:'acctErrDistrict'},
+    {id:'acctStreet',err:'acctErrStreet'},
+    {id:'acctBuildNum',err:'acctErrBuildNum'},
+  ];
+  const activeBType=document.querySelector('#acctAddressFormSection .btype-btn.active');
+  if(!activeBType||activeBType.dataset.en!=='Company'){
+    requiredFields.push({id:'acctFloor',err:'acctErrFloor'});
+    requiredFields.push({id:'acctApt',err:'acctErrApt'});
+  }
+  requiredFields.forEach(f=>{
+    const el=document.getElementById(f.id);
+    const err=document.getElementById(f.err);
+    if(!el.value.trim()){
+      el.classList.add('error');
+      if(err) err.classList.add('show');
+      valid=false;
+    }
+  });
+  if(!document.getElementById('acctGov').value){
+    document.getElementById('acctGov').classList.add('error');
+    document.getElementById('acctErrGov').classList.add('show');
+    valid=false;
+  }
+  if(!activeBType){
+    document.getElementById('acctErrBuildingType').classList.add('show');
+    valid=false;
+  }
+  return valid;
+}
 async function saveAcctAddressForm(){
-  const addr=buildAcctAddressFromForm();
   const msg=document.getElementById('acctAddrFormMsg');
-  if(!addr){
+  if(!validateAcctAddressForm()){
     msg.style.color='#c00';
-    msg.textContent=lang==='ar'?'ادخلي تفاصيل العنوان الأول':'Please enter the address details first';
+    msg.textContent=lang==='ar'?'استكملي البيانات المطلوبة':'Please complete the required fields';
     return;
   }
+  const addr=buildAcctAddressFromForm();
   msg.style.color='var(--mid)';
   msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
   const addresses=(customerProfile.addresses||[]).slice();
@@ -2173,10 +2210,19 @@ async function createAccount(){
   if(!phone){document.getElementById('acctPhone').classList.add('error');document.getElementById('acctErrPhone').classList.add('show');valid=false}
   if(!email||!email.includes('@')){document.getElementById('acctEmail').classList.add('error');document.getElementById('acctErrEmail').classList.add('show');valid=false}
   if(!valid) return;
+  // العنوان اختياري بالكامل، بس لو العميلة بدأت تكتب فيه لازم تكمّله بنفس شروط الشيك أوت
+  const addressAttempted=!!buildAcctAddressFromForm();
+  if(addressAttempted&&!validateAcctAddressForm()){
+    const addrMsg=document.getElementById('acctAddrFormMsg');
+    addrMsg.style.color='#c00';
+    addrMsg.textContent=lang==='ar'?'استكملي بيانات العنوان':'Please complete the address details';
+    document.getElementById('acctAddressFormSection').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   const msg=document.getElementById('acctCreateMsg');
   msg.style.color='var(--mid)';
   msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
-  const address=buildAcctAddressFromForm();
+  const address=addressAttempted?buildAcctAddressFromForm():null;
   const profile={name,phone,email,addresses:address?[address]:[]};
   const {error}=await upsertCustomer(profile);
   if(error){
