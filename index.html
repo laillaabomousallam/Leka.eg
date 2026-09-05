@@ -1619,7 +1619,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
     <div id="acctAddressFormSection" style="display:none;margin-top:1.25rem">
       <div class="t" id="acctAddrFormTitle" data-ar="عنوان جديد" data-en="New Address" style="font-size:.8rem;font-weight:700;margin-bottom:1rem"></div>
-      <div class="field"><label class="t" data-ar="اسم العنوان (مثلاً البيت، الشغل)" data-en="Address Label (e.g. Home, Work)"></label><input type="text" id="acctAddrLabel" placeholder="Home"/></div>
       <div class="field">
         <label class="t" data-ar="المحافظة" data-en="Governorate"></label>
         <select id="acctGov" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none">
@@ -2028,12 +2027,10 @@ function buildAcctAddressFromForm(){
   const apt=document.getElementById('acctApt').value.trim();
   const landmark=document.getElementById('acctLandmark').value.trim();
   const recipient=document.getElementById('acctRecipient').value.trim();
-  const label=document.getElementById('acctAddrLabel').value.trim();
   if(!gov&&!district&&!street&&!buildNum) return null;
-  return {label,gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
+  return {gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
 }
 function fillAcctAddressForm(addr){
-  document.getElementById('acctAddrLabel').value=addr.label||'';
   document.getElementById('acctGov').value=addr.gov||'';
   document.getElementById('acctDistrict').value=addr.district||'';
   document.getElementById('acctStreet').value=addr.street||'';
@@ -2051,7 +2048,7 @@ function fillAcctAddressForm(addr){
   document.getElementById('acctFloorField').style.display=isCompany?'none':'';
 }
 function clearAcctAddressForm(){
-  ['acctAddrLabel','acctGov','acctDistrict','acctStreet','acctBuildNum','acctFloor','acctApt','acctLandmark','acctRecipient'].forEach(id=>{document.getElementById(id).value=''});
+  ['acctGov','acctDistrict','acctStreet','acctBuildNum','acctFloor','acctApt','acctLandmark','acctRecipient'].forEach(id=>{document.getElementById(id).value=''});
   document.querySelectorAll('#acctAddressFormSection .btype-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('acctAptRow').style.display='';
   document.getElementById('acctCompanyRow').style.display='none';
