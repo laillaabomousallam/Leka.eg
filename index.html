@@ -767,6 +767,26 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   .home-footer-social-label{font-size:.74rem}
   .sb-head-label{font-size:.62rem}
 }
+
+/* ─── ACCOUNT PAGE ─── */
+.acct-heading{font-family:var(--display);font-size:1.8rem;font-weight:400;margin-bottom:.4rem}
+.acct-subtitle{font-size:.82rem;color:var(--mid);margin-bottom:1.5rem;line-height:1.6}
+.acct-tabs{display:flex;background:var(--dust);border-radius:24px;padding:4px;margin-bottom:1.75rem}
+.acct-tab-btn{flex:1;background:none;border:none;border-radius:20px;padding:10px 12px;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);cursor:pointer;transition:all .2s;font-family:inherit}
+.acct-tab-btn.active{background:var(--ink);color:#fff}
+.acct-card{background:var(--dust);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem}
+.acct-avatar{width:52px;height:52px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:1.3rem;margin-bottom:1rem}
+.acct-name{font-size:1rem;font-weight:600;margin-bottom:.25rem}
+.acct-email-sub{font-size:.75rem;color:var(--mid);margin-bottom:1.2rem}
+.acct-row{display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-top:1px solid var(--line);gap:1rem}
+.acct-row:first-of-type{border-top:none;padding-top:0}
+.acct-row-stack{flex-direction:column;align-items:flex-start;gap:.3rem}
+.acct-row-label{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
+.acct-row-value{font-size:.85rem;text-align:end;line-height:1.6}
+.acct-row-stack .acct-row-value{text-align:start}
+.acct-signout-btn{background:none;border:1px solid var(--line);border-radius:20px;padding:10px 18px;font-size:.72rem;font-weight:600;color:var(--ink);cursor:pointer;width:100%;font-family:inherit}
+.acct-signout-btn:hover{background:var(--dust)}
+
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
   .products-grid{grid-template-columns:repeat(3,1fr)}
@@ -1543,10 +1563,27 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <div class="view" id="view-account">
   <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
   <div style="max-width:480px;margin:0 auto;padding:3rem 1.5rem 2rem;width:100%;box-sizing:border-box">
-    <div style="font-family:var(--display);font-size:1.8rem;font-weight:400;margin-bottom:.4rem" class="t" data-ar="حسابي" data-en="My Account"></div>
+    <div class="acct-heading t" data-ar="حسابي" data-en="My Account"></div>
 
     <div id="acctNoProfile">
-      <p style="font-size:.82rem;color:var(--mid);margin-bottom:1.5rem;line-height:1.6" class="t" data-ar="اعملي حساب عشان بياناتك تتحفظ ومتدخليهاش تاني كل مرة تطلبي فيها" data-en="Create an account so your details are saved and you don't have to re-enter them every time you order"></p>
+      <div class="acct-tabs">
+        <button type="button" class="acct-tab-btn active" id="acctTabBtnCreate" onclick="switchAcctTab('create')">
+          <span class="t" data-ar="حساب جديد" data-en="New Account"></span>
+        </button>
+        <button type="button" class="acct-tab-btn" id="acctTabBtnRestore" onclick="switchAcctTab('restore')">
+          <span class="t" data-ar="عندي حساب" data-en="I Have an Account"></span>
+        </button>
+      </div>
+
+      <div id="acctPaneRestore" style="display:none">
+        <p class="acct-subtitle t" data-ar="ادخلي إيميلك عشان نرجّعلك بياناتك المحفوظة" data-en="Enter your email to restore your saved details"></p>
+        <div class="field"><label class="t" data-ar="الإيميل" data-en="Email"></label><input type="text" id="acctRestoreEmail" placeholder="example@email.com"/></div>
+        <button onclick="restoreAccount()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;width:100%" class="t" data-ar="استرجاع بياناتي" data-en="Restore My Details"></button>
+        <p id="acctRestoreMsg" style="font-size:.75rem;margin-top:.6rem;text-align:center"></p>
+      </div>
+
+      <div id="acctPaneCreate">
+      <p class="acct-subtitle t" data-ar="اعملي حساب عشان بياناتك تتحفظ ومتدخليهاش تاني كل مرة تطلبي فيها" data-en="Create an account so your details are saved and you don't have to re-enter them every time you order"></p>
       <div class="field"><label class="t" data-ar="الاسم *" data-en="Name *"></label><input type="text" id="acctName"/><span class="field-error t" id="acctErrName" data-ar="الاسم مطلوب" data-en="Name is required"></span></div>
       <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="acctPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="acctErrPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
       <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="acctEmail" placeholder="example@email.com"/><span class="field-error t" id="acctErrEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
@@ -1613,33 +1650,23 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
       <button onclick="createAccount()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;width:100%;margin-top:.5rem" class="t" data-ar="إنشاء حساب" data-en="Create Account"></button>
       <p id="acctCreateMsg" style="font-size:.75rem;margin-top:.6rem;text-align:center"></p>
-
-      <div style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line)">
-        <p style="font-size:.78rem;color:var(--mid);margin-bottom:.6rem" class="t" data-ar="عندك حساب بالفعل؟ ادخلي إيميلك عشان نرجّعلك بياناتك" data-en="Already have an account? Enter your email to restore your details"></p>
-        <div style="display:flex;gap:.5rem">
-          <input type="text" id="acctRestoreEmail" style="flex:1;min-width:0;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none" placeholder="example@email.com"/>
-          <button onclick="restoreAccount()" style="background:#f2f2f2;color:#0a0a0a;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;white-space:nowrap;flex-shrink:0" class="t" data-ar="استرجاع" data-en="Restore"></button>
-        </div>
-        <p id="acctRestoreMsg" style="font-size:.75rem;margin-top:.6rem"></p>
       </div>
     </div>
 
     <div id="acctHasProfile" style="display:none">
-      <p style="font-size:.85rem;font-weight:600;margin-bottom:1.2rem" id="acctWelcome"></p>
-      <div style="background:#f7f7f7;border-radius:12px;padding:1.2rem;margin-bottom:1rem">
-        <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="الاسم" data-en="Name"></div>
-        <div id="acctViewName" style="font-size:.85rem;margin-bottom:.8rem"></div>
-        <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="رقم الموبايل" data-en="Phone"></div>
-        <div id="acctViewPhone" style="font-size:.85rem;margin-bottom:.8rem"></div>
-        <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="الإيميل" data-en="Email"></div>
-        <div id="acctViewEmail" style="font-size:.85rem;margin-bottom:.8rem"></div>
-        <div id="acctAddressBlock" style="display:none">
-          <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem" class="t" data-ar="العنوان المحفوظ" data-en="Saved Address"></div>
-          <div id="acctViewAddress" style="font-size:.85rem;line-height:1.6"></div>
+      <div class="acct-card">
+        <div class="acct-avatar" id="acctAvatar"></div>
+        <div class="acct-name" id="acctWelcome"></div>
+        <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم" data-en="Name"></span><span class="acct-row-value" id="acctViewName"></span></div>
+        <div class="acct-row"><span class="acct-row-label t" data-ar="رقم الموبايل" data-en="Phone"></span><span class="acct-row-value" id="acctViewPhone"></span></div>
+        <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><span class="acct-row-value" id="acctViewEmail"></span></div>
+        <div class="acct-row acct-row-stack" id="acctAddressBlock" style="display:none">
+          <span class="acct-row-label t" data-ar="العنوان المحفوظ" data-en="Saved Address"></span>
+          <span class="acct-row-value" id="acctViewAddress"></span>
         </div>
-        <p id="acctNoAddress" style="font-size:.78rem;color:var(--mid);margin-top:.4rem" class="t" data-ar="لسه معملتيش أول أوردر — العنوان هيتحفظ تلقائي أول ما تطلبي" data-en="No order yet — your address will be saved automatically after your first order"></p>
       </div>
-      <button onclick="forgetAccount()" style="background:none;border:none;color:var(--mid);font-size:.75rem;text-decoration:underline;cursor:pointer;padding:0" class="t" data-ar="مش أنا / نسّي البيانات دي" data-en="Not me / Forget this account"></button>
+      <p id="acctNoAddress" style="font-size:.78rem;color:var(--mid);margin:-.5rem 0 1.25rem" class="t" data-ar="لسه معملتيش أول أوردر — العنوان هيتحفظ تلقائي أول ما تطلبي" data-en="No order yet — your address will be saved automatically after your first order"></p>
+      <button onclick="forgetAccount()" class="acct-signout-btn t" data-ar="مش أنا / نسّي البيانات دي" data-en="Not me / Forget this account"></button>
     </div>
   </div>
 </div>
@@ -1914,6 +1941,7 @@ function renderAccountView(){
   if(customerProfile){
     noProfile.style.display='none';
     hasProfile.style.display='block';
+    document.getElementById('acctAvatar').textContent=(customerProfile.name||'?').trim().charAt(0).toUpperCase();
     document.getElementById('acctWelcome').textContent=(lang==='ar'?'أهلاً، ':'Welcome, ')+customerProfile.name;
     document.getElementById('acctViewName').textContent=customerProfile.name;
     document.getElementById('acctViewPhone').textContent=customerProfile.phone;
@@ -1921,7 +1949,7 @@ function renderAccountView(){
     const addrBlock=document.getElementById('acctAddressBlock');
     const noAddr=document.getElementById('acctNoAddress');
     if(customerProfile.address){
-      addrBlock.style.display='block';
+      addrBlock.style.display='flex';
       noAddr.style.display='none';
       document.getElementById('acctViewAddress').innerHTML=formatAddressLines(customerProfile.address);
     } else {
@@ -1933,7 +1961,14 @@ function renderAccountView(){
     hasProfile.style.display='none';
     document.getElementById('acctCreateMsg').textContent='';
     document.getElementById('acctRestoreMsg').textContent='';
+    switchAcctTab('create');
   }
+}
+function switchAcctTab(tab){
+  document.getElementById('acctPaneCreate').style.display=tab==='create'?'block':'none';
+  document.getElementById('acctPaneRestore').style.display=tab==='restore'?'block':'none';
+  document.getElementById('acctTabBtnCreate').classList.toggle('active',tab==='create');
+  document.getElementById('acctTabBtnRestore').classList.toggle('active',tab==='restore');
 }
 function toggleAcctAddress(){
   const fields=document.getElementById('acctAddressFields');
