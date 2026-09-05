@@ -1569,7 +1569,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div id="acctNoProfile">
       <div id="acctPaneCreate">
       <p class="acct-subtitle t" data-ar="اعملي حساب عشان بياناتك تتحفظ ومتدخليهاش تاني كل مرة تطلبي فيها" data-en="Create an account so your details are saved and you don't have to re-enter them every time you order"></p>
-      <div class="field"><label class="t" data-ar="الاسم *" data-en="Name *"></label><input type="text" id="acctName"/><span class="field-error t" id="acctErrName" data-ar="الاسم مطلوب" data-en="Name is required"></span></div>
+      <div class="field-row">
+        <div class="field"><label class="t" data-ar="الاسم الأول *" data-en="First Name *"></label><input type="text" id="acctFirst"/><span class="field-error t" id="acctErrFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
+        <div class="field"><label class="t" data-ar="الاسم الأخير *" data-en="Last Name *"></label><input type="text" id="acctLast"/><span class="field-error t" id="acctErrLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
+      </div>
       <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="acctPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="acctErrPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
       <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="acctEmail" placeholder="example@email.com"/><span class="field-error t" id="acctErrEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
 
@@ -1599,7 +1602,8 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><span class="acct-row-value" id="acctViewEmail"></span></div>
         </div>
         <div id="acctProfileEdit" style="display:none">
-          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم" data-en="Name"></span><input type="text" id="acctEditName"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم الأول" data-en="First Name"></span><input type="text" id="acctEditFirst"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم الأخير" data-en="Last Name"></span><input type="text" id="acctEditLast"/></div>
           <div class="acct-row"><span class="acct-row-label t" data-ar="رقم الموبايل" data-en="Phone"></span><input type="text" id="acctEditPhone"/></div>
           <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><input type="text" id="acctEditEmail"/></div>
           <div style="display:flex;gap:.6rem;margin-top:.9rem">
@@ -1620,36 +1624,42 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div class="t" id="acctAddrFormTitle" data-ar="عنوان جديد" data-en="New Address" style="font-size:.8rem;font-weight:700;margin-bottom:1rem"></div>
       <div class="field">
         <label class="t" data-ar="المحافظة *" data-en="Governorate *"></label>
-        <select id="acctGov" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none">
-          <option value="">—</option>
-          <option value="القاهرة / Cairo">القاهرة / Cairo</option>
-          <option value="الجيزة / Giza">الجيزة / Giza</option>
-          <option value="الإسكندرية / Alexandria">الإسكندرية / Alexandria</option>
-          <option value="المنصورة / Mansoura">المنصورة / Mansoura</option>
-          <option value="طنطا / Tanta">طنطا / Tanta</option>
-          <option value="أسيوط / Asyut">أسيوط / Asyut</option>
-          <option value="أسوان / Aswan">أسوان / Aswan</option>
-          <option value="الأقصر / Luxor">الأقصر / Luxor</option>
-          <option value="الإسماعيلية / Ismailia">الإسماعيلية / Ismailia</option>
-          <option value="بورسعيد / Port Said">بورسعيد / Port Said</option>
-          <option value="السويس / Suez">السويس / Suez</option>
-          <option value="الشرقية / Sharkia">الشرقية / Sharkia</option>
-          <option value="الدقهلية / Dakahlia">الدقهلية / Dakahlia</option>
-          <option value="البحيرة / Beheira">البحيرة / Beheira</option>
-          <option value="كفر الشيخ / Kafr El Sheikh">كفر الشيخ / Kafr El Sheikh</option>
-          <option value="الغربية / Gharbia">الغربية / Gharbia</option>
-          <option value="المنوفية / Monufia">المنوفية / Monufia</option>
-          <option value="الفيوم / Fayoum">الفيوم / Fayoum</option>
-          <option value="بني سويف / Beni Suef">بني سويف / Beni Suef</option>
-          <option value="المنيا / Minya">المنيا / Minya</option>
-          <option value="قنا / Qena">قنا / Qena</option>
-          <option value="سوهاج / Sohag">سوهاج / Sohag</option>
-          <option value="شمال سيناء / North Sinai">شمال سيناء / North Sinai</option>
-          <option value="جنوب سيناء / South Sinai">جنوب سيناء / South Sinai</option>
-          <option value="البحر الأحمر / Red Sea">البحر الأحمر / Red Sea</option>
-          <option value="مطروح / Matrouh">مطروح / Matrouh</option>
-          <option value="الوادي الجديد / New Valley">الوادي الجديد / New Valley</option>
-        </select>
+        <div class="cd-wrap" id="acctGovDrop">
+          <button type="button" class="cd-trigger placeholder" id="acctGovTrigger">
+            <span id="acctGovLabel" class="t" data-ar="اختر المحافظة" data-en="Select Governorate"></span>
+            <span class="cd-arrow">▼</span>
+          </button>
+          <div class="cd-panel" id="acctGovPanel">
+            <div class="cd-opt" data-val="القاهرة / Cairo">القاهرة / Cairo</div>
+            <div class="cd-opt" data-val="الجيزة / Giza">الجيزة / Giza</div>
+            <div class="cd-opt" data-val="الإسكندرية / Alexandria">الإسكندرية / Alexandria</div>
+            <div class="cd-opt" data-val="المنصورة / Mansoura">المنصورة / Mansoura</div>
+            <div class="cd-opt" data-val="طنطا / Tanta">طنطا / Tanta</div>
+            <div class="cd-opt" data-val="أسيوط / Asyut">أسيوط / Asyut</div>
+            <div class="cd-opt" data-val="أسوان / Aswan">أسوان / Aswan</div>
+            <div class="cd-opt" data-val="الأقصر / Luxor">الأقصر / Luxor</div>
+            <div class="cd-opt" data-val="الإسماعيلية / Ismailia">الإسماعيلية / Ismailia</div>
+            <div class="cd-opt" data-val="بورسعيد / Port Said">بورسعيد / Port Said</div>
+            <div class="cd-opt" data-val="السويس / Suez">السويس / Suez</div>
+            <div class="cd-opt" data-val="الشرقية / Sharkia">الشرقية / Sharkia</div>
+            <div class="cd-opt" data-val="الدقهلية / Dakahlia">الدقهلية / Dakahlia</div>
+            <div class="cd-opt" data-val="البحيرة / Beheira">البحيرة / Beheira</div>
+            <div class="cd-opt" data-val="كفر الشيخ / Kafr El Sheikh">كفر الشيخ / Kafr El Sheikh</div>
+            <div class="cd-opt" data-val="الغربية / Gharbia">الغربية / Gharbia</div>
+            <div class="cd-opt" data-val="المنوفية / Monufia">المنوفية / Monufia</div>
+            <div class="cd-opt" data-val="الفيوم / Fayoum">الفيوم / Fayoum</div>
+            <div class="cd-opt" data-val="بني سويف / Beni Suef">بني سويف / Beni Suef</div>
+            <div class="cd-opt" data-val="المنيا / Minya">المنيا / Minya</div>
+            <div class="cd-opt" data-val="قنا / Qena">قنا / Qena</div>
+            <div class="cd-opt" data-val="سوهاج / Sohag">سوهاج / Sohag</div>
+            <div class="cd-opt" data-val="شمال سيناء / North Sinai">شمال سيناء / North Sinai</div>
+            <div class="cd-opt" data-val="جنوب سيناء / South Sinai">جنوب سيناء / South Sinai</div>
+            <div class="cd-opt" data-val="البحر الأحمر / Red Sea">البحر الأحمر / Red Sea</div>
+            <div class="cd-opt" data-val="مطروح / Matrouh">مطروح / Matrouh</div>
+            <div class="cd-opt" data-val="الوادي الجديد / New Valley">الوادي الجديد / New Valley</div>
+          </div>
+        </div>
+        <input type="hidden" id="acctGov"/>
         <span class="field-error t" id="acctErrGov" data-ar="المحافظة مطلوبة" data-en="Governorate is required"></span>
       </div>
       <div class="field"><label class="t" data-ar="المنطقة / الحي *" data-en="District / Area *"></label><input type="text" id="acctDistrict"/><span class="field-error t" id="acctErrDistrict" data-ar="المنطقة مطلوبة" data-en="District is required"></span></div>
@@ -2012,6 +2022,7 @@ function toggleAcctAddress(){
 function setAcctBuildingType(btn,type){
   document.querySelectorAll('#acctAddressFormSection .btype-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('acctErrBuildingType').classList.remove('show');
   const isCompany=(type==='Company');
   document.getElementById('acctAptRow').style.display=isCompany?'none':'';
   document.getElementById('acctCompanyRow').style.display=isCompany?'block':'none';
@@ -2032,7 +2043,12 @@ function buildAcctAddressFromForm(){
   return {gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
 }
 function fillAcctAddressForm(addr){
-  document.getElementById('acctGov').value=addr.gov||'';
+  if(addr.gov){
+    const opt=document.querySelector('#acctGovPanel .cd-opt[data-val="'+CSS.escape(addr.gov)+'"]');
+    if(opt) opt.click();
+  } else {
+    clearAcctGovDropdown();
+  }
   document.getElementById('acctDistrict').value=addr.district||'';
   document.getElementById('acctStreet').value=addr.street||'';
   document.getElementById('acctBuildNum').value=addr.buildNum||'';
@@ -2048,8 +2064,15 @@ function fillAcctAddressForm(addr){
   document.getElementById('acctCompanyRow').style.display=isCompany?'block':'none';
   document.getElementById('acctFloorField').style.display=isCompany?'none':'';
 }
+function clearAcctGovDropdown(){
+  document.getElementById('acctGov').value='';
+  document.getElementById('acctGovLabel').textContent=lang==='ar'?'اختر المحافظة':'Select Governorate';
+  document.getElementById('acctGovTrigger').classList.add('placeholder');
+  document.querySelectorAll('#acctGovPanel .cd-opt').forEach(o=>o.classList.remove('selected'));
+}
 function clearAcctAddressForm(){
-  ['acctGov','acctDistrict','acctStreet','acctBuildNum','acctFloor','acctApt','acctLandmark','acctRecipient'].forEach(id=>{document.getElementById(id).value=''});
+  ['acctDistrict','acctStreet','acctBuildNum','acctFloor','acctApt','acctLandmark','acctRecipient'].forEach(id=>{document.getElementById(id).value=''});
+  clearAcctGovDropdown();
   document.querySelectorAll('#acctAddressFormSection .btype-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('acctAptRow').style.display='';
   document.getElementById('acctCompanyRow').style.display='none';
@@ -2094,6 +2117,7 @@ function closeAcctAddressForm(){
 // بتتأكد إن كل الحقول المطلوبة في العنوان متملية — نفس بالظبط المطلوب في الشيك أوت
 function validateAcctAddressForm(){
   document.querySelectorAll('#acctAddressFormSection .field input,#acctAddressFormSection .field select').forEach(el=>el.classList.remove('error'));
+  document.getElementById('acctGovTrigger').classList.remove('error');
   document.querySelectorAll('#acctAddressFormSection .field-error').forEach(el=>el.classList.remove('show'));
   let valid=true;
   const requiredFields=[
@@ -2116,7 +2140,7 @@ function validateAcctAddressForm(){
     }
   });
   if(!document.getElementById('acctGov').value){
-    document.getElementById('acctGov').classList.add('error');
+    document.getElementById('acctGovTrigger').classList.add('error');
     document.getElementById('acctErrGov').classList.add('show');
     valid=false;
   }
@@ -2163,7 +2187,9 @@ async function deleteAcctAddress(index){
   renderAcctAddressList();
 }
 function openAcctProfileEdit(){
-  document.getElementById('acctEditName').value=customerProfile.name||'';
+  const nameParts=(customerProfile.name||'').trim().split(/\s+/);
+  document.getElementById('acctEditFirst').value=nameParts[0]||'';
+  document.getElementById('acctEditLast').value=nameParts.slice(1).join(' ')||'';
   document.getElementById('acctEditPhone').value=customerProfile.phone||'';
   document.getElementById('acctEditEmail').value=customerProfile.email||'';
   document.getElementById('acctProfileEditMsg').textContent='';
@@ -2177,15 +2203,17 @@ function closeAcctProfileEdit(){
   document.getElementById('acctEditProfileBtn').style.display='block';
 }
 async function saveAcctProfileEdit(){
-  const name=document.getElementById('acctEditName').value.trim();
+  const first=document.getElementById('acctEditFirst').value.trim();
+  const last=document.getElementById('acctEditLast').value.trim();
   const phone=document.getElementById('acctEditPhone').value.trim();
   const email=document.getElementById('acctEditEmail').value.trim();
   const msg=document.getElementById('acctProfileEditMsg');
-  if(!name||!phone||!email||!email.includes('@')){
+  if(!first||!last||!phone||!email||!email.includes('@')){
     msg.style.color='#c00';
     msg.textContent=lang==='ar'?'كل البيانات مطلوبة':'All fields are required';
     return;
   }
+  const name=(first+' '+last).trim();
   msg.style.color='var(--mid)';
   msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
   const updatedProfile={...customerProfile,name,phone,email};
@@ -2200,16 +2228,19 @@ async function saveAcctProfileEdit(){
   renderAccountView();
 }
 async function createAccount(){
-  const name=document.getElementById('acctName').value.trim();
+  const first=document.getElementById('acctFirst').value.trim();
+  const last=document.getElementById('acctLast').value.trim();
   const phone=document.getElementById('acctPhone').value.trim();
   const email=document.getElementById('acctEmail').value.trim();
   let valid=true;
   document.querySelectorAll('#acctNoProfile .field input').forEach(el=>el.classList.remove('error'));
   document.querySelectorAll('#acctNoProfile .field-error').forEach(el=>el.classList.remove('show'));
-  if(!name){document.getElementById('acctName').classList.add('error');document.getElementById('acctErrName').classList.add('show');valid=false}
+  if(!first){document.getElementById('acctFirst').classList.add('error');document.getElementById('acctErrFirst').classList.add('show');valid=false}
+  if(!last){document.getElementById('acctLast').classList.add('error');document.getElementById('acctErrLast').classList.add('show');valid=false}
   if(!phone){document.getElementById('acctPhone').classList.add('error');document.getElementById('acctErrPhone').classList.add('show');valid=false}
   if(!email||!email.includes('@')){document.getElementById('acctEmail').classList.add('error');document.getElementById('acctErrEmail').classList.add('show');valid=false}
   if(!valid) return;
+  const name=(first+' '+last).trim();
   // العنوان اختياري بالكامل، بس لو العميلة بدأت تكتب فيه لازم تكمّله بنفس شروط الشيك أوت
   const addressAttempted=!!buildAcctAddressFromForm();
   if(addressAttempted&&!validateAcctAddressForm()){
@@ -2446,7 +2477,7 @@ function isColorAvailable(p,colorKey){
 function applyLang(){
   document.documentElement.lang=lang;
   document.documentElement.dir=lang==='ar'?'rtl':'ltr';
-  document.querySelectorAll('.t[data-ar]:not(#govLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
+  document.querySelectorAll('.t[data-ar]:not(#govLabel):not(#acctGovLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   document.querySelectorAll('.btype-btn').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
   document.getElementById('langBtn').textContent=lang==='ar'?'ENG':'عربي';
   ['logoImgAr','shopLogoAr1','shopLogoAr2','shopLogoAr4','shopLogoAr5','shopLogoAr6','shopLogoAr7'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=lang==='ar'?'block':'none'});
@@ -3451,7 +3482,7 @@ function setBuildingType(btn,ar,en){
     if(lblFloor) lblFloor.setAttribute('data-en','Floor No. *');
   }
   // تحديث النصوص
-  document.querySelectorAll('.t[data-ar]:not(#govLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
+  document.querySelectorAll('.t[data-ar]:not(#govLabel):not(#acctGovLabel)').forEach(el=>el.textContent=lang==='ar'?el.dataset.ar:el.dataset.en);
 }
 
 // ── TRACK ORDER ──
@@ -3824,12 +3855,52 @@ if(window.location.hash==='#admin'){
   });
 })();
 
+// ── نفس الدروب داون بالظبط، بس بتاع عنوان صفحة الحساب ──
+(function(){
+  const wrap=document.getElementById('acctGovDrop');
+  const trigger=document.getElementById('acctGovTrigger');
+  const panel=document.getElementById('acctGovPanel');
+  const input=document.getElementById('acctGov');
+  const labelEl=document.getElementById('acctGovLabel');
+
+  trigger.addEventListener('click',function(e){
+    e.stopPropagation();
+    wrap.classList.toggle('open');
+  });
+
+  panel.querySelectorAll('.cd-opt').forEach(function(opt){
+    opt.addEventListener('click',function(e){
+      e.stopPropagation();
+      const val=opt.dataset.val;
+      input.value=val;
+      labelEl.textContent=val;
+      trigger.classList.remove('placeholder','error');
+      document.getElementById('acctErrGov').classList.remove('show');
+      panel.querySelectorAll('.cd-opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      wrap.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('click',function(){
+    wrap.classList.remove('open');
+  });
+})();
+
 // مسح الـ error لما المستخدم يبدأ يكتب
 ['coFirst','coLast','coPhone','coDistrict','coStreet','coBuildNum'].forEach(id=>{
   const el=document.getElementById(id);
   if(el) el.addEventListener('input',()=>{
     el.classList.remove('error');
     const err=document.getElementById('err'+id.replace('co',''));
+    if(err) err.classList.remove('show');
+  });
+});
+['acctFirst','acctLast','acctPhone','acctEmail','acctDistrict','acctStreet','acctBuildNum','acctFloor','acctApt'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el) el.addEventListener('input',()=>{
+    el.classList.remove('error');
+    const err=document.getElementById('acctErr'+id.replace('acct',''));
     if(err) err.classList.remove('show');
   });
 });
