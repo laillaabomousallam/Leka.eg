@@ -1272,8 +1272,9 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="field"><label class="t" data-ar="الاسم الأول *" data-en="First Name *"></label><input type="text" id="coFirst"/><span class="field-error t" id="errFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
           <div class="field"><label class="t" data-ar="الاسم الأخير *" data-en="Last Name *"></label><input type="text" id="coLast"/><span class="field-error t" id="errLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
         </div>
-        <div class="field-row full">
+        <div class="field-row">
           <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="coPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="errPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
+          <div class="field"><label class="t" data-ar="رقم موبايل تاني (اختياري)" data-en="Phone Number 2 (optional)"></label><input type="text" id="coPhone2" placeholder="+20 1XX XXX XXXX"/></div>
         </div>
         <div class="field-row full">
           <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="coEmail" placeholder="example@email.com"/><span class="field-error t" id="errEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
@@ -3242,6 +3243,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   const first=document.getElementById('coFirst').value.trim();
   const last=document.getElementById('coLast').value.trim();
   const phone=document.getElementById('coPhone').value.trim();
+  const phone2=document.getElementById('coPhone2').value.trim();
   const email=document.getElementById('coEmail').value.trim();
   const gov=document.getElementById('coGov').value;
   const district=document.getElementById('coDistrict').value.trim();
@@ -3317,7 +3319,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   const orderNum=await generateUniqueOrderNumber();
 
   const {error}=await sb.from('orders').insert([{
-    first_name:first,last_name:last,phone,customer_email:email||null,
+    first_name:first,last_name:last,phone,phone2:phone2||null,customer_email:email||null,
     governorate:gov,district,street,building_name:buildName,building_number:buildNum,
     floor_number:floor,apartment_number:apt,landmark,notes,
     payment_method:payment,items:itemsData,total,status:'new',
