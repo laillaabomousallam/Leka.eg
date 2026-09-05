@@ -775,17 +775,30 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 .acct-tab-btn{flex:1;background:none;border:none;border-radius:20px;padding:10px 12px;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);cursor:pointer;transition:all .2s;font-family:inherit}
 .acct-tab-btn.active{background:var(--ink);color:#fff}
 .acct-card{background:var(--dust);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem}
+.acct-card-head{display:flex;justify-content:space-between;align-items:flex-start}
+.acct-edit-link{background:none;border:none;color:var(--mid);font-size:.68rem;font-weight:600;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit}
 .acct-avatar{width:52px;height:52px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:1.3rem;margin-bottom:1rem}
 .acct-name{font-size:1rem;font-weight:600;margin-bottom:.25rem}
 .acct-email-sub{font-size:.75rem;color:var(--mid);margin-bottom:1.2rem}
 .acct-row{display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-top:1px solid var(--line);gap:1rem}
-.acct-row:first-of-type{border-top:none;padding-top:0}
+.acct-row + .acct-row{border-top:1px solid var(--line)}
+#acctProfileView .acct-row:first-child,#acctProfileEdit .acct-row:first-child{border-top:none;padding-top:0}
 .acct-row-stack{flex-direction:column;align-items:flex-start;gap:.3rem}
 .acct-row-label{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
 .acct-row-value{font-size:.85rem;text-align:end;line-height:1.6}
 .acct-row-stack .acct-row-value{text-align:start}
+.acct-row input{flex:1;min-width:0;max-width:60%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:7px 12px;font-size:.8rem;font-family:inherit;outline:none;text-align:end}
 .acct-signout-btn{background:none;border:1px solid var(--line);border-radius:20px;padding:10px 18px;font-size:.72rem;font-weight:600;color:var(--ink);cursor:pointer;width:100%;font-family:inherit}
 .acct-signout-btn:hover{background:var(--dust)}
+.acct-addr-item{border-top:1px solid var(--line);padding:.9rem 0}
+#acctAddressList .acct-addr-item:first-child{border-top:none;padding-top:0}
+.acct-addr-item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;margin-bottom:.35rem}
+.acct-addr-label{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.acct-addr-actions{display:flex;gap:.7rem;flex-shrink:0}
+.acct-addr-actions button{background:none;border:none;color:var(--mid);font-size:.68rem;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit}
+.acct-addr-text{font-size:.82rem;line-height:1.6;color:var(--ink)}
+.acct-add-addr-btn{background:none;border:1px dashed var(--muted);border-radius:14px;padding:10px;font-size:.72rem;font-weight:600;color:var(--mid);cursor:pointer;width:100%;margin-top:.9rem;font-family:inherit}
+.acct-add-addr-btn:hover{background:#fff;color:var(--ink)}
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
@@ -1271,15 +1284,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
         <div id="coAddressChoice" style="display:none;margin-bottom:1.5rem">
           <div class="co-section-label t" data-ar="عنوان التوصيل" data-en="Delivery Address"></div>
-          <div id="coSavedAddrOption" onclick="selectCoAddressMode('saved')" style="border:1px solid var(--line);border-radius:10px;padding:1rem;margin-bottom:.6rem;cursor:pointer">
-            <div style="display:flex;align-items:flex-start;gap:.6rem">
-              <input type="radio" name="coAddrMode" id="coAddrModeSaved" style="margin-top:3px;flex-shrink:0"/>
-              <div>
-                <div style="font-size:.78rem;font-weight:600;margin-bottom:.3rem" class="t" data-ar="استخدمي عنوانك المحفوظ" data-en="Use your saved address"></div>
-                <div id="coSavedAddrSummary" style="font-size:.75rem;color:var(--mid);line-height:1.6"></div>
-              </div>
-            </div>
-          </div>
+          <div id="coSavedAddrOptions"></div>
           <div onclick="selectCoAddressMode('new')" style="border:1px solid var(--line);border-radius:10px;padding:1rem;cursor:pointer">
             <div style="display:flex;align-items:center;gap:.6rem">
               <input type="radio" name="coAddrMode" id="coAddrModeNew" style="margin:0;flex-shrink:0"/>
@@ -1592,61 +1597,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <span class="t" data-ar="ضيفي عنوانك (اختياري)" data-en="Add your address (optional)"></span>
         <span id="acctAddrToggleIcon">+</span>
       </button>
-      <div id="acctAddressFields" style="display:none">
-        <div class="field">
-          <label class="t" data-ar="المحافظة" data-en="Governorate"></label>
-          <select id="acctGov" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none">
-            <option value="">—</option>
-            <option value="القاهرة / Cairo">القاهرة / Cairo</option>
-            <option value="الجيزة / Giza">الجيزة / Giza</option>
-            <option value="الإسكندرية / Alexandria">الإسكندرية / Alexandria</option>
-            <option value="المنصورة / Mansoura">المنصورة / Mansoura</option>
-            <option value="طنطا / Tanta">طنطا / Tanta</option>
-            <option value="أسيوط / Asyut">أسيوط / Asyut</option>
-            <option value="أسوان / Aswan">أسوان / Aswan</option>
-            <option value="الأقصر / Luxor">الأقصر / Luxor</option>
-            <option value="الإسماعيلية / Ismailia">الإسماعيلية / Ismailia</option>
-            <option value="بورسعيد / Port Said">بورسعيد / Port Said</option>
-            <option value="السويس / Suez">السويس / Suez</option>
-            <option value="الشرقية / Sharkia">الشرقية / Sharkia</option>
-            <option value="الدقهلية / Dakahlia">الدقهلية / Dakahlia</option>
-            <option value="البحيرة / Beheira">البحيرة / Beheira</option>
-            <option value="كفر الشيخ / Kafr El Sheikh">كفر الشيخ / Kafr El Sheikh</option>
-            <option value="الغربية / Gharbia">الغربية / Gharbia</option>
-            <option value="المنوفية / Monufia">المنوفية / Monufia</option>
-            <option value="الفيوم / Fayoum">الفيوم / Fayoum</option>
-            <option value="بني سويف / Beni Suef">بني سويف / Beni Suef</option>
-            <option value="المنيا / Minya">المنيا / Minya</option>
-            <option value="قنا / Qena">قنا / Qena</option>
-            <option value="سوهاج / Sohag">سوهاج / Sohag</option>
-            <option value="شمال سيناء / North Sinai">شمال سيناء / North Sinai</option>
-            <option value="جنوب سيناء / South Sinai">جنوب سيناء / South Sinai</option>
-            <option value="البحر الأحمر / Red Sea">البحر الأحمر / Red Sea</option>
-            <option value="مطروح / Matrouh">مطروح / Matrouh</option>
-            <option value="الوادي الجديد / New Valley">الوادي الجديد / New Valley</option>
-          </select>
-        </div>
-        <div class="field"><label class="t" data-ar="المنطقة / الحي" data-en="District / Area"></label><input type="text" id="acctDistrict"/></div>
-        <div class="field"><label class="t" data-ar="اسم الشارع" data-en="Street Name"></label><input type="text" id="acctStreet"/></div>
-        <div class="field">
-          <label class="t" data-ar="نوع المبنى" data-en="Building Type"></label>
-          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
-            <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Building')" data-ar="عمارة" data-en="Building"></button>
-            <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Company')" data-ar="شركة" data-en="Company"></button>
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label id="acctLblBuildNum" class="t" data-ar="رقم المبنى" data-en="Building No."></label><input type="text" id="acctBuildNum"/></div>
-          <div class="field" id="acctFloorField"><label class="t" data-ar="رقم الدور" data-en="Floor No."></label><input type="text" id="acctFloor"/></div>
-        </div>
-        <div class="field-row" id="acctAptRow">
-          <div class="field"><label class="t" data-ar="رقم الشقة" data-en="Apartment No."></label><input type="text" id="acctApt"/></div>
-          <div class="field"><label class="t" data-ar="علامة مميزة" data-en="Landmark"></label><input type="text" id="acctLandmark"/></div>
-        </div>
-        <div class="field-row full" id="acctCompanyRow" style="display:none">
-          <div class="field"><label class="t" data-ar="اسم الشخص المستلم" data-en="Recipient Name"></label><input type="text" id="acctRecipient"/></div>
-        </div>
-      </div>
 
       <button onclick="createAccount()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;width:100%;margin-top:.5rem" class="t" data-ar="إنشاء حساب" data-en="Create Account"></button>
       <p id="acctCreateMsg" style="font-size:.75rem;margin-top:.6rem;text-align:center"></p>
@@ -1655,18 +1605,98 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 
     <div id="acctHasProfile" style="display:none">
       <div class="acct-card">
-        <div class="acct-avatar" id="acctAvatar"></div>
+        <div class="acct-card-head">
+          <div class="acct-avatar" id="acctAvatar"></div>
+          <button type="button" class="acct-edit-link" onclick="openAcctProfileEdit()" id="acctEditProfileBtn">
+            <span class="t" data-ar="تعديل" data-en="Edit"></span>
+          </button>
+        </div>
         <div class="acct-name" id="acctWelcome"></div>
-        <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم" data-en="Name"></span><span class="acct-row-value" id="acctViewName"></span></div>
-        <div class="acct-row"><span class="acct-row-label t" data-ar="رقم الموبايل" data-en="Phone"></span><span class="acct-row-value" id="acctViewPhone"></span></div>
-        <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><span class="acct-row-value" id="acctViewEmail"></span></div>
-        <div class="acct-row acct-row-stack" id="acctAddressBlock" style="display:none">
-          <span class="acct-row-label t" data-ar="العنوان المحفوظ" data-en="Saved Address"></span>
-          <span class="acct-row-value" id="acctViewAddress"></span>
+
+        <div id="acctProfileView">
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم" data-en="Name"></span><span class="acct-row-value" id="acctViewName"></span></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="رقم الموبايل" data-en="Phone"></span><span class="acct-row-value" id="acctViewPhone"></span></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><span class="acct-row-value" id="acctViewEmail"></span></div>
+        </div>
+        <div id="acctProfileEdit" style="display:none">
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم" data-en="Name"></span><input type="text" id="acctEditName"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="رقم الموبايل" data-en="Phone"></span><input type="text" id="acctEditPhone"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><input type="text" id="acctEditEmail"/></div>
+          <div style="display:flex;gap:.6rem;margin-top:.9rem">
+            <button type="button" onclick="saveAcctProfileEdit()" style="background:#0a0a0a;color:#fff;border:none;border-radius:16px;padding:9px 16px;font-size:.7rem;font-weight:700;cursor:pointer;flex:1;font-family:inherit" class="t" data-ar="حفظ" data-en="Save"></button>
+            <button type="button" onclick="closeAcctProfileEdit()" style="background:none;border:1px solid var(--line);border-radius:16px;padding:9px 16px;font-size:.7rem;font-weight:700;cursor:pointer;flex:1;font-family:inherit" class="t" data-ar="إلغاء" data-en="Cancel"></button>
+          </div>
+          <p id="acctProfileEditMsg" style="font-size:.72rem;margin-top:.5rem"></p>
+        </div>
+
+        <div id="acctAddressList"></div>
+        <p id="acctNoAddress" style="font-size:.78rem;color:var(--mid);margin-top:.4rem" class="t" data-ar="لسه معملتيش أول أوردر — العنوان هيتحفظ تلقائي أول ما تطلبي" data-en="No order yet — your address will be saved automatically after your first order"></p>
+        <button type="button" id="acctAddAddrBtn" class="acct-add-addr-btn t" onclick="openAcctAddressForm('add')" data-ar="+ ضيفي عنوان جديد" data-en="+ Add New Address"></button>
+      </div>
+      <button onclick="forgetAccount()" class="acct-signout-btn t" data-ar="تسجيل الخروج" data-en="Log Out"></button>
+    </div>
+
+    <div id="acctAddressFormSection" style="display:none;margin-top:1.25rem">
+      <div class="t" id="acctAddrFormTitle" data-ar="عنوان جديد" data-en="New Address" style="font-size:.8rem;font-weight:700;margin-bottom:1rem"></div>
+      <div class="field"><label class="t" data-ar="اسم العنوان (مثلاً البيت، الشغل)" data-en="Address Label (e.g. Home, Work)"></label><input type="text" id="acctAddrLabel" placeholder="Home"/></div>
+      <div class="field">
+        <label class="t" data-ar="المحافظة" data-en="Governorate"></label>
+        <select id="acctGov" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none">
+          <option value="">—</option>
+          <option value="القاهرة / Cairo">القاهرة / Cairo</option>
+          <option value="الجيزة / Giza">الجيزة / Giza</option>
+          <option value="الإسكندرية / Alexandria">الإسكندرية / Alexandria</option>
+          <option value="المنصورة / Mansoura">المنصورة / Mansoura</option>
+          <option value="طنطا / Tanta">طنطا / Tanta</option>
+          <option value="أسيوط / Asyut">أسيوط / Asyut</option>
+          <option value="أسوان / Aswan">أسوان / Aswan</option>
+          <option value="الأقصر / Luxor">الأقصر / Luxor</option>
+          <option value="الإسماعيلية / Ismailia">الإسماعيلية / Ismailia</option>
+          <option value="بورسعيد / Port Said">بورسعيد / Port Said</option>
+          <option value="السويس / Suez">السويس / Suez</option>
+          <option value="الشرقية / Sharkia">الشرقية / Sharkia</option>
+          <option value="الدقهلية / Dakahlia">الدقهلية / Dakahlia</option>
+          <option value="البحيرة / Beheira">البحيرة / Beheira</option>
+          <option value="كفر الشيخ / Kafr El Sheikh">كفر الشيخ / Kafr El Sheikh</option>
+          <option value="الغربية / Gharbia">الغربية / Gharbia</option>
+          <option value="المنوفية / Monufia">المنوفية / Monufia</option>
+          <option value="الفيوم / Fayoum">الفيوم / Fayoum</option>
+          <option value="بني سويف / Beni Suef">بني سويف / Beni Suef</option>
+          <option value="المنيا / Minya">المنيا / Minya</option>
+          <option value="قنا / Qena">قنا / Qena</option>
+          <option value="سوهاج / Sohag">سوهاج / Sohag</option>
+          <option value="شمال سيناء / North Sinai">شمال سيناء / North Sinai</option>
+          <option value="جنوب سيناء / South Sinai">جنوب سيناء / South Sinai</option>
+          <option value="البحر الأحمر / Red Sea">البحر الأحمر / Red Sea</option>
+          <option value="مطروح / Matrouh">مطروح / Matrouh</option>
+          <option value="الوادي الجديد / New Valley">الوادي الجديد / New Valley</option>
+        </select>
+      </div>
+      <div class="field"><label class="t" data-ar="المنطقة / الحي" data-en="District / Area"></label><input type="text" id="acctDistrict"/></div>
+      <div class="field"><label class="t" data-ar="اسم الشارع" data-en="Street Name"></label><input type="text" id="acctStreet"/></div>
+      <div class="field">
+        <label class="t" data-ar="نوع المبنى" data-en="Building Type"></label>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+          <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Building')" data-ar="عمارة" data-en="Building"></button>
+          <button type="button" class="btype-btn t" onclick="setAcctBuildingType(this,'Company')" data-ar="شركة" data-en="Company"></button>
         </div>
       </div>
-      <p id="acctNoAddress" style="font-size:.78rem;color:var(--mid);margin:-.5rem 0 1.25rem" class="t" data-ar="لسه معملتيش أول أوردر — العنوان هيتحفظ تلقائي أول ما تطلبي" data-en="No order yet — your address will be saved automatically after your first order"></p>
-      <button onclick="forgetAccount()" class="acct-signout-btn t" data-ar="مش أنا / نسّي البيانات دي" data-en="Not me / Forget this account"></button>
+      <div class="field-row">
+        <div class="field"><label id="acctLblBuildNum" class="t" data-ar="رقم المبنى" data-en="Building No."></label><input type="text" id="acctBuildNum"/></div>
+        <div class="field" id="acctFloorField"><label class="t" data-ar="رقم الدور" data-en="Floor No."></label><input type="text" id="acctFloor"/></div>
+      </div>
+      <div class="field-row" id="acctAptRow">
+        <div class="field"><label class="t" data-ar="رقم الشقة" data-en="Apartment No."></label><input type="text" id="acctApt"/></div>
+        <div class="field"><label class="t" data-ar="علامة مميزة" data-en="Landmark"></label><input type="text" id="acctLandmark"/></div>
+      </div>
+      <div class="field-row full" id="acctCompanyRow" style="display:none">
+        <div class="field"><label class="t" data-ar="اسم الشخص المستلم" data-en="Recipient Name"></label><input type="text" id="acctRecipient"/></div>
+      </div>
+      <div id="acctAddrFormActions" style="display:none;gap:.6rem">
+        <button type="button" onclick="saveAcctAddressForm()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;flex:1;font-family:inherit" class="t" data-ar="حفظ العنوان" data-en="Save Address"></button>
+        <button type="button" onclick="closeAcctAddressForm()" style="background:none;border:1px solid var(--line);border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;flex:1;font-family:inherit" class="t" data-ar="إلغاء" data-en="Cancel"></button>
+      </div>
+      <p id="acctAddrFormMsg" style="font-size:.75rem;margin-top:.6rem;text-align:center"></p>
     </div>
   </div>
 </div>
@@ -1898,12 +1928,23 @@ async function loadShippingCosts(){
 }
 let favorites=JSON.parse(localStorage.getItem('leka_favs')||'[]');
 
-// ── حساب العميلة (اسم، رقم، إيميل — والعنوان بيتحفظ لوحده أول ما تعمل أوردر) ──
+// ── حساب العميلة (اسم، رقم، إيميل — والعناوين بتتحفظ لوحدها أول ما تعمل أوردر) ──
+// بيدعم عناوين متعددة (addresses[]) وكمان البيانات القديمة اللي كانت متسجلة كعنوان واحد بس (address)
+function normalizeProfileAddresses(profile){
+  if(!profile) return profile;
+  if(!Array.isArray(profile.addresses)){
+    profile.addresses=profile.address?[profile.address]:[];
+  }
+  delete profile.address;
+  return profile;
+}
 let customerProfile=JSON.parse(localStorage.getItem('leka_customer')||'null');
-if(customerProfile&&customerProfile.address&&typeof customerProfile.address==='string'){
+if(customerProfile&&typeof customerProfile.address==='string'){
   try{customerProfile.address=JSON.parse(customerProfile.address);}catch(e){customerProfile.address=null;}
 }
+normalizeProfileAddresses(customerProfile);
 function saveCustomerProfileLocal(profile){
+  normalizeProfileAddresses(profile);
   customerProfile=profile;
   localStorage.setItem('leka_customer',JSON.stringify(profile));
 }
@@ -1912,16 +1953,17 @@ async function upsertCustomer(profile){
     email:profile.email,
     name:profile.name,
     phone:profile.phone,
-    address:profile.address?JSON.stringify(profile.address):null
+    address:(profile.addresses&&profile.addresses.length)?JSON.stringify(profile.addresses):null
   };
   const {data,error}=await sb.from('customers').upsert(payload,{onConflict:'email'}).select();
   return {data,error};
 }
 async function fetchCustomerByEmail(email){
   const {data,error}=await sb.from('customers').select('*').eq('email',email).maybeSingle();
-  if(data&&data.address){
+  if(data&&typeof data.address==='string'){
     try{data.address=JSON.parse(data.address);}catch(e){data.address=null;}
   }
+  normalizeProfileAddresses(data);
   return {data,error};
 }
 function formatAddressLines(addr){
@@ -1938,24 +1980,17 @@ function renderAccountView(){
   const noProfile=document.getElementById('acctNoProfile');
   const hasProfile=document.getElementById('acctHasProfile');
   if(!noProfile||!hasProfile) return;
+  closeAcctAddressForm();
   if(customerProfile){
     noProfile.style.display='none';
     hasProfile.style.display='block';
+    closeAcctProfileEdit();
     document.getElementById('acctAvatar').textContent=(customerProfile.name||'?').trim().charAt(0).toUpperCase();
     document.getElementById('acctWelcome').textContent=(lang==='ar'?'أهلاً، ':'Welcome, ')+customerProfile.name;
     document.getElementById('acctViewName').textContent=customerProfile.name;
     document.getElementById('acctViewPhone').textContent=customerProfile.phone;
     document.getElementById('acctViewEmail').textContent=customerProfile.email;
-    const addrBlock=document.getElementById('acctAddressBlock');
-    const noAddr=document.getElementById('acctNoAddress');
-    if(customerProfile.address){
-      addrBlock.style.display='flex';
-      noAddr.style.display='none';
-      document.getElementById('acctViewAddress').innerHTML=formatAddressLines(customerProfile.address);
-    } else {
-      addrBlock.style.display='none';
-      noAddr.style.display='block';
-    }
+    renderAcctAddressList();
   } else {
     noProfile.style.display='block';
     hasProfile.style.display='none';
@@ -1964,6 +1999,29 @@ function renderAccountView(){
     switchAcctTab('create');
   }
 }
+function renderAcctAddressList(){
+  const list=document.getElementById('acctAddressList');
+  const noAddr=document.getElementById('acctNoAddress');
+  const addresses=(customerProfile&&customerProfile.addresses)||[];
+  if(!addresses.length){
+    list.innerHTML='';
+    noAddr.style.display='block';
+    return;
+  }
+  noAddr.style.display='none';
+  list.innerHTML=addresses.map((addr,i)=>`
+    <div class="acct-addr-item">
+      <div class="acct-addr-item-head">
+        <span class="acct-addr-label">${addr.label||(lang==='ar'?'عنوان':'Address')+' '+(i+1)}</span>
+        <span class="acct-addr-actions">
+          <button type="button" onclick="openAcctAddressForm('edit',${i})">${lang==='ar'?'تعديل':'Edit'}</button>
+          <button type="button" onclick="deleteAcctAddress(${i})">${lang==='ar'?'حذف':'Delete'}</button>
+        </span>
+      </div>
+      <div class="acct-addr-text">${formatAddressLines(addr)}</div>
+    </div>
+  `).join('');
+}
 function switchAcctTab(tab){
   document.getElementById('acctPaneCreate').style.display=tab==='create'?'block':'none';
   document.getElementById('acctPaneRestore').style.display=tab==='restore'?'block':'none';
@@ -1971,14 +2029,15 @@ function switchAcctTab(tab){
   document.getElementById('acctTabBtnRestore').classList.toggle('active',tab==='restore');
 }
 function toggleAcctAddress(){
-  const fields=document.getElementById('acctAddressFields');
-  const icon=document.getElementById('acctAddrToggleIcon');
-  const isOpen=fields.style.display!=='none';
-  fields.style.display=isOpen?'none':'block';
-  icon.textContent=isOpen?'+':'−';
+  const isOpen=document.getElementById('acctAddressFormSection').style.display!=='none';
+  if(isOpen){
+    closeAcctAddressForm();
+  } else {
+    openAcctAddressForm('inline-create');
+  }
 }
 function setAcctBuildingType(btn,type){
-  document.querySelectorAll('#acctAddressFields .btype-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#acctAddressFormSection .btype-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   const isCompany=(type==='Company');
   document.getElementById('acctAptRow').style.display=isCompany?'none':'';
@@ -1989,15 +2048,150 @@ function buildAcctAddressFromForm(){
   const gov=document.getElementById('acctGov').value;
   const district=document.getElementById('acctDistrict').value.trim();
   const street=document.getElementById('acctStreet').value.trim();
-  const activeBType=document.querySelector('#acctAddressFields .btype-btn.active');
+  const activeBType=document.querySelector('#acctAddressFormSection .btype-btn.active');
   const buildName=activeBType?activeBType.dataset.en:'';
   const buildNum=document.getElementById('acctBuildNum').value.trim();
   const floor=document.getElementById('acctFloor').value.trim();
   const apt=document.getElementById('acctApt').value.trim();
   const landmark=document.getElementById('acctLandmark').value.trim();
   const recipient=document.getElementById('acctRecipient').value.trim();
+  const label=document.getElementById('acctAddrLabel').value.trim();
   if(!gov&&!district&&!street&&!buildNum) return null;
-  return {gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
+  return {label,gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
+}
+function fillAcctAddressForm(addr){
+  document.getElementById('acctAddrLabel').value=addr.label||'';
+  document.getElementById('acctGov').value=addr.gov||'';
+  document.getElementById('acctDistrict').value=addr.district||'';
+  document.getElementById('acctStreet').value=addr.street||'';
+  document.getElementById('acctBuildNum').value=addr.buildNum||'';
+  document.getElementById('acctFloor').value=addr.floor||'';
+  document.getElementById('acctApt').value=addr.apt||'';
+  document.getElementById('acctLandmark').value=addr.landmark||'';
+  document.getElementById('acctRecipient').value=addr.recipient||'';
+  document.querySelectorAll('#acctAddressFormSection .btype-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.en===addr.buildName);
+  });
+  const isCompany=(addr.buildName==='Company');
+  document.getElementById('acctAptRow').style.display=isCompany?'none':'';
+  document.getElementById('acctCompanyRow').style.display=isCompany?'block':'none';
+  document.getElementById('acctFloorField').style.display=isCompany?'none':'';
+}
+function clearAcctAddressForm(){
+  ['acctAddrLabel','acctGov','acctDistrict','acctStreet','acctBuildNum','acctFloor','acctApt','acctLandmark','acctRecipient'].forEach(id=>{document.getElementById(id).value=''});
+  document.querySelectorAll('#acctAddressFormSection .btype-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('acctAptRow').style.display='';
+  document.getElementById('acctCompanyRow').style.display='none';
+  document.getElementById('acctFloorField').style.display='';
+}
+let acctAddrFormMode=null;
+let acctAddrFormEditIndex=null;
+function openAcctAddressForm(mode,index){
+  acctAddrFormMode=mode;
+  acctAddrFormEditIndex=(typeof index==='number')?index:null;
+  clearAcctAddressForm();
+  const formSection=document.getElementById('acctAddressFormSection');
+  const anchor=document.getElementById(mode==='inline-create'?'acctAddrToggleBtn':'acctAddAddrBtn');
+  anchor.insertAdjacentElement('afterend',formSection);
+  const actions=document.getElementById('acctAddrFormActions');
+  const title=document.getElementById('acctAddrFormTitle');
+  if(mode==='edit'){
+    actions.style.display='flex';
+    title.style.display='block';
+    fillAcctAddressForm(customerProfile.addresses[index]);
+  } else if(mode==='add'){
+    actions.style.display='flex';
+    title.style.display='block';
+  } else {
+    actions.style.display='none';
+    title.style.display='none';
+  }
+  document.getElementById('acctAddrFormMsg').textContent='';
+  document.getElementById('acctAddressFormSection').style.display='block';
+  const icon=document.getElementById('acctAddrToggleIcon');
+  if(icon) icon.textContent='−';
+  document.getElementById('acctAddressFormSection').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function closeAcctAddressForm(){
+  acctAddrFormMode=null;
+  acctAddrFormEditIndex=null;
+  document.getElementById('acctAddressFormSection').style.display='none';
+  const icon=document.getElementById('acctAddrToggleIcon');
+  if(icon) icon.textContent='+';
+  clearAcctAddressForm();
+}
+async function saveAcctAddressForm(){
+  const addr=buildAcctAddressFromForm();
+  const msg=document.getElementById('acctAddrFormMsg');
+  if(!addr){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'ادخلي تفاصيل العنوان الأول':'Please enter the address details first';
+    return;
+  }
+  msg.style.color='var(--mid)';
+  msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
+  const addresses=(customerProfile.addresses||[]).slice();
+  if(acctAddrFormMode==='edit'&&acctAddrFormEditIndex!=null){
+    addresses[acctAddrFormEditIndex]=addr;
+  } else {
+    addresses.push(addr);
+  }
+  const updatedProfile={...customerProfile,addresses};
+  const {error}=await upsertCustomer(updatedProfile);
+  if(error){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'حدث خطأ، حاول مرة أخرى':'Something went wrong, please try again';
+    return;
+  }
+  saveCustomerProfileLocal(updatedProfile);
+  closeAcctAddressForm();
+  renderAcctAddressList();
+}
+async function deleteAcctAddress(index){
+  if(!confirm(lang==='ar'?'تأكيد حذف العنوان ده؟':'Delete this address?')) return;
+  const addresses=(customerProfile.addresses||[]).filter((a,i)=>i!==index);
+  const updatedProfile={...customerProfile,addresses};
+  const {error}=await upsertCustomer(updatedProfile);
+  if(error) return;
+  saveCustomerProfileLocal(updatedProfile);
+  renderAcctAddressList();
+}
+function openAcctProfileEdit(){
+  document.getElementById('acctEditName').value=customerProfile.name||'';
+  document.getElementById('acctEditPhone').value=customerProfile.phone||'';
+  document.getElementById('acctEditEmail').value=customerProfile.email||'';
+  document.getElementById('acctProfileEditMsg').textContent='';
+  document.getElementById('acctProfileView').style.display='none';
+  document.getElementById('acctProfileEdit').style.display='block';
+  document.getElementById('acctEditProfileBtn').style.display='none';
+}
+function closeAcctProfileEdit(){
+  document.getElementById('acctProfileView').style.display='block';
+  document.getElementById('acctProfileEdit').style.display='none';
+  document.getElementById('acctEditProfileBtn').style.display='block';
+}
+async function saveAcctProfileEdit(){
+  const name=document.getElementById('acctEditName').value.trim();
+  const phone=document.getElementById('acctEditPhone').value.trim();
+  const email=document.getElementById('acctEditEmail').value.trim();
+  const msg=document.getElementById('acctProfileEditMsg');
+  if(!name||!phone||!email||!email.includes('@')){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'كل البيانات مطلوبة':'All fields are required';
+    return;
+  }
+  msg.style.color='var(--mid)';
+  msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
+  const updatedProfile={...customerProfile,name,phone,email};
+  const {error}=await upsertCustomer(updatedProfile);
+  if(error){
+    msg.style.color='#c00';
+    msg.textContent=lang==='ar'?'حدث خطأ، حاول مرة أخرى':'Something went wrong, please try again';
+    return;
+  }
+  saveCustomerProfileLocal(updatedProfile);
+  closeAcctProfileEdit();
+  renderAccountView();
 }
 async function createAccount(){
   const name=document.getElementById('acctName').value.trim();
@@ -2014,7 +2208,7 @@ async function createAccount(){
   msg.style.color='var(--mid)';
   msg.textContent=lang==='ar'?'جاري الحفظ...':'Saving...';
   const address=buildAcctAddressFromForm();
-  const profile={name,phone,email,address};
+  const profile={name,phone,email,addresses:address?[address]:[]};
   const {error}=await upsertCustomer(profile);
   if(error){
     msg.style.color='#c00';
@@ -2043,7 +2237,7 @@ async function restoreAccount(){
     msg.textContent=lang==='ar'?'مفيش حساب بالإيميل ده':'No account found with this email';
     return;
   }
-  saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,address:data.address||null});
+  saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,addresses:data.addresses||[]});
   closeWelcomeBanner();
   msg.textContent='';
   renderAccountView();
@@ -2098,7 +2292,7 @@ async function welcomeSignIn(){
     msg.textContent=lang==='ar'?'مفيش حساب بالإيميل ده':'No account found with this email';
     return;
   }
-  saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,address:data.address||null});
+  saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,addresses:data.addresses||[]});
   closeWelcomeModal();
   checkIfBlocked();
 }
@@ -2915,12 +3109,22 @@ function prefillCheckoutFromProfile(){
   if(coLast&&!coLast.value) coLast.value=last;
   if(coPhone&&!coPhone.value) coPhone.value=customerProfile.phone||'';
   if(coEmail&&!coEmail.value) coEmail.value=customerProfile.email||'';
-  const addr=customerProfile.address;
+  const addresses=customerProfile.addresses||[];
   const choiceBlock=document.getElementById('coAddressChoice');
-  if(addr){
+  if(addresses.length){
     choiceBlock.style.display='block';
-    document.getElementById('coSavedAddrSummary').innerHTML=formatAddressLines(addr);
-    selectCoAddressMode('saved');
+    document.getElementById('coSavedAddrOptions').innerHTML=addresses.map((addr,i)=>`
+      <div onclick="selectCoAddressMode('${i}')" style="border:1px solid var(--line);border-radius:10px;padding:1rem;margin-bottom:.6rem;cursor:pointer">
+        <div style="display:flex;align-items:flex-start;gap:.6rem">
+          <input type="radio" name="coAddrMode" id="coAddrModeSaved${i}" style="margin-top:3px;flex-shrink:0"/>
+          <div>
+            <div style="font-size:.78rem;font-weight:600;margin-bottom:.3rem">${(addr.label||((lang==='ar'?'عنوان':'Address')+' '+(i+1)))}</div>
+            <div style="font-size:.75rem;color:var(--mid);line-height:1.6">${formatAddressLines(addr)}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    selectCoAddressMode('0');
   } else {
     choiceBlock.style.display='none';
     document.getElementById('coAddressFields').style.display='';
@@ -2959,12 +3163,13 @@ function clearCoAddressFields(){
   if(coRecipient) coRecipient.value='';
 }
 function selectCoAddressMode(mode){
-  document.getElementById('coAddrModeSaved').checked=(mode==='saved');
+  document.querySelectorAll('#coSavedAddrOptions input[type=radio]').forEach((r,i)=>{r.checked=(String(i)===mode)});
   document.getElementById('coAddrModeNew').checked=(mode==='new');
   const fields=document.getElementById('coAddressFields');
-  if(mode==='saved'){
+  if(mode!=='new'){
     fields.style.display='none';
-    if(customerProfile&&customerProfile.address) fillCoAddressFields(customerProfile.address);
+    const addr=customerProfile&&customerProfile.addresses&&customerProfile.addresses[parseInt(mode,10)];
+    if(addr) fillCoAddressFields(addr);
   } else {
     fields.style.display='';
     clearCoAddressFields();
@@ -3103,10 +3308,10 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     btn.disabled=false;btn.textContent=lang==='ar'?'تأكيد الطلب':'Place Order';return;
   }
 
-  // لو العميلة عندها حساب ومحفظتش عنوانها لسه، أول أوردر بتعمله يتحفظله العنوان تلقائي
-  if(customerProfile&&!customerProfile.address){
+  // لو العميلة عندها حساب ومحفظتش أي عنوان لسه، أول أوردر بتعمله يتحفظله العنوان تلقائي
+  if(customerProfile&&!(customerProfile.addresses&&customerProfile.addresses.length)){
     const addressObj={gov,district,street,buildName,buildNum,floor,apt,landmark,recipient};
-    const updatedProfile={...customerProfile,name:(first+' '+last).trim()||customerProfile.name,phone:phone||customerProfile.phone,email:email||customerProfile.email,address:addressObj};
+    const updatedProfile={...customerProfile,name:(first+' '+last).trim()||customerProfile.name,phone:phone||customerProfile.phone,email:email||customerProfile.email,addresses:[addressObj]};
     try{
       const {error:custErr}=await upsertCustomer(updatedProfile);
       if(!custErr) saveCustomerProfileLocal(updatedProfile);
