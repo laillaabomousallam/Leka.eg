@@ -2074,11 +2074,7 @@ function openCreateAccountFromWelcome(){
 }
 function maybeShowWelcomeModal(){
   if(customerProfile) return;
-  if(localStorage.getItem('leka_welcome_seen')){
-    showWelcomeBanner();
-  } else {
-    openWelcomeModal();
-  }
+  showWelcomeBanner();
 }
 
 // ── فحص الحظر — لو العميلة متحظرة من الداشبورد، بنوريها رسالة ومنسمحلهاش تكمل طلب ──
