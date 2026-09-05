@@ -771,9 +771,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 /* ─── ACCOUNT PAGE ─── */
 .acct-heading{font-family:var(--display);font-size:1.8rem;font-weight:400;margin-bottom:.4rem}
 .acct-subtitle{font-size:.82rem;color:var(--mid);margin-bottom:1.5rem;line-height:1.6}
-.acct-tabs{display:flex;background:var(--dust);border-radius:24px;padding:4px;margin-bottom:1.75rem}
-.acct-tab-btn{flex:1;background:none;border:none;border-radius:20px;padding:10px 12px;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);cursor:pointer;transition:all .2s;font-family:inherit}
-.acct-tab-btn.active{background:var(--ink);color:#fff}
 .acct-card{background:var(--dust);border-radius:16px;padding:1.5rem;margin-bottom:1.25rem}
 .acct-card-head{display:flex;justify-content:space-between;align-items:flex-start}
 .acct-edit-link{background:none;border:none;color:var(--mid);font-size:.68rem;font-weight:600;text-decoration:underline;cursor:pointer;padding:0;font-family:inherit}
@@ -1571,22 +1568,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div class="acct-heading t" data-ar="حسابي" data-en="My Account"></div>
 
     <div id="acctNoProfile">
-      <div class="acct-tabs">
-        <button type="button" class="acct-tab-btn active" id="acctTabBtnCreate" onclick="switchAcctTab('create')">
-          <span class="t" data-ar="حساب جديد" data-en="New Account"></span>
-        </button>
-        <button type="button" class="acct-tab-btn" id="acctTabBtnRestore" onclick="switchAcctTab('restore')">
-          <span class="t" data-ar="عندي حساب" data-en="I Have an Account"></span>
-        </button>
-      </div>
-
-      <div id="acctPaneRestore" style="display:none">
-        <p class="acct-subtitle t" data-ar="ادخلي إيميلك عشان نرجّعلك بياناتك المحفوظة" data-en="Enter your email to restore your saved details"></p>
-        <div class="field"><label class="t" data-ar="الإيميل" data-en="Email"></label><input type="text" id="acctRestoreEmail" placeholder="example@email.com"/></div>
-        <button onclick="restoreAccount()" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px 16px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;width:100%" class="t" data-ar="استرجاع بياناتي" data-en="Restore My Details"></button>
-        <p id="acctRestoreMsg" style="font-size:.75rem;margin-top:.6rem;text-align:center"></p>
-      </div>
-
       <div id="acctPaneCreate">
       <p class="acct-subtitle t" data-ar="اعملي حساب عشان بياناتك تتحفظ ومتدخليهاش تاني كل مرة تطلبي فيها" data-en="Create an account so your details are saved and you don't have to re-enter them every time you order"></p>
       <div class="field"><label class="t" data-ar="الاسم *" data-en="Name *"></label><input type="text" id="acctName"/><span class="field-error t" id="acctErrName" data-ar="الاسم مطلوب" data-en="Name is required"></span></div>
@@ -1995,8 +1976,6 @@ function renderAccountView(){
     noProfile.style.display='block';
     hasProfile.style.display='none';
     document.getElementById('acctCreateMsg').textContent='';
-    document.getElementById('acctRestoreMsg').textContent='';
-    switchAcctTab('create');
   }
 }
 function renderAcctAddressList(){
@@ -2021,12 +2000,6 @@ function renderAcctAddressList(){
       <div class="acct-addr-text">${formatAddressLines(addr)}</div>
     </div>
   `).join('');
-}
-function switchAcctTab(tab){
-  document.getElementById('acctPaneCreate').style.display=tab==='create'?'block':'none';
-  document.getElementById('acctPaneRestore').style.display=tab==='restore'?'block':'none';
-  document.getElementById('acctTabBtnCreate').classList.toggle('active',tab==='create');
-  document.getElementById('acctTabBtnRestore').classList.toggle('active',tab==='restore');
 }
 function toggleAcctAddress(){
   const isOpen=document.getElementById('acctAddressFormSection').style.display!=='none';
@@ -2221,28 +2194,6 @@ async function createAccount(){
   renderAccountView();
   checkIfBlocked();
 }
-async function restoreAccount(){
-  const email=document.getElementById('acctRestoreEmail').value.trim();
-  const msg=document.getElementById('acctRestoreMsg');
-  if(!email){
-    msg.style.color='#c00';
-    msg.textContent=lang==='ar'?'اكتبي إيميلك الأول':'Please enter your email first';
-    return;
-  }
-  msg.style.color='var(--mid)';
-  msg.textContent=lang==='ar'?'جاري البحث...':'Looking up...';
-  const {data,error}=await fetchCustomerByEmail(email);
-  if(error||!data){
-    msg.style.color='#c00';
-    msg.textContent=lang==='ar'?'مفيش حساب بالإيميل ده':'No account found with this email';
-    return;
-  }
-  saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,addresses:data.addresses||[]});
-  closeWelcomeBanner();
-  msg.textContent='';
-  renderAccountView();
-  checkIfBlocked();
-}
 function forgetAccount(){
   customerProfile=null;
   isBlockedCustomer=false;
@@ -2288,8 +2239,11 @@ async function welcomeSignIn(){
   msg.textContent=lang==='ar'?'جاري البحث...':'Looking up...';
   const {data,error}=await fetchCustomerByEmail(email);
   if(error||!data){
-    msg.style.color='#c00';
-    msg.textContent=lang==='ar'?'مفيش حساب بالإيميل ده':'No account found with this email';
+    // معندهاش حساب بالإيميل ده — نودّيها على صفحة ملي البيانات عشان تعمل حساب جديد، والإيميل يتحط جاهز
+    closeWelcomeModal();
+    showView('account');
+    renderAccountView();
+    document.getElementById('acctEmail').value=email;
     return;
   }
   saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,addresses:data.addresses||[]});
