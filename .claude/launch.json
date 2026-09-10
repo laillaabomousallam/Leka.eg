@@ -6,6 +6,12 @@
       "runtimeExecutable": "C:/Python314/python",
       "runtimeArgs": ["-m", "http.server", "8796"],
       "port": 8796
+    },
+    {
+      "name": "mockup-preview",
+      "runtimeExecutable": "C:/Python314/python",
+      "runtimeArgs": ["-m", "http.server", "8797", "--directory", "C:/Users/aboms/AppData/Local/Temp/claude/C--Users-aboms-OneDrive-Desktop-Leka-website/5832aea9-dcdf-4d42-ab3e-494e18cef4f2/scratchpad"],
+      "port": 8797
     }
   ]
 }

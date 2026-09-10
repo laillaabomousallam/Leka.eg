@@ -1442,29 +1442,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   </div>
 </div>
 
-<!-- ADMIN (مخفي عن العملاء) -->
-<div id="view-admin" style="display:none">
-  <!-- Login -->
-  <div class="admin-login" id="adminLogin">
-    <div style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">LEKA ADMIN</div>
-    <input type="password" id="adminPass" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()"/>
-    <button onclick="adminLogin()">Enter</button>
-    <p id="adminErr" style="font-size:.72rem;color:#c00;display:none">Incorrect password</p>
-  </div>
-  <!-- Dashboard -->
-  <div class="admin-wrap" id="adminDash" style="display:none">
-    <div class="admin-title">Leka — Admin</div>
-    <div style="display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid var(--line)">
-      <button onclick="adminTab('dashboard')" id="tabDashboard" style="background:none;border:none;padding:.75rem 1.25rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border-bottom:2px solid #0a0a0a;margin-bottom:-2px;font-family:inherit">DASHBOARD</button>
-      <button onclick="adminTab('inventory')" id="tabInventory" style="background:none;border:none;padding:.75rem 1.25rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:inherit;color:var(--muted)">INVENTORY</button>
-      <button onclick="adminTab('orders')" id="tabOrders" style="background:none;border:none;padding:.75rem 1.25rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:inherit;color:var(--muted)">ORDERS</button>
-    </div>
-    <div id="adminDashboard"></div>
-    <div id="adminContent" style="display:none"></div>
-    <div id="adminOrders" style="display:none"></div>
-  </div>
-</div>
-
 <!-- CONTACT -->
 <div class="view" id="view-contact">
   
@@ -1960,7 +1937,8 @@ async function upsertCustomer(profile){
   return {data,error};
 }
 async function fetchCustomerByEmail(email){
-  const {data,error}=await sb.from('customers').select('*').eq('email',email).maybeSingle();
+  const {data:rows,error}=await sb.rpc('get_customer_profile',{p_email:email});
+  const data=rows&&rows[0]?rows[0]:null;
   if(data&&typeof data.address==='string'){
     try{data.address=JSON.parse(data.address);}catch(e){data.address=null;}
   }
@@ -2347,8 +2325,8 @@ function maybeShowWelcomeModal(){
 let isBlockedCustomer=false;
 async function checkIfBlocked(){
   if(!customerProfile||!customerProfile.email) return;
-  const {data}=await sb.from('customers').select('blocked').eq('email',customerProfile.email).maybeSingle();
-  isBlockedCustomer=!!(data&&data.blocked);
+  const {data}=await sb.rpc('check_customer_blocked',{p_phone:null,p_email:customerProfile.email});
+  isBlockedCustomer=!!data;
   if(isBlockedCustomer) openBlockedModal();
 }
 function openBlockedModal(){
@@ -2382,7 +2360,7 @@ async function loadInventory(){
 }
 
 async function loadBestSeller(){
-  const {data:ordersData,error}=await sb.from('orders').select('items');
+  const {data:ordersData,error}=await sb.rpc('get_all_order_items');
   if(error||!ordersData) return;
   // بنجمع الكمية المباعة لكل (منتج + لون) مع بعض، مش لكل منتج لوحده —
   // عشان لو لون واحد باع كتير، هو بس اللي ياخد بادج "الأكثر مبيعاً" مش كل الألوان
@@ -2443,7 +2421,7 @@ async function loadBestSeller(){
     const newTopBadge=row.badge==='bestseller'?null:row.badge;
     if(newTopBadge!==row.badge) changed=true;
     if(changed){
-      await sb.from('products').update({colors:newDbColors,badge:newTopBadge}).eq('id',pid);
+      await sb.rpc('update_product_badge',{p_id:pid,p_colors:newDbColors,p_badge:newTopBadge});
       const localP=PRODUCTS.find(p=>p.id===pid);
       if(localP){
         localP.badge=newTopBadge;
@@ -3240,8 +3218,8 @@ function renderCheckout(){
 async function generateUniqueOrderNumber(){
   for(let attempt=0;attempt<10;attempt++){
     const candidate='LKA-2026-'+String(Math.floor(Math.random()*90000+10000));
-    const {data,error}=await sb.from('orders').select('id').eq('order_number',candidate).limit(1);
-    if(!error&&(!data||!data.length)) return candidate;
+    const {data,error}=await sb.rpc('order_number_exists',{p_candidate:candidate});
+    if(!error&&!data) return candidate;
   }
   // fallback نادر جدًا لو كل المحاولات اتصادفت — بيضيف جزء من الوقت عشان يضمن التفرد
   return 'LKA-2026-'+String(Math.floor(Math.random()*90000+10000))+'-'+Date.now().toString().slice(-4);
@@ -3313,8 +3291,8 @@ document.getElementById('placeOrderBtn').onclick=async function(){
 
   // فحص إضافي: حتى لو من غير حساب، لو رقم الموبايل أو الإيميل اللي دخلته دلوقتي متسجل عليه حظر منسمحلهاش تكمل —
   // من غير ما نقول ليها إننا عرفنا من البيانات دي بالذات
-  const {data:blockCheck}=await sb.from('customers').select('id').eq('blocked',true).or(`phone.eq.${phone},email.eq.${email}`).limit(1);
-  if(blockCheck&&blockCheck.length){
+  const {data:blockCheck}=await sb.rpc('check_customer_blocked',{p_phone:phone,p_email:email});
+  if(blockCheck){
     openBlockedModal();
     return;
   }
@@ -3532,13 +3510,13 @@ async function trackOrder(){
 
   let data=null,error=null;
   // ابحث بـ order_number الأول
-  const res1=await sb.from('orders').select(ORDER_SELECT_COLS).eq('order_number',val).limit(5);
+  const res1=await sb.rpc('get_order_by_number',{p_order_number:val});
   if(res1.data&&res1.data.length){data=res1.data}
   else{
     // ابحث بكل variants الموبايل
     let found=[];
     for(const p of phoneVariants){
-      const res=await sb.from('orders').select(ORDER_SELECT_COLS).eq('phone',p).order('created_at',{ascending:false}).limit(5);
+      const res=await sb.rpc('get_orders_by_phone',{p_phone:p,p_limit:5});
       if(res.data&&res.data.length){found=[...found,...res.data];error=null;}
     }
     // شيل duplicates
@@ -3570,12 +3548,12 @@ async function loadMyOrders(){
   if(customerProfile.phone){
     const phoneVariants=buildPhoneVariants(customerProfile.phone);
     for(const p of phoneVariants){
-      const res=await sb.from('orders').select(ORDER_SELECT_COLS).eq('phone',p).order('created_at',{ascending:false}).limit(20);
+      const res=await sb.rpc('get_orders_by_phone',{p_phone:p,p_limit:20});
       if(res.data&&res.data.length) found=[...found,...res.data];
     }
   }
   if(customerProfile.email){
-    const res=await sb.from('orders').select(ORDER_SELECT_COLS).eq('customer_email',customerProfile.email).order('created_at',{ascending:false}).limit(20);
+    const res=await sb.rpc('get_orders_by_email',{p_email:customerProfile.email,p_limit:20});
     if(res.data&&res.data.length) found=[...found,...res.data];
   }
   const seen=new Set();
@@ -3644,195 +3622,6 @@ function renderTrackResults(data){
   }).join('');
 }
 
-const ADMIN_PASSWORD = 'leka2025'; // غيري الباسورد من هنا
-
-function adminLogin(){
-  const pass=document.getElementById('adminPass').value;
-  if(pass===ADMIN_PASSWORD){
-    document.getElementById('adminLogin').style.display='none';
-    document.getElementById('adminDash').style.display='block';
-    renderDashboard();
-  } else {
-    document.getElementById('adminErr').style.display='block';
-  }
-}
-
-function adminTab(tab){
-  document.getElementById('adminDashboard').style.display=tab==='dashboard'?'block':'none';
-  document.getElementById('adminContent').style.display=tab==='inventory'?'block':'none';
-  document.getElementById('adminOrders').style.display=tab==='orders'?'block':'none';
-  ['tabDashboard','tabInventory','tabOrders'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.style.borderBottomColor='transparent';el.style.color='var(--muted)';}
-  });
-  const active=document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1));
-  if(active){active.style.borderBottomColor='#0a0a0a';active.style.color='#0a0a0a';}
-  if(tab==='orders') renderOrders();
-  if(tab==='dashboard') renderDashboard();
-}
-
-async function renderDashboard(){
-  const el=document.getElementById('adminDashboard');
-  el.innerHTML='<p style="color:var(--muted);font-size:.82rem">Loading...</p>';
-
-  // جيب الأوردرات
-  const {data:orders}=await sb.from('orders').select('total,status,created_at,items');
-  // جيب الرسائل
-  const {data:messages}=await sb.from('messages').select('id,created_at');
-
-  if(!orders){el.innerHTML='<p>Error</p>';return}
-
-  const totalOrders=orders.length;
-  const totalRevenue=orders.reduce((a,o)=>a+(o.total||0),0);
-  const statusCount={};
-  orders.forEach(o=>{statusCount[o.status]=(statusCount[o.status]||0)+1});
-
-  // أكتر منتج مطلوب
-  const productCount={};
-  orders.forEach(o=>{
-    let itemsArr=[];
-    try{itemsArr=Array.isArray(o.items)?o.items:(typeof o.items==='string'?JSON.parse(o.items):[]);}catch(e){}
-    itemsArr.forEach(i=>{
-      const name=i.name||'';
-      productCount[name]=(productCount[name]||0)+(i.qty||1);
-    });
-  });
-  const topProduct=Object.entries(productCount).sort((a,b)=>b[1]-a[1])[0];
-
-  // أوردرات النهارده
-  const today=new Date().toDateString();
-  const todayOrders=orders.filter(o=>new Date(o.created_at).toDateString()===today).length;
-
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem">
-      ${stat('Total Orders',totalOrders,'🛍️')}
-      ${stat('Today',todayOrders,'📅')}
-      ${stat('Revenue',totalRevenue+' EGP','💰')}
-      ${stat('Messages',messages?.length||0,'💬')}
-      ${stat('Confirmed',statusCount['confirmed']||0,'✅')}
-      ${stat('Shipped',statusCount['shipped']||0,'🚚')}
-      ${stat('Pending',statusCount['new']||0,'⏳')}
-      ${stat('Top Product',topProduct?topProduct[0].split('/')[0].trim()+' ('+topProduct[1]+')':'—','🏆')}
-    </div>
-    <div style="font-size:.6rem;color:var(--muted);text-align:center;margin-top:1rem">Last updated: ${new Date().toLocaleTimeString()}</div>
-  `;
-}
-
-function stat(label,value,icon){
-  return `<div style="background:#f2f2f2;border-radius:12px;padding:1.1rem;text-align:center">
-    <div style="font-size:1.4rem;margin-bottom:.3rem">${icon}</div>
-    <div style="font-size:1.1rem;font-weight:700;margin-bottom:.2rem">${value}</div>
-    <div style="font-size:.62rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase">${label}</div>
-  </div>`;
-}
-
-async function renderOrders(){
-  const el=document.getElementById('adminOrders');
-  el.innerHTML='<p style="color:var(--muted);font-size:.82rem">Loading...</p>';
-  const {data,error}=await sb.from('orders').select('*').order('created_at',{ascending:false}).limit(50);
-  if(error||!data){el.innerHTML='<p>Error loading orders</p>';return}
-
-  const statusOptions=['new','confirmed','shipped','delivered','cancelled'];
-  const statusLabels={'new':'Under Review','confirmed':'Confirmed','shipped':'Shipped','delivered':'Delivered','cancelled':'Cancelled'};
-  const statusColors={'new':'#e8a000','confirmed':'#0a7c0a','shipped':'#0057b7','delivered':'#0a7c0a','cancelled':'#c00'};
-
-  el.innerHTML=`<div style="margin-bottom:1rem;font-size:.72rem;color:var(--muted)">${data.length} orders</div>`+
-  data.map(o=>{
-    let itemsArr=[];
-    try{itemsArr=Array.isArray(o.items)?o.items:(typeof o.items==='string'?JSON.parse(o.items):[]);}catch(e){}
-    const items=itemsArr.map(i=>`<span style="font-size:.72rem;color:var(--mid)">${i.name||''} (${i.size||''} · ${i.color||''}) ×${i.qty||1}</span>`).join('<br>');
-    const date=new Date(o.created_at).toLocaleDateString('en-GB');
-    return `<div style="border:1px solid var(--line);border-radius:12px;padding:1rem;margin-bottom:.75rem">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
-        <div>
-          <div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--muted)">${o.order_number||'—'}</div>
-          <div style="font-size:.88rem;font-weight:600;margin-top:2px">${o.first_name||''} ${o.last_name||''}</div>
-          <div style="font-size:.72rem;color:var(--muted)">${o.phone||''} · ${date}</div>
-        </div>
-        <div style="font-size:.95rem;font-weight:700">${o.total||0} EGP</div>
-      </div>
-      <div style="margin-bottom:.75rem">${items}</div>
-      <div style="display:flex;align-items:center;gap:.5rem">
-        <select id="ostatus_${o.id}" style="background:#e8e8e8;border:none;border-radius:20px;padding:7px 14px;font-size:.72rem;font-family:inherit;cursor:pointer">
-          ${statusOptions.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${statusLabels[s]}</option>`).join('')}
-        </select>
-        <button onclick="saveOrderStatus(${o.id})" style="background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit">Save</button>
-        <span id="ostatus_msg_${o.id}" style="font-size:.7rem;color:green"></span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function saveOrderStatus(orderId){
-  const sel=document.getElementById(`ostatus_${orderId}`);
-  const msg=document.getElementById(`ostatus_msg_${orderId}`);
-  const {error}=await sb.from('orders').update({status:sel.value}).eq('id',orderId);
-  if(error){msg.textContent='Error!';msg.style.color='red'}
-  else{msg.textContent='✓ Saved';msg.style.color='green';setTimeout(()=>msg.textContent='',2000)}
-}
-
-async function renderAdmin(){
-  const content=document.getElementById('adminContent');
-  content.innerHTML='<p style="color:var(--muted);font-size:.82rem">Loading...</p>';
-  const {data}=await sb.from('inventory').select('*').order('product_id').order('size').order('color');
-  if(!data){content.innerHTML='<p>Error loading inventory</p>';return}
-
-  const colorNames={'Black':'أسود','White':'أبيض','Burgundy':'برجاندي'};
-  const sizeOrder=['S','M','L','XL'];
-  let html='';
-
-  PRODUCTS.forEach(p=>{
-    const productRows=data.filter(r=>r.product_id===p.id);
-    if(!productRows.length) return;
-
-    const sizes=[...new Set(productRows.map(r=>r.size))].sort((a,b)=>sizeOrder.indexOf(a)-sizeOrder.indexOf(b));
-
-    html+=`<div class="admin-section">
-      <div class="admin-section-title">${p.nameAr} — ${p.nameEn}</div>
-      <table class="admin-table">
-        <thead><tr><th>المقاس</th><th>اللون</th><th>الكمية</th><th></th></tr></thead>
-        <tbody>`;
-
-    sizes.forEach(size=>{
-      const sizeRows=productRows.filter(r=>r.size===size);
-      sizeRows.forEach((r,i)=>{
-        const colorLabel=colorNames[r.color]||r.color;
-        html+=`<tr ${i===0?'style="border-top:2px solid var(--line)"':''}>
-          <td>${i===0?`<strong>${size}</strong>`:''}</td>
-          <td style="color:var(--mid);font-size:.78rem">${colorLabel} / ${r.color}</td>
-          <td><input class="admin-qty" id="qty_${r.product_id}_${r.color}_${r.size}" type="number" value="${r.quantity}" min="0"/></td>
-          <td>
-            <button class="admin-save" onclick="saveQty(${r.product_id},'${r.color}','${r.size}')">حفظ</button>
-            <span class="admin-status" id="status_${r.product_id}_${r.color}_${r.size}"></span>
-          </td>
-        </tr>`;
-      });
-    });
-
-    html+=`</tbody></table></div>`;
-  });
-  content.innerHTML=html;
-}
-
-async function saveQty(productId,color,size){
-  const input=document.getElementById(`qty_${productId}_${color}_${size}`);
-  const status=document.getElementById(`status_${productId}_${color}_${size}`);
-  const newQty=parseInt(input.value)||0;
-  const {error}=await sb.from('inventory').update({quantity:newQty})
-    .eq('product_id',productId).eq('color',color).eq('size',size);
-  if(error){status.textContent='Error!';status.style.color='red'}
-  else{
-    inventory[`${productId}_${color}_${size}`]=newQty;
-    status.textContent='✓';status.style.color='green';
-    setTimeout(()=>status.textContent='',2000);
-    renderGrids();
-  }
-}
-
-// فتح Admin بـ URL سري
-if(window.location.hash==='#admin'){
-  document.getElementById('view-admin').style.display='block';
-}
 
 // ── CUSTOM GOV DROPDOWN ──
 (function(){
