@@ -13,6 +13,22 @@ language sql stable as $$
   select auth.email() = 'order.leka.eg@gmail.com';
 $$;
 
+-- 0.5) مسح أي سياسات قديمة موجودة على الجداول دي (مهما كان اسمها) —
+--      عشان مفيش سياسة قديمة مفتوحة للكل تفضل شغالة جنب الجديدة وتلغي تأثيرها
+do $$
+declare
+  r record;
+begin
+  for r in
+    select schemaname, tablename, policyname
+    from pg_policies
+    where schemaname = 'public'
+      and tablename in ('products','inventory','orders','customers','messages','settings','analytics')
+  loop
+    execute format('drop policy if exists %I on %I.%I', r.policyname, r.schemaname, r.tablename);
+  end loop;
+end $$;
+
 -- 1) تفعيل الحماية (RLS) على كل جدول
 alter table products enable row level security;
 alter table inventory enable row level security;
