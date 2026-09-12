@@ -402,7 +402,7 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 
 /* ─── CHECKOUT ─── */
 .co-wrap{padding:3rem 2.5rem;min-height:calc(100vh - var(--nav-h))}
-.co-layout{display:grid;grid-template-columns:1fr 360px;gap:3rem;max-width:980px}
+.co-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:1200px;align-items:stretch}
 .co-section-label{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--line)}
 .co-page-title{font-family:var(--display);font-size:1.8rem;font-weight:400;margin-bottom:2rem;letter-spacing:-.01em}
 .field-group{margin-bottom:1rem}
@@ -440,7 +440,8 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 }
 .place-btn:hover{background:#333}
 /* order summary */
-.order-box{background:#f2f2f2;border-radius:16px;padding:1.5rem;position:sticky;top:72px;align-self:start}
+.order-box{background:#f2f2f2;border-radius:16px;height:100%}
+.order-box-inner{padding:1.5rem;position:sticky;top:72px}
 .order-box-title{font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1.1rem}
 .order-items{display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--line)}
 .order-item{display:grid;grid-template-columns:50px 1fr auto;gap:10px;align-items:start}
@@ -800,7 +801,6 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 /* ─── RESPONSIVE ─── */
 @media(max-width:1024px){
   .products-grid{grid-template-columns:repeat(3,1fr)}
-  .co-layout{grid-template-columns:1fr 300px}
 }
 @media(max-width:768px){
   /* nav — الشريط العلوي يفضل بنفس المقاس اللي متفقين عليه على الموبايل، الكبر بس للاب توب/الشاشات الكبيرة */
@@ -834,7 +834,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   .related-card{flex:0 0 120px}
   /* checkout */
   .co-layout{grid-template-columns:1fr}
-  .order-box{position:static}
+  .order-box-inner{position:static}
   #placeOrderBtn{width:100%!important}
   .field-row{grid-template-columns:1fr}
   .co-wrap{padding:1.5rem 1rem}
@@ -1388,6 +1388,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       </div>
       <div>
         <div class="order-box">
+          <div class="order-box-inner">
           <div class="order-box-title t" data-ar="ملخص الطلب" data-en="Order Summary"></div>
           <div class="order-items" id="osItems"></div>
           <div class="order-row"><span class="t" data-ar="المجموع" data-en="Subtotal"></span><span id="osSubtotal">0 EGP</span></div>
@@ -1402,6 +1403,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="order-notice t"
                data-ar="⚠️ في حالة عدم استلام الشحنة، يتم دفع قيمة الشحن."
                data-en="⚠️ If the shipment is not received, the shipping cost must still be paid."></div>
+          </div>
         </div>
       </div>
     </div>
