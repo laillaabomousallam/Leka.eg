@@ -1910,7 +1910,7 @@ let favorites=JSON.parse(localStorage.getItem('leka_favs')||'[]');
 function normalizeProfileAddresses(profile){
   if(!profile) return profile;
   if(!Array.isArray(profile.addresses)){
-    profile.addresses=profile.address?[profile.address]:[];
+    profile.addresses=Array.isArray(profile.address)?profile.address:(profile.address?[profile.address]:[]);
   }
   delete profile.address;
   return profile;
@@ -1926,14 +1926,13 @@ function saveCustomerProfileLocal(profile){
   localStorage.setItem('leka_customer',JSON.stringify(profile));
 }
 async function upsertCustomer(profile){
-  const payload={
-    email:profile.email,
-    name:profile.name,
-    phone:profile.phone,
-    address:(profile.addresses&&profile.addresses.length)?JSON.stringify(profile.addresses):null
-  };
-  const {data,error}=await sb.from('customers').upsert(payload,{onConflict:'email'}).select();
-  return {data,error};
+  const {error}=await sb.rpc('upsert_customer_profile',{
+    p_email:profile.email,
+    p_name:profile.name,
+    p_phone:profile.phone,
+    p_address:(profile.addresses&&profile.addresses.length)?JSON.stringify(profile.addresses):null
+  });
+  return {error};
 }
 async function fetchCustomerByEmail(email){
   const {data:rows,error}=await sb.rpc('get_customer_profile',{p_email:email});
