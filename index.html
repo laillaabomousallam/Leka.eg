@@ -1353,6 +1353,42 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       </table>
       <p class="chart-note t" data-ar="* القياسات بالسنتيمتر" data-en="* Measurements in cm"></p>
     </div>
+    <div class="chart-section">
+      <div class="chart-section-title t" data-ar="هودي" data-en="Hoodie"></div>
+      <table class="size-table">
+        <thead><tr>
+          <th>Size</th>
+          <th class="t" data-ar="طول الجسم (سم)" data-en="Body Length (cm)"></th>
+          <th class="t" data-ar="عرض الجسم (سم)" data-en="Body Width (cm)"></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>S</td><td>63</td><td>54</td></tr>
+          <tr><td>M</td><td>65</td><td>56</td></tr>
+          <tr><td>L</td><td>67</td><td>58</td></tr>
+          <tr><td>XL</td><td>69</td><td>60</td></tr>
+          <tr><td>XXL</td><td>72</td><td>62</td></tr>
+        </tbody>
+      </table>
+      <p class="chart-note t" data-ar="* القياسات بالسنتيمتر" data-en="* Measurements in cm"></p>
+    </div>
+    <div class="chart-section">
+      <div class="chart-section-title t" data-ar="كرو نيك" data-en="Crewneck"></div>
+      <table class="size-table">
+        <thead><tr>
+          <th>Size</th>
+          <th class="t" data-ar="طول الجسم (سم)" data-en="Body Length (cm)"></th>
+          <th class="t" data-ar="عرض الجسم (سم)" data-en="Body Width (cm)"></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>S</td><td>63</td><td>54</td></tr>
+          <tr><td>M</td><td>65</td><td>56</td></tr>
+          <tr><td>L</td><td>67</td><td>58</td></tr>
+          <tr><td>XL</td><td>69</td><td>60</td></tr>
+          <tr><td>XXL</td><td>72</td><td>62</td></tr>
+        </tbody>
+      </table>
+      <p class="chart-note t" data-ar="* القياسات بالسنتيمتر" data-en="* Measurements in cm"></p>
+    </div>
   </div>
 </div>
 
@@ -2946,7 +2982,14 @@ function renderInlineSizeChart(cat){
     ['L','72','58'],
     ['XL','72','60'],
   ];
-  const rows=(isHijabi?hijabiRows:halfRows).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+  const winterRows=[
+    ['S','63','54'],
+    ['M','65','56'],
+    ['L','67','58'],
+    ['XL','69','60'],
+    ['XXL','72','62'],
+  ];
+  const rows=(cat==='winter'?winterRows:isHijabi?hijabiRows:halfRows).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
   tbl.innerHTML=`<thead>${hdr}</thead><tbody>${rows}</tbody>`;
 }
 function renderFavs(){
@@ -2991,8 +3034,7 @@ function renderProd(p){
   document.getElementById('qtyVal').value=qty;
   document.getElementById('buyNow').textContent=lang==='ar'?'اشتر الآن':'Buy Now';
   const isWinterType=p.categories.includes('hoodie')||p.categories.includes('crewneck');
-  document.getElementById('inlineSizeWrap').style.display=isWinterType?'none':'';
-  if(!isWinterType) renderInlineSizeChart(p.categories.includes('full')?'full':'half');
+  renderInlineSizeChart(isWinterType?'winter':p.categories.includes('full')?'full':'half');
   document.getElementById('addCartBtn').textContent=lang==='ar'?'أضف لعربة التسوق':'Add to Cart';
   const notice=document.querySelector('#view-product .prod-notice');
   notice.textContent=lang==='ar'?notice.dataset.ar:notice.dataset.en;
