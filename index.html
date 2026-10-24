@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#fafaf8"/>
 <title>ليكا | Leka</title>
 <meta name="description" content="ليكا (Leka) براند ملابس محلي مصري — تيشرتات يونيسكس وموديست بتصاميم مميزة وقطن 100%. تسوق أحدث موديلات الملابس الشبابي دلوقتي."/>
-<meta name="keywords" content="ليكا, Leka, LEKA, leka brand, local brand, لوكال براند, براند ملابس, ملابس, ملابس شبابي, clothes,ملابس موديست"/>
 <link rel="canonical" href="https://www.leka-eg.com/"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Leka"/>
@@ -162,6 +161,8 @@ html[lang=ar] .nav-search-cart{order:1;flex-direction:row-reverse}
   position:relative;overflow:hidden;cursor:pointer;background:var(--dust);
   border-radius:2px;
 }
+.home-hero-winter{margin-bottom:.75rem}
+.home-panel-noimg{background:#2b2b2b}
 .home-panel img{
   width:100%;height:100%;object-fit:cover;object-position:center top;
   transition:transform .7s cubic-bezier(.25,.46,.45,.94);
@@ -238,6 +239,8 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 .sb-subgroup{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .sb-subitem{padding-inline-start:2.75rem}
 .sb-item.sb-subitem:hover{padding-inline-start:3.25rem}
+.sb-subitem2{padding-inline-start:4.25rem}
+.sb-item.sb-subitem2:hover{padding-inline-start:4.75rem}
 .sb-item:hover .sb-item-arrow{color:var(--ink);transform:translateX(3px)}
 
 /* ─── SHOP ─── */
@@ -408,6 +411,9 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 .field-group{margin-bottom:1rem}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
 .field-row.full{grid-template-columns:1fr}
+.field-row.keep2{grid-template-columns:1fr 1fr!important}
+.co-more-toggle{display:flex;align-items:center;gap:.5rem;background:none;border:1px dashed var(--muted);border-radius:14px;padding:11px 16px;font-size:.74rem;font-weight:600;color:var(--mid);cursor:pointer;width:100%;margin:.5rem 0 1rem;font-family:inherit}
+.co-more-toggle:hover{background:#fff;color:var(--ink)}
 .field{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.75rem}
 .field label{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .field-error{font-size:.65rem;color:#c00;margin-top:.3rem;display:none}
@@ -923,16 +929,40 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div class="sb-item sb-subitem" onclick="showView('all');closeSidebar()">
         <div><div class="sb-item-name t" data-ar="كل المنتجات" data-en="All Products"></div></div>
       </div>
-      <div class="sb-item sb-subitem" onclick="showView('oversized');closeSidebar()">
-        <div>
-          <div class="sb-item-name t" data-ar="تيشرتات" data-en=" T-Shirts"></div>
-          <div class="sb-item-sub t" data-ar="نص كم — يونيسيكس" data-en="Short Sleeve — Unisex"></div>
+      <div class="sb-item sb-subitem" id="sbWinterToggle" onclick="toggleSbNested('sbWinterSub','sbWinterArrow')">
+        <div><div class="sb-item-name t" data-ar="كوليكشن الشتاء" data-en="Winter Collection"></div></div>
+        <svg id="sbWinterArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted);transition:transform .25s"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="sb-subgroup" id="sbWinterSub">
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('winter');closeSidebar()">
+          <div><div class="sb-item-name t" data-ar="كل كوليكشن الشتاء" data-en="All Winter Collection"></div></div>
+        </div>
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('crewneck');closeSidebar()">
+          <div><div class="sb-item-name t" data-ar="كرو نيك" data-en="Crewneck"></div></div>
+        </div>
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('hoodie');closeSidebar()">
+          <div><div class="sb-item-name t" data-ar="هودي" data-en="Hoodie"></div></div>
         </div>
       </div>
-      <div class="sb-item sb-subitem" onclick="showView('hijabi');closeSidebar()">
-        <div>
-          <div class="sb-item-name t" data-ar="كوليكشن موديست" data-en="Modest Collection"></div>
-          <div class="sb-item-sub t" data-ar="كم طويل — موديست" data-en="Long Sleeve — Modest"></div>
+      <div class="sb-item sb-subitem" id="sbSummerToggle" onclick="toggleSbNested('sbSummerSub','sbSummerArrow')">
+        <div><div class="sb-item-name t" data-ar="كوليكشن الصيف" data-en="Summer Collection"></div></div>
+        <svg id="sbSummerArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted);transition:transform .25s"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="sb-subgroup" id="sbSummerSub">
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('summer');closeSidebar()">
+          <div><div class="sb-item-name t" data-ar="كل كوليكشن الصيف" data-en="All Summer Collection"></div></div>
+        </div>
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('oversized');closeSidebar()">
+          <div>
+            <div class="sb-item-name t" data-ar="تيشرتات" data-en=" T-Shirts"></div>
+            <div class="sb-item-sub t" data-ar="نص كم — يونيسيكس" data-en="Short Sleeve — Unisex"></div>
+          </div>
+        </div>
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('hijabi');closeSidebar()">
+          <div>
+            <div class="sb-item-name t" data-ar="موديست" data-en="Modest"></div>
+            <div class="sb-item-sub t" data-ar="كم طويل — موديست" data-en="Long Sleeve — Modest"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -986,6 +1016,22 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div class="home-panel-overlay home-banner-overlay">
         <div class="home-panel-label t" data-ar="كل المنتجات" data-en="All Products"></div>
         <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
+      </div>
+    </div>
+    <div class="home-hero home-hero-winter">
+      <div class="home-panel home-panel-noimg" onclick="showView('crewneck')">
+        <div class="home-panel-overlay">
+          <div class="home-panel-label t" data-ar="كرو نيك" data-en="Crewneck"></div>
+          <div class="home-panel-sub t" data-ar="كوليكشن الشتاء" data-en="Winter Collection"></div>
+          <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
+        </div>
+      </div>
+      <div class="home-panel home-panel-noimg" onclick="showView('hoodie')">
+        <div class="home-panel-overlay">
+          <div class="home-panel-label t" data-ar="هودي" data-en="Hoodie"></div>
+          <div class="home-panel-sub t" data-ar="كوليكشن الشتاء" data-en="Winter Collection"></div>
+          <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
+        </div>
       </div>
     </div>
     <div class="home-hero">
@@ -1084,6 +1130,50 @@ html[lang=en] .contact-layout > div:last-child{order:1}
   </div>
 </div>
 
+<!-- ALL WINTER -->
+<div class="view" id="view-winter">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-title t" data-ar="كل كوليكشن الشتاء" data-en="All Winter Collection"></div>
+    </div>
+    <div class="products-grid" id="grid-winter"></div>
+  </div>
+</div>
+
+<!-- ALL SUMMER -->
+<div class="view" id="view-summer">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-title t" data-ar="كل كوليكشن الصيف" data-en="All Summer Collection"></div>
+    </div>
+    <div class="products-grid" id="grid-summer"></div>
+  </div>
+</div>
+
+<!-- CREWNECK -->
+<div class="view" id="view-crewneck">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-title t" data-ar="كرو نيك" data-en="Crewneck"></div>
+    </div>
+    <div class="products-grid" id="grid-crewneck"></div>
+  </div>
+</div>
+
+<!-- HOODIE -->
+<div class="view" id="view-hoodie">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-title t" data-ar="هودي" data-en="Hoodie"></div>
+    </div>
+    <div class="products-grid" id="grid-hoodie"></div>
+  </div>
+</div>
+
 <!-- HIJABI -->
 <div class="view" id="view-hijabi">
   
@@ -1134,7 +1224,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
            data-en=" You may inspect your order upon delivery"></div>
 
       <!-- Size Chart inline -->
-      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--line)">
+      <div id="inlineSizeWrap" style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--line)">
         <div style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.85rem" class="t" data-ar="جدول المقاسات" data-en="Size Chart"></div>
         <table class="size-table" id="inlineSizeTable" style="width:100%;font-size:.75rem"></table>
         <p class="chart-note t" data-ar="* القياسات بالسنتيمتر" data-en="* Measurements in cm"></p>
@@ -1187,8 +1277,8 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div class="chart-section">
       <div class="chart-section-title t" data-ar="مدة التوصيل" data-en="Delivery Time"></div>
       <p style="font-size:.82rem;color:var(--mid);line-height:1.9" class="t"
-        data-ar="التوصيل بياخد من 3 إلى 7 أيام عمل حسب المحافظة."
-        data-en="Delivery takes 3 to 7 business days depending on your governorate."></p>
+        data-ar="التوصيل بياخد من 3 إلى 5 أيام عمل حسب المحافظة."
+        data-en="Delivery takes 3 to 5 business days depending on your governorate."></p>
     </div>
     <div class="chart-section">
       <div class="chart-section-title t" data-ar="طرق الدفع" data-en="Payment Methods"></div>
@@ -1274,15 +1364,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <h2 class="co-page-title t" data-ar="إتمام الشراء" data-en="Checkout"></h2>
         <div class="co-section-label t" data-ar="بيانات التوصيل" data-en="Delivery Details"></div>
         <div class="field-row">
-          <div class="field"><label class="t" data-ar="الاسم الأول *" data-en="First Name *"></label><input type="text" id="coFirst"/><span class="field-error t" id="errFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
-          <div class="field"><label class="t" data-ar="الاسم الأخير *" data-en="Last Name *"></label><input type="text" id="coLast"/><span class="field-error t" id="errLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="coPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="errPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
-          <div class="field"><label class="t" data-ar="رقم موبايل تاني (اختياري)" data-en="Phone Number 2 (optional)"></label><input type="text" id="coPhone2" placeholder="+20 1XX XXX XXXX"/></div>
+          <div class="field"><label class="t" data-ar="الاسم الأول *" data-en="First Name *"></label><input autocomplete="given-name" type="text" id="coFirst"/><span class="field-error t" id="errFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
+          <div class="field"><label class="t" data-ar="الاسم الأخير *" data-en="Last Name *"></label><input autocomplete="family-name" type="text" id="coLast"/><span class="field-error t" id="errLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
         </div>
         <div class="field-row full">
-          <div class="field"><label class="t" data-ar="الإيميل (اختياري)" data-en="Email (optional)"></label><input type="text" id="coEmail" placeholder="example@email.com"/></div>
+          <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input autocomplete="tel" inputmode="tel" type="text" id="coPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="errPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
         </div>
         <div id="coAddressChoice" style="display:none;margin-bottom:1.5rem">
           <div class="co-section-label t" data-ar="عنوان التوصيل" data-en="Delivery Address"></div>
@@ -1338,10 +1424,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           </div>
         </div>
         <div class="field-row full">
-          <div class="field"><label class="t" data-ar="المنطقة / الحي *" data-en="District / Area *"></label><input type="text" id="coDistrict"/><span class="field-error t" id="errDistrict" data-ar="المنطقة مطلوبة" data-en="District is required"></span></div>
+          <div class="field"><label class="t" data-ar="المنطقة / الحي *" data-en="District / Area *"></label><input autocomplete="address-level2" type="text" id="coDistrict"/><span class="field-error t" id="errDistrict" data-ar="المنطقة مطلوبة" data-en="District is required"></span></div>
         </div>
         <div class="field-row full">
-          <div class="field"><label class="t" data-ar="اسم الشارع *" data-en="Street Name *"></label><input type="text" id="coStreet"/><span class="field-error t" id="errStreet" data-ar="اسم الشارع مطلوب" data-en="Street name is required"></span></div>
+          <div class="field"><label class="t" data-ar="اسم الشارع *" data-en="Street Name *"></label><input autocomplete="address-line1" type="text" id="coStreet"/><span class="field-error t" id="errStreet" data-ar="اسم الشارع مطلوب" data-en="Street name is required"></span></div>
         </div>
         <div class="field-row full">
           <div class="field">
@@ -1355,22 +1441,32 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
         <!-- حقول العمارة -->
         <div id="buildingFields">
-          <div class="field-row">
+          <div class="field-row full">
             <div class="field"><label id="lblBuildNum" class="t" data-ar="رقم المبنى *" data-en="Building No. *"></label><input type="text" id="coBuildNum"/><span class="field-error t" id="errBuildNum" data-ar="رقم المبنى مطلوب" data-en="Building number is required"></span></div>
-            <div class="field"><label id="lblFloor" class="t" data-ar="رقم الدور *" data-en="Floor No. *"></label><input type="text" id="coFloor"/><span class="field-error t" id="errFloor" data-ar="رقم الدور مطلوب" data-en="Floor number is required"></span></div>
           </div>
-          <div class="field-row" id="aptRow">
+          <div class="field-row keep2" id="floorAptRow">
+            <div class="field"><label id="lblFloor" class="t" data-ar="رقم الدور *" data-en="Floor No. *"></label><input type="text" id="coFloor"/><span class="field-error t" id="errFloor" data-ar="رقم الدور مطلوب" data-en="Floor number is required"></span></div>
             <div class="field"><label class="t" data-ar="رقم الشقة *" data-en="Apartment No. *"></label><input type="text" id="coApt"/><span class="field-error t" id="errApt" data-ar="رقم الشقة مطلوب" data-en="Apartment number is required"></span></div>
-            <div class="field"><label class="t" data-ar="علامة مميزة " data-en="Landmark "></label><input type="text" id="coLandmark"/></div>
           </div>
           <div class="field-row full" id="companyRow" style="display:none">
             <div class="field"><label class="t" data-ar="اسم الشخص المستلم" data-en="Recipient Name"></label><input type="text" id="coRecipient"/></div>
           </div>
         </div>
         </div>
-        <div class="field-row full" style="margin-bottom:1.5rem">
-          <div class="field"><label class="t" data-ar="ملاحظات (اختياري)" data-en="Notes (optional)"></label><textarea id="coNotes"></textarea></div>
+        <button type="button" class="co-more-toggle" id="coMoreToggle" onclick="toggleCoMore()"><span id="coMoreIcon">+</span> <span id="coMoreText" class="t" data-ar="إضافة تفاصيل (اختياري)" data-en="Add more details (optional)"></span></button>
+        <div id="coMore" style="display:none">
+          <div class="field-row">
+            <div class="field"><label class="t" data-ar="رقم موبايل تاني" data-en="Phone Number 2"></label><input inputmode="tel" type="text" id="coPhone2" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="errPhone2" data-ar="رقم الموبايل غير صحيح" data-en="Invalid phone number"></span></div>
+            <div class="field"><label class="t" data-ar="الإيميل" data-en="Email"></label><input autocomplete="email" inputmode="email" type="text" id="coEmail" placeholder="example@email.com"/></div>
+          </div>
+          <div class="field-row full">
+            <div class="field"><label class="t" data-ar="علامة مميزة" data-en="Landmark"></label><input type="text" id="coLandmark"/></div>
+          </div>
+          <div class="field-row full">
+            <div class="field"><label class="t" data-ar="ملاحظات" data-en="Notes"></label><textarea id="coNotes"></textarea></div>
+          </div>
         </div>
+        <div style="margin-bottom:1.5rem"></div>
         <div class="co-section-label t" data-ar="طريقة الدفع" data-en="Payment Method"></div>
         <div class="pay-opts">
           <label class="pay-opt">
@@ -1396,8 +1492,8 @@ html[lang=en] .contact-layout > div:last-child{order:1}
                data-ar="يمكن معاينة المنتج عند الاستلام "
                data-en="✅ Inspect on delivery"></div>
           <div class="order-notice t" style="margin-top:.4rem;padding-top:0;border-top:none"
-               data-ar="🚚 التوصيل خلال 5 أيام"
-               data-en="🚚 Delivery within 5 days"></div>
+               data-ar="🚚 التوصيل خلال 3 إلى 5 أيام عمل"
+               data-en="🚚 Delivery within 3 to 5 business days"></div>
           <div class="order-notice t"
                data-ar="⚠️ في حالة عدم استلام الشحنة، يتم دفع قيمة الشحن."
                data-en="⚠️ If the shipment is not received, the shipping cost must still be paid."></div>
@@ -1450,7 +1546,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
     <div class="contact-info">
       <div class="contact-info-title t" data-ar="محتاج مساعدة؟" data-en="NEED HELP?"></div>
 
-      <a class="contact-info-item" href="https://www.instagram.com/leka.eg/" target="_blank">
+      <a class="contact-info-item" href="https://www.instagram.com/leka.eg/" target="_blank" rel="noopener">
         <div class="contact-info-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
         </div>
@@ -1460,7 +1556,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
       </a>
 
-      <a class="contact-info-item" href="https://www.facebook.com/profile.php?id=61588791881174" target="_blank">
+      <a class="contact-info-item" href="https://www.facebook.com/profile.php?id=61588791881174" target="_blank" rel="noopener">
         <div class="contact-info-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
         </div>
@@ -1480,7 +1576,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
       </a>
 
-      <a class="contact-info-item" href="https://wa.me/201505428744" target="_blank">
+      <a class="contact-info-item" href="https://wa.me/201505428744" target="_blank" rel="noopener">
         <div class="contact-info-icon">
           <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm0 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 012.41 5.82c0 4.54-3.69 8.23-8.23 8.23-1.48 0-2.93-.4-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 01-1.25-4.37c0-4.54 3.7-8.24 8.23-8.24zm-4.52 4.7c-.16 0-.43.06-.65.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.17 1.7 2.72 4.2 3.71 2.07.83 2.49.66 2.94.62.45-.04 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.47-.28-.25-.12-1.45-.71-1.68-.8-.22-.08-.39-.12-.55.13-.16.25-.63.79-.77.95-.14.16-.29.18-.53.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.7-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.24-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.34-.76-1.83-.2-.48-.4-.42-.55-.42h-.47z"/></svg>
         </div>
@@ -1490,7 +1586,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         </div>
       </a>
 
-      <a class="contact-info-item" href="https://tiktok.com/@leka.eg" target="_blank">
+      <a class="contact-info-item" href="https://tiktok.com/@leka.eg" target="_blank" rel="noopener">
         <div class="contact-info-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
         </div>
@@ -1556,11 +1652,11 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div id="acctPaneCreate">
       <p class="acct-subtitle t" data-ar="اعمل حساب عشان بياناتك تتحفظ ومتدخلهاش تاني كل مرة تطلب فيها" data-en="Create an account so your details are saved and you don't have to re-enter them every time you order"></p>
       <div class="field-row">
-        <div class="field"><label class="t" data-ar="الاسم الأول *" data-en="First Name *"></label><input type="text" id="acctFirst"/><span class="field-error t" id="acctErrFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
-        <div class="field"><label class="t" data-ar="الاسم الأخير *" data-en="Last Name *"></label><input type="text" id="acctLast"/><span class="field-error t" id="acctErrLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
+        <div class="field"><label class="t" data-ar="الاسم الأول *" data-en="First Name *"></label><input autocomplete="given-name" type="text" id="acctFirst"/><span class="field-error t" id="acctErrFirst" data-ar="الاسم الأول مطلوب" data-en="First name is required"></span></div>
+        <div class="field"><label class="t" data-ar="الاسم الأخير *" data-en="Last Name *"></label><input autocomplete="family-name" type="text" id="acctLast"/><span class="field-error t" id="acctErrLast" data-ar="الاسم الأخير مطلوب" data-en="Last name is required"></span></div>
       </div>
-      <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input type="text" id="acctPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="acctErrPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
-      <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="acctEmail" placeholder="example@email.com"/><span class="field-error t" id="acctErrEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
+      <div class="field"><label class="t" data-ar="رقم الموبايل *" data-en="Phone Number *"></label><input autocomplete="tel" inputmode="tel" type="text" id="acctPhone" placeholder="+20 1XX XXX XXXX"/><span class="field-error t" id="acctErrPhone" data-ar="رقم الموبايل مطلوب" data-en="Phone number is required"></span></div>
+      <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input autocomplete="email" inputmode="email" type="text" id="acctEmail" placeholder="example@email.com"/><span class="field-error t" id="acctErrEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
 
       <button type="button" onclick="toggleAcctAddress()" id="acctAddrToggleBtn" style="background:none;border:1px solid var(--line);border-radius:20px;padding:10px 16px;font-size:.72rem;font-weight:600;cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
         <span class="t" data-ar="إضافة عنوانك (اختياري)" data-en="Add your address (optional)"></span>
@@ -1588,10 +1684,10 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><span class="acct-row-value" id="acctViewEmail"></span></div>
         </div>
         <div id="acctProfileEdit" style="display:none">
-          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم الأول" data-en="First Name"></span><input type="text" id="acctEditFirst"/></div>
-          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم الأخير" data-en="Last Name"></span><input type="text" id="acctEditLast"/></div>
-          <div class="acct-row"><span class="acct-row-label t" data-ar="رقم الموبايل" data-en="Phone"></span><input type="text" id="acctEditPhone"/></div>
-          <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><input type="text" id="acctEditEmail"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم الأول" data-en="First Name"></span><input autocomplete="given-name" type="text" id="acctEditFirst"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الاسم الأخير" data-en="Last Name"></span><input autocomplete="family-name" type="text" id="acctEditLast"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="رقم الموبايل" data-en="Phone"></span><input autocomplete="tel" inputmode="tel" type="text" id="acctEditPhone"/></div>
+          <div class="acct-row"><span class="acct-row-label t" data-ar="الإيميل" data-en="Email"></span><input autocomplete="email" inputmode="email" type="text" id="acctEditEmail"/></div>
           <div style="display:flex;gap:.6rem;margin-top:.9rem">
             <button type="button" onclick="saveAcctProfileEdit()" style="background:#0a0a0a;color:#fff;border:none;border-radius:16px;padding:9px 16px;font-size:.7rem;font-weight:700;cursor:pointer;flex:1;font-family:inherit" class="t" data-ar="حفظ" data-en="Save"></button>
             <button type="button" onclick="closeAcctProfileEdit()" style="background:none;border:1px solid var(--line);border-radius:16px;padding:9px 16px;font-size:.7rem;font-weight:700;cursor:pointer;flex:1;font-family:inherit" class="t" data-ar="إلغاء" data-en="Cancel"></button>
@@ -1705,7 +1801,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
 <div class="welcome-modal" id="welcomeModal" onclick="event.stopPropagation()">
   <div style="font-family:var(--display);font-size:1.3rem;text-align:center;margin-bottom:.3rem" class="t" data-ar="أهلاً بيك في ليكا" data-en="Welcome to LEKA"></div>
   <p style="font-size:.78rem;color:var(--mid);text-align:center;margin-bottom:1.5rem" class="t" data-ar="سجّل دخولك عشان بياناتك تكون جاهزة" data-en="Sign in to have your details ready"></p>
-  <input type="text" id="welcomeEmail" placeholder="example@email.com" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none;margin-bottom:.75rem"/>
+  <input autocomplete="email" inputmode="email" type="text" id="welcomeEmail" placeholder="example@email.com" style="width:100%;box-sizing:border-box;background:#e8e8e8;border:none;border-radius:20px;padding:12px 18px;font-size:16px;font-family:inherit;outline:none;margin-bottom:.75rem"/>
   <p id="welcomeMsg" style="font-size:.72rem;margin:0 0 .5rem;display:none"></p>
   <button onclick="welcomeSignIn()" style="width:100%;background:#0a0a0a;color:#fff;border:none;border-radius:20px;padding:12px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;margin-bottom:.6rem" class="t" data-ar="تسجيل الدخول" data-en="Sign In"></button>
   <button onclick="cancelWelcomeModal()" style="width:100%;background:none;border:1px solid var(--line);border-radius:20px;padding:12px;font-size:.72rem;font-weight:700;letter-spacing:.1em;cursor:pointer;color:var(--ink)" class="t" data-ar="إلغاء" data-en="Cancel"></button>
@@ -1798,6 +1894,27 @@ async function loadProducts(){
     return;
   }
   PRODUCTS=(data||[]).map(mapProductRow);
+  addWinterPreviewProducts();
+}
+// معاينة مؤقتة للكوليكشن الشتوي — شغالة على localhost بس، مش بتظهر على الموقع الحقيقي ولا بتتحفظ في القاعدة.
+// امسحي الدالة دي (واستدعاءها فوق) أول ما المنتجات الحقيقية تتضاف من الداشبورد.
+function addWinterPreviewProducts(){
+  if(!['localhost','127.0.0.1',''].includes(location.hostname)) return;
+  const blank='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#e8e8e8"/></svg>');
+  const mkColors=()=>[
+    {nameAr:'أسود',nameEn:'Black',hex:'#0a0a0a',key:'Black'},
+    {nameAr:'أبيض',nameEn:'White',hex:'#f0f0f0',key:'White'}
+  ].map(c=>({...c,images:[blank],img:blank,badge:null,locked:false,homeBestSeller:false}));
+  const mk=(id,type,nameAr,nameEn,price)=>({
+    id,cat:type,categories:[type,'all'],nameAr,nameEn,
+    descAr:'منتج تجريبي للمعاينة فقط',descEn:'Preview product only',
+    price,originalPrice:null,badge:'new',sizes:['S','M','L','XL'],
+    colors:mkColors()
+  });
+  PRODUCTS.push(
+    mk(9001,'hoodie','هودي ليكا','Leka Hoodie',1200),
+    mk(9002,'crewneck','كرو نيك ليكا','Leka Crewneck',950)
+  );
 }
 
 let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,selColor=0,selSize=null,qty=1,prevView='home',toastTimer=null;
@@ -2598,12 +2715,23 @@ function toggleSbProducts(){
   const arrow=document.getElementById('sbProductsArrow');
   const isOpen=sub.style.maxHeight&&sub.style.maxHeight!=='0px';
   if(isOpen){
+    sub.style.maxHeight=sub.scrollHeight+'px';
+    void sub.offsetHeight;
     sub.style.maxHeight='0px';
     arrow.style.transform='rotate(0deg)';
   }else{
     sub.style.maxHeight=sub.scrollHeight+'px';
     arrow.style.transform='rotate(90deg)';
   }
+}
+function toggleSbNested(subId,arrowId){
+  const sub=document.getElementById(subId);
+  const arrow=document.getElementById(arrowId);
+  const isOpen=sub.style.maxHeight&&sub.style.maxHeight!=='0px';
+  sub.style.maxHeight=isOpen?'0px':sub.scrollHeight+'px';
+  arrow.style.transform=isOpen?'rotate(0deg)':'rotate(90deg)';
+  // الجروب الأب لازم يكبر/يصغر مع الفرعي — بنسيبه من غير حد ارتفاع طول ما هو مفتوح
+  document.getElementById('sbProductsSub').style.maxHeight='none';
 }
 function toggleSbPolicies(){
   const sub=document.getElementById('sbPoliciesSub');
@@ -2626,6 +2754,8 @@ function priceHTML(p){
 }
 function catLabel(p){
   const hasHalf=p.categories.includes('half'),hasFull=p.categories.includes('full');
+  if(p.categories.includes('hoodie')) return lang==='ar'?'هودي':'Hoodie';
+  if(p.categories.includes('crewneck')) return lang==='ar'?'كرو نيك':'Crewneck';
   if(hasHalf&&hasFull) return lang==='ar'?'نص كم وموديست':'Half Sleeve & Modest';
   if(hasHalf) return lang==='ar'?'كم قصير — يونيسكس':'Half Sleeve — Unisex';
   if(hasFull) return lang==='ar'?'كم طويل — موديست':'Long Sleeve — Modest';
@@ -2715,6 +2845,10 @@ function renderGrids(){
   }
   document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')));
   document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('full')));
+  document.getElementById('grid-winter').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')||p.categories.includes('hoodie')));
+  document.getElementById('grid-summer').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')||p.categories.includes('full')));
+  document.getElementById('grid-crewneck').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')));
+  document.getElementById('grid-hoodie').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('hoodie')));
   document.getElementById('grid-all').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('all')));
   renderHomeBestSellers();
   renderFavs();
@@ -2852,7 +2986,9 @@ function renderProd(p){
   document.getElementById('colorLabel').textContent=lang==='ar'?col.nameAr:col.nameEn;
   document.getElementById('qtyVal').value=qty;
   document.getElementById('buyNow').textContent=lang==='ar'?'اشتر الآن':'Buy Now';
-  renderInlineSizeChart(p.categories.includes('full')?'full':'half');
+  const isWinterType=p.categories.includes('hoodie')||p.categories.includes('crewneck');
+  document.getElementById('inlineSizeWrap').style.display=isWinterType?'none':'';
+  if(!isWinterType) renderInlineSizeChart(p.categories.includes('full')?'full':'half');
   document.getElementById('addCartBtn').textContent=lang==='ar'?'أضف لعربة التسوق':'Add to Cart';
   const notice=document.querySelector('#view-product .prod-notice');
   notice.textContent=lang==='ar'?notice.dataset.ar:notice.dataset.en;
@@ -3122,6 +3258,7 @@ function prefillCheckoutFromProfile(){
   if(coLast&&!coLast.value) coLast.value=last;
   if(coPhone&&!coPhone.value) coPhone.value=customerProfile.phone||'';
   if(coEmail&&!coEmail.value) coEmail.value=customerProfile.email||'';
+  syncCoMore();
   const addresses=customerProfile.addresses||[];
   const choiceBlock=document.getElementById('coAddressChoice');
   if(addresses.length){
@@ -3159,6 +3296,7 @@ function fillCoAddressFields(addr){
   document.getElementById('coLandmark').value=addr.landmark||'';
   const coRecipient=document.getElementById('coRecipient');
   if(coRecipient) coRecipient.value=addr.recipient||'';
+  syncCoMore();
 }
 function clearCoAddressFields(){
   document.getElementById('coGov').value='';
@@ -3227,8 +3365,10 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   if(isBlockedCustomer){ openBlockedModal(); return; }
   const first=document.getElementById('coFirst').value.trim();
   const last=document.getElementById('coLast').value.trim();
-  const phone=document.getElementById('coPhone').value.trim();
-  const phone2=document.getElementById('coPhone2').value.trim();
+  // الأرقام العربية (٠١٠٠...) بتتحول لإنجليزي، عشان التحقق والبحث عن الأوردر بالتليفون يشتغلوا مهما كان الكيبورد
+  const toLatin=v=>v.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  const phone=toLatin(document.getElementById('coPhone').value.trim());
+  const phone2=toLatin(document.getElementById('coPhone2').value.trim());
   const email=document.getElementById('coEmail').value.trim();
   const gov=document.getElementById('coGov').value;
   const district=document.getElementById('coDistrict').value.trim();
@@ -3251,13 +3391,19 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     {id:'coDistrict',err:'errDistrict'},
     {id:'coStreet',err:'errStreet'},
     {id:'coBuildNum',err:'errBuildNum'},
-    {id:'coFloor',err:'errFloor'},
-    {id:'coApt',err:'errApt'},
   ];
+  // الدور والشقة مش موجودين في العنوان لو النوع "شركة" — فمش لازم يتطلبوا
+  if(buildName!=='Company'){
+    fields.push({id:'coFloor',err:'errFloor'},{id:'coApt',err:'errApt'});
+  }
   let valid=true;
+  let firstBad=null;
+  const markBad=el=>{ if(el&&!firstBad) firstBad=el; };
   // clear previous errors
   document.querySelectorAll('.field input,.field select,.field textarea').forEach(el=>el.classList.remove('error'));
   document.querySelectorAll('.field-error').forEach(el=>el.classList.remove('show'));
+  const errPhone2El=document.getElementById('errPhone2');
+  if(errPhone2El) errPhone2El.classList.remove('show');
 
   fields.forEach(f=>{
     const el=document.getElementById(f.id);
@@ -3266,9 +3412,28 @@ document.getElementById('placeOrderBtn').onclick=async function(){
       el.classList.add('error');
       if(err) err.classList.add('show');
       valid=false;
-      if(valid===false&&el) el.scrollIntoView({behavior:'smooth',block:'center'});
+      markBad(el);
     }
   });
+  // صيغة رقم الموبايل المصري (01xxxxxxxxx أو +201xxxxxxxxx)
+  const egPhone=v=>/^(\+?20|0)?1[0125]\d{8}$/.test(v.replace(/[\s\-()]/g,''));
+  const errPhoneEl=document.getElementById('errPhone');
+  if(phone&&!egPhone(phone)){
+    document.getElementById('coPhone').classList.add('error');
+    errPhoneEl.textContent=lang==='ar'?'رقم الموبايل غير صحيح':'Invalid phone number';
+    errPhoneEl.classList.add('show');
+    valid=false;
+    markBad(document.getElementById('coPhone'));
+  } else if(errPhoneEl){
+    errPhoneEl.textContent=lang==='ar'?errPhoneEl.dataset.ar:errPhoneEl.dataset.en;
+  }
+  if(phone2&&!egPhone(phone2)){
+    document.getElementById('coPhone2').classList.add('error');
+    if(errPhone2El) errPhone2El.classList.add('show');
+    toggleCoMore(true);
+    valid=false;
+    markBad(document.getElementById('coPhone2'));
+  }
   // check governorate
   if(!gov){
     const trigger=document.getElementById('govTrigger');
@@ -3276,14 +3441,19 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     const errGov=document.getElementById('errGov');
     if(errGov) errGov.classList.add('show');
     valid=false;
+    markBad(document.getElementById('govTrigger'));
   }
   // لازم يختار عمارة أو شركة — من غير اختيار مش هيعرف يكمل
   if(!document.querySelector('#coAddressFields .btype-btn.active')){
     const errBType=document.getElementById('errBuildingType');
     if(errBType) errBType.classList.add('show');
     valid=false;
+    markBad(errBType);
   }
-  if(!valid) return;
+  if(!valid){
+    if(firstBad) firstBad.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if(!cart.length){showToast({nameAr:lang==='ar'?'لا يوجد منتجات في عربة التسوق':'Cart is empty',nameEn:'Cart is empty'});return}
 
   // فحص إضافي: حتى لو من غير حساب، لو رقم الموبايل أو الإيميل اللي دخلته دلوقتي متسجل عليه حظر منسمحلهاش تكمل —
@@ -3331,16 +3501,17 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     }catch(e){console.error('Save address:',e)}
   }
 
-  try{
-    await fetch('https://axoyqisvnmkgbuvklvis.supabase.co/functions/v1/send-order-email',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer sb_publishable_VJHuyzV-YTy_L3ia1ss8QA_gn4J6qlu'},
-      body:JSON.stringify({first_name:first,last_name:last,phone,email,governorate:gov,district,street,building_name:buildName,building_number:buildNum,floor_number:floor,apartment_number:apt,landmark,notes,payment_method:payment,items:itemsData,total,order_number:orderNum})
-    });
-  }catch(e){console.error('Email:',e)}
+  // الإيميل مش بنستناه — الأوردر اتحفظ خلاص، والعميلة متستناش سيرفر الإيميل عشان تشوف تأكيد الطلب
+  fetch('https://axoyqisvnmkgbuvklvis.supabase.co/functions/v1/send-order-email',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer sb_publishable_VJHuyzV-YTy_L3ia1ss8QA_gn4J6qlu'},
+    body:JSON.stringify({first_name:first,last_name:last,phone,email,governorate:gov,district,street,building_name:buildName,building_number:buildNum,floor_number:floor,apartment_number:apt,landmark,notes,payment_method:payment,items:itemsData,total,order_number:orderNum})
+  }).catch(e=>console.error('Email:',e));
 
   // تقليل المخزون بعد الطلب — تنقيص آمن (atomic) جوه قاعدة البيانات نفسها عشان
   // لو اتنين اشتروا في نفس اللحظة تقريبًا، الكمية تتحسب صح دايمًا (مش تتكتب فوق بعض)
+  // لو حصل أي خطأ هنا الأوردر اتحفظ فعلًا، فلازم العميلة تشوف تأكيد الطلب مش زرار متعلق (عشان ماتبعتش أوردر مكرر)
+  try{
   for(const item of cart){
     const colorKey=item.colorEn||item.colorKey||'Black';
     const boughtProduct=PRODUCTS.find(p=>p.id===item.id);
@@ -3354,6 +3525,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
       if(k.endsWith(`_${colorKey}_${item.size}`) && sameTypeIds.includes(parseInt(k.split('_')[0]))) inventory[k]=newQty;
     });
   }
+  }catch(e){console.error('Stock:',e)}
 
   showView('success');
   cart=[];saveCart();
@@ -3439,6 +3611,19 @@ async function submitContact(){
 }
 
 document.getElementById('ctSubmit').addEventListener('click',submitContact);
+function toggleCoMore(forceOpen){
+  const box=document.getElementById('coMore');
+  const open=(typeof forceOpen==='boolean')?forceOpen:box.style.display==='none';
+  box.style.display=open?'block':'none';
+  document.getElementById('coMoreIcon').textContent=open?'−':'+';
+  const t=document.getElementById('coMoreText');
+  t.dataset.ar=open?'إخفاء التفاصيل الإضافية':'إضافة تفاصيل (اختياري)';
+  t.dataset.en=open?'Hide extra details':'Add more details (optional)';
+  t.textContent=lang==='ar'?t.dataset.ar:t.dataset.en;
+}
+function syncCoMore(){
+  if(['coPhone2','coEmail','coLandmark','coNotes'].some(id=>document.getElementById(id).value.trim())) toggleCoMore(true);
+}
 function setBuildingType(btn,ar,en){
   document.querySelectorAll('#coAddressFields .btype-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -3447,21 +3632,19 @@ function setBuildingType(btn,ar,en){
   const isCompany=(ar==='شركة');
 
   // أظهر/أخفي الخانات
-  const aptRow=document.getElementById('aptRow');
+  const floorAptRow=document.getElementById('floorAptRow');
   const companyRow=document.getElementById('companyRow');
   const lblBuildNum=document.getElementById('lblBuildNum');
   const lblFloor=document.getElementById('lblFloor');
 
   if(isCompany){
-    aptRow.style.display='none';
+    floorAptRow.style.display='none';
     companyRow.style.display='block';
-    document.getElementById('coFloor').closest('.field').style.display='none';
     if(lblBuildNum) lblBuildNum.setAttribute('data-ar','رقم المبنى *');
     if(lblBuildNum) lblBuildNum.setAttribute('data-en','Building No. *');
   } else {
-    aptRow.style.display='';
+    floorAptRow.style.display='';
     companyRow.style.display='none';
-    document.getElementById('coFloor').closest('.field').style.display='';
     if(lblBuildNum) lblBuildNum.setAttribute('data-ar','رقم المبنى *');
     if(lblBuildNum) lblBuildNum.setAttribute('data-en','Building No. *');
     if(lblFloor) lblFloor.setAttribute('data-ar','رقم الدور *');

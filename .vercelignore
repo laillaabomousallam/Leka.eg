@@ -1,0 +1,13 @@
+inv_dump.json
+products_cover.json
+basic_check.json
+basic13_check.json
+basic14_check.json
+final_check.json
+shipping_check.json
+convert_log.txt
+push.bat
+supabase_*.sql
+optimized_for_upload
+.claude
+.vscode
