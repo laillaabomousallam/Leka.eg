@@ -2562,6 +2562,8 @@ function getColorKey(color){
 // بيرجع true لو المخزون المفروض يبقى مشترك بين كل منتجات نفس النوع، وfalse لو المفروض
 // يبقى كل منتج بمخزونه الخاص بيه لوحده (استثناءات محددة طلبتها المديرة) — نفس المنطق في admin.html بالظبط
 function isPooledInventory(cat,color,size){
+  // الشتوي: كل منتجات نفس النوع (كل الكرو نيك مع بعض، وكل الهودي مع بعض) مخزونها مشترك لكل لون ومقاس، من غير أي استثناءات
+  if(cat==='crewneck'||cat==='hoodie') return true;
   const c=(color||'').toLowerCase();
   if(c==='burgundy') return false;
   if(size==='L'||size==='M') return false;
