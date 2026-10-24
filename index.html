@@ -306,7 +306,7 @@ html[lang=en] .sidebar.open{transform:translateX(0)}
 .thumb.active{border-color:var(--ink);opacity:1}
 .prod-info{padding:3rem 2.5rem 3rem 5rem;overflow-y:auto;max-height:calc(100vh - var(--nav-h));position:relative;-webkit-overflow-scrolling:touch;min-width:0}
 .back-btn{
-  position:fixed;top:calc(var(--nav-h) + 4px);left:12px;
+  position:fixed;top:calc(var(--nav-h) + var(--banner-h) + 4px);left:12px;
   display:none;align-items:center;justify-content:center;
   width:38px;height:38px;border-radius:50%;
   background:#f2f2f2;border:none;cursor:pointer;
@@ -1282,7 +1282,7 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="field"><label class="t" data-ar="رقم موبايل تاني (اختياري)" data-en="Phone Number 2 (optional)"></label><input type="text" id="coPhone2" placeholder="+20 1XX XXX XXXX"/></div>
         </div>
         <div class="field-row full">
-          <div class="field"><label class="t" data-ar="الإيميل *" data-en="Email *"></label><input type="text" id="coEmail" placeholder="example@email.com"/><span class="field-error t" id="errEmail" data-ar="الإيميل مطلوب" data-en="Email is required"></span></div>
+          <div class="field"><label class="t" data-ar="الإيميل (اختياري)" data-en="Email (optional)"></label><input type="text" id="coEmail" placeholder="example@email.com"/></div>
         </div>
         <div id="coAddressChoice" style="display:none;margin-bottom:1.5rem">
           <div class="co-section-label t" data-ar="عنوان التوصيل" data-en="Delivery Address"></div>
@@ -3248,7 +3248,6 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     {id:'coFirst',err:'errFirst'},
     {id:'coLast',err:'errLast'},
     {id:'coPhone',err:'errPhone'},
-    {id:'coEmail',err:'errEmail'},
     {id:'coDistrict',err:'errDistrict'},
     {id:'coStreet',err:'errStreet'},
     {id:'coBuildNum',err:'errBuildNum'},
@@ -3289,7 +3288,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
 
   // فحص إضافي: حتى لو من غير حساب، لو رقم الموبايل أو الإيميل اللي دخلته دلوقتي متسجل عليه حظر منسمحلهاش تكمل —
   // من غير ما نقول ليها إننا عرفنا من البيانات دي بالذات
-  const {data:blockCheck}=await sb.rpc('check_customer_blocked',{p_phone:phone,p_email:email});
+  const {data:blockCheck}=await sb.rpc('check_customer_blocked',{p_phone:phone,p_email:email||null});
   if(blockCheck){
     openBlockedModal();
     return;
