@@ -2839,7 +2839,7 @@ function shuffleCardsNoAdjacentRepeat(cards){
   return arr;
 }
 function renderGrids(){
-  function buildCards(prods){
+  function buildCardList(prods){
     const lekaCards=shuffleCardsNoAdjacentRepeat(prods.filter(p=>p.id===1||p.id===5).flatMap(p=>p.colors.map((_,i)=>({p,i}))));
     const others=prods.filter(p=>p.id!==1&&p.id!==5);
     // خلط حقيقي على مستوى المنتج واللون مع بعض — مش دفعة كل لون لوحده
@@ -2860,15 +2860,24 @@ function renderGrids(){
       }
     });
     while(oi<otherCards.length){result.push(makeCard(otherCards[oi].p,otherCards[oi].i));oi++;}
-    return result.join('');
+    return result;
   }
+  const buildCards=prods=>buildCardList(prods).join('');
   document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')));
   document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('full')));
   document.getElementById('grid-winter').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')||p.categories.includes('hoodie')));
   document.getElementById('grid-summer').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')||p.categories.includes('full')));
   document.getElementById('grid-crewneck').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')));
   document.getElementById('grid-hoodie').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('hoodie')));
-  document.getElementById('grid-all').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('all')));
+  // في "كل المنتجات" الشتوي بيظهر الأول فوق، وبعده الصيفي (الترتيب جوه كل مجموعة زي ما هو)
+  const isWinterP=p=>p.categories.includes('hoodie')||p.categories.includes('crewneck');
+  const allList=PRODUCTS.filter(p=>p.categories.includes('all'));
+  // الشتوي أكتر، مع كارت صيفي بعد كل 3 كروت شتوي في الأول، وباقي الصيفي بعد كده
+  const winterCards=buildCardList(allList.filter(isWinterP)), summerCards=buildCardList(allList.filter(p=>!isWinterP(p)));
+  const mixed=[]; let si=0;
+  winterCards.forEach((c,i)=>{ mixed.push(c); if((i+1)%3===0&&si<summerCards.length) mixed.push(summerCards[si++]); });
+  while(si<summerCards.length) mixed.push(summerCards[si++]);
+  document.getElementById('grid-all').innerHTML=mixed.join('');
   renderHomeBestSellers();
   renderFavs();
 }
