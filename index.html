@@ -1932,27 +1932,6 @@ async function loadProducts(){
     return;
   }
   PRODUCTS=(data||[]).map(mapProductRow);
-  addWinterPreviewProducts();
-}
-// معاينة مؤقتة للكوليكشن الشتوي — شغالة على localhost بس، مش بتظهر على الموقع الحقيقي ولا بتتحفظ في القاعدة.
-// امسحي الدالة دي (واستدعاءها فوق) أول ما المنتجات الحقيقية تتضاف من الداشبورد.
-function addWinterPreviewProducts(){
-  if(!['localhost','127.0.0.1',''].includes(location.hostname)) return;
-  const blank='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#e8e8e8"/></svg>');
-  const mkColors=()=>[
-    {nameAr:'أسود',nameEn:'Black',hex:'#0a0a0a',key:'Black'},
-    {nameAr:'أبيض',nameEn:'White',hex:'#f0f0f0',key:'White'}
-  ].map(c=>({...c,images:[blank],img:blank,badge:null,locked:false,homeBestSeller:false}));
-  const mk=(id,type,nameAr,nameEn,price)=>({
-    id,cat:type,categories:[type,'all'],nameAr,nameEn,
-    descAr:'منتج تجريبي للمعاينة فقط',descEn:'Preview product only',
-    price,originalPrice:null,badge:'new',sizes:['S','M','L','XL'],
-    colors:mkColors()
-  });
-  PRODUCTS.push(
-    mk(9001,'hoodie','هودي ليكا','Leka Hoodie',1200),
-    mk(9002,'crewneck','كرو نيك ليكا','Leka Crewneck',950)
-  );
 }
 
 let lang='en',cart=JSON.parse(localStorage.getItem('leka_cart')||'[]'),cur=null,selColor=0,selSize=null,qty=1,prevView='home',toastTimer=null;
