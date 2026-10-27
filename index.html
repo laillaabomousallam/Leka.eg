@@ -150,6 +150,8 @@ html[lang=ar] .nav-search-cart{order:1;flex-direction:row-reverse}
   padding:1.5rem;
 }
 .home-banner-overlay .home-panel-label{margin-bottom:.5rem}
+.home-banner-junior .home-banner-imgs img{object-position:center 8%}
+.home-banner-junior .home-panel-sub{margin-bottom:.15rem}
 .home-banner-overlay .home-panel-arrow{opacity:1;transform:none;margin-top:0}
 .home-hero{
   display:grid;grid-template-columns:1fr 1fr;
@@ -943,6 +945,9 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <div class="sb-item sb-subitem sb-subitem2" onclick="showView('hoodie');closeSidebar()">
           <div><div class="sb-item-name t" data-ar="هودي" data-en="Hoodie"></div></div>
         </div>
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('junior');closeSidebar()">
+          <div><div class="sb-item-name t" data-ar="جونيور" data-en="Junior"></div><div class="sb-item-sub t" data-ar="مقاسات الأطفال" data-en="Kids sizes"></div></div>
+        </div>
       </div>
       <div class="sb-item sb-subitem" id="sbSummerToggle" onclick="toggleSbNested('sbSummerSub','sbSummerArrow')">
         <div><div class="sb-item-name t" data-ar="كوليكشن الصيف" data-en="Summer Collection"></div></div>
@@ -1034,6 +1039,16 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="home-panel-sub t" data-ar="كوليكشن الشتاء" data-en="Winter Collection"></div>
           <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
         </div>
+      </div>
+    </div>
+    <div class="home-banner home-banner-junior" onclick="showView('junior')">
+      <div class="home-banner-imgs">
+        <img src="imgs/junior.webp" alt="Junior"/>
+      </div>
+      <div class="home-panel-overlay home-banner-overlay">
+        <div class="home-panel-label t" data-ar="جونيور" data-en="Junior"></div>
+        <div class="home-panel-sub t" data-ar="مقاسات الأطفال — كوليكشن الشتاء" data-en="Kids sizes — Winter Collection"></div>
+        <div class="home-panel-arrow t" data-ar="تسوق الآن →" data-en="Shop Now →"></div>
       </div>
     </div>
     <div class="home-hero">
@@ -1173,6 +1188,17 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div class="shop-header-title t" data-ar="هودي" data-en="Hoodie"></div>
     </div>
     <div class="products-grid" id="grid-hoodie"></div>
+  </div>
+</div>
+
+<!-- JUNIOR -->
+<div class="view" id="view-junior">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-title t" data-ar="جونيور" data-en="Junior"></div>
+    </div>
+    <div class="products-grid" id="grid-junior"></div>
   </div>
 </div>
 
@@ -2578,7 +2604,7 @@ function getColorKey(color){
 // يبقى كل منتج بمخزونه الخاص بيه لوحده (استثناءات محددة طلبتها المديرة) — نفس المنطق في admin.html بالظبط
 function isPooledInventory(cat,color,size){
   // الشتوي: كل منتجات نفس النوع (كل الكرو نيك مع بعض، وكل الهودي مع بعض) مخزونها مشترك لكل لون ومقاس، من غير أي استثناءات
-  if(cat==='crewneck'||cat==='hoodie') return true;
+  if(cat==='crewneck'||cat==='hoodie'||cat==='junior_crewneck'||cat==='junior_hoodie') return true;
   const c=(color||'').toLowerCase();
   if(c==='burgundy') return false;
   if(size==='L'||size==='M') return false;
@@ -2773,6 +2799,8 @@ function priceHTML(p){
 }
 function catLabel(p){
   const hasHalf=p.categories.includes('half'),hasFull=p.categories.includes('full');
+  if(p.categories.includes('junior_hoodie')) return lang==='ar'?'جونيور هودي':'Junior Hoodie';
+  if(p.categories.includes('junior_crewneck')) return lang==='ar'?'جونيور كرو نيك':'Junior Crewneck';
   if(p.categories.includes('hoodie')) return lang==='ar'?'هودي':'Hoodie';
   if(p.categories.includes('crewneck')) return lang==='ar'?'كرو نيك':'Crewneck';
   if(hasHalf&&hasFull) return lang==='ar'?'نص كم وموديست':'Half Sleeve & Modest';
@@ -2865,12 +2893,14 @@ function renderGrids(){
   const buildCards=prods=>buildCardList(prods).join('');
   document.getElementById('grid-half').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')));
   document.getElementById('grid-full').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('full')));
-  document.getElementById('grid-winter').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')||p.categories.includes('hoodie')));
+  const isJuniorP=p=>p.categories.includes('junior_hoodie')||p.categories.includes('junior_crewneck');
+  document.getElementById('grid-winter').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')||p.categories.includes('hoodie')||isJuniorP(p)));
+  document.getElementById('grid-junior').innerHTML=buildCards(PRODUCTS.filter(isJuniorP));
   document.getElementById('grid-summer').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')||p.categories.includes('full')));
   document.getElementById('grid-crewneck').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')));
   document.getElementById('grid-hoodie').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('hoodie')));
   // في "كل المنتجات" الشتوي بيظهر الأول فوق، وبعده الصيفي (الترتيب جوه كل مجموعة زي ما هو)
-  const isWinterP=p=>p.categories.includes('hoodie')||p.categories.includes('crewneck');
+  const isWinterP=p=>p.categories.includes('hoodie')||p.categories.includes('crewneck')||isJuniorP(p);
   const allList=PRODUCTS.filter(p=>p.categories.includes('all'));
   // الشتوي أكتر، مع كارت صيفي بعد كل 3 كروت شتوي في الأول، وباقي الصيفي بعد كده
   const winterCards=buildCardList(allList.filter(isWinterP)), summerCards=buildCardList(allList.filter(p=>!isWinterP(p)));
@@ -3021,8 +3051,10 @@ function renderProd(p){
   document.getElementById('colorLabel').textContent=lang==='ar'?col.nameAr:col.nameEn;
   document.getElementById('qtyVal').value=qty;
   document.getElementById('buyNow').textContent=lang==='ar'?'اشتر الآن':'Buy Now';
+  const isJunior=p.categories.includes('junior_hoodie')||p.categories.includes('junior_crewneck');
   const isWinterType=p.categories.includes('hoodie')||p.categories.includes('crewneck');
-  renderInlineSizeChart(isWinterType?'winter':p.categories.includes('full')?'full':'half');
+  document.getElementById('inlineSizeWrap').style.display=isJunior?'none':'';
+  if(!isJunior) renderInlineSizeChart(isWinterType?'winter':p.categories.includes('full')?'full':'half');
   document.getElementById('addCartBtn').textContent=lang==='ar'?'أضف لعربة التسوق':'Add to Cart';
   const notice=document.querySelector('#view-product .prod-notice');
   notice.textContent=lang==='ar'?notice.dataset.ar:notice.dataset.en;
