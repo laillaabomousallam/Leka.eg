@@ -1419,6 +1419,21 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <p class="chart-note t" data-ar="* القياسات بالسنتيمتر" data-en="* Measurements in cm"></p>
     </div>
     <div class="chart-section">
+      <div class="chart-section-title t" data-ar="جونيور — هودي وكرو نيك" data-en="Junior — Hoodie &amp; Crewneck"></div>
+      <table class="size-table">
+        <thead><tr>
+          <th>Size</th>
+          <th class="t" data-ar="طول الجسم (سم)" data-en="Body Length (cm)"></th>
+          <th class="t" data-ar="عرض الجسم (سم)" data-en="Body Width (cm)"></th>
+        </tr></thead>
+        <tbody>
+          <tr><td>S</td><td>63</td><td>54</td></tr>
+          <tr><td>M</td><td>65</td><td>56</td></tr>
+        </tbody>
+      </table>
+      <p class="chart-note t" data-ar="* القياسات بالسنتيمتر" data-en="* Measurements in cm"></p>
+    </div>
+    <div class="chart-section">
       <div class="chart-section-title t" data-ar="موديست — كم طويل" data-en="Modest — Long Sleeve"></div>
       <table class="size-table">
         <thead><tr>
@@ -3046,7 +3061,8 @@ function renderInlineSizeChart(cat){
     ['XL','69','60'],
     ['XXL','72','62'],
   ];
-  const rows=(cat==='winter'?winterRows:isHijabi?hijabiRows:halfRows).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+  const juniorRows=winterRows.slice(0,2); // جونيور: S و M بس (مؤقتاً بقياسات الهودي لحد ما تتبعت قياسات الجونيور)
+  const rows=(cat==='junior'?juniorRows:cat==='winter'?winterRows:isHijabi?hijabiRows:halfRows).map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
   tbl.innerHTML=`<thead>${hdr}</thead><tbody>${rows}</tbody>`;
 }
 function renderFavs(){
@@ -3092,8 +3108,7 @@ function renderProd(p){
   document.getElementById('buyNow').textContent=lang==='ar'?'اشتر الآن':'Buy Now';
   const isJunior=p.categories.includes('junior_hoodie')||p.categories.includes('junior_crewneck');
   const isWinterType=p.categories.includes('hoodie')||p.categories.includes('crewneck');
-  document.getElementById('inlineSizeWrap').style.display=isJunior?'none':'';
-  if(!isJunior) renderInlineSizeChart(isWinterType?'winter':p.categories.includes('full')?'full':'half');
+  renderInlineSizeChart(isJunior?'junior':isWinterType?'winter':p.categories.includes('full')?'full':'half');
   document.getElementById('addCartBtn').textContent=lang==='ar'?'أضف لعربة التسوق':'Add to Cart';
   const notice=document.querySelector('#view-product .prod-notice');
   notice.textContent=lang==='ar'?notice.dataset.ar:notice.dataset.en;
