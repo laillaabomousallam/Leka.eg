@@ -945,8 +945,23 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <div class="sb-item sb-subitem sb-subitem2" onclick="showView('hoodie');closeSidebar()">
           <div><div class="sb-item-name t" data-ar="هودي" data-en="Hoodie"></div></div>
         </div>
+      </div>
+      <div class="sb-item sb-subitem" id="sbJuniorToggle" onclick="toggleSbNested('sbJuniorSub','sbJuniorArrow')">
+        <div>
+          <div class="sb-item-name t" data-ar="جونيور" data-en="Junior"></div>
+          <div class="sb-item-sub t" data-ar="مقاسات الأطفال — شتاء" data-en="Kids sizes — Winter"></div>
+        </div>
+        <svg id="sbJuniorArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16" style="flex-shrink:0;color:var(--muted);transition:transform .25s"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="sb-subgroup" id="sbJuniorSub">
         <div class="sb-item sb-subitem sb-subitem2" onclick="showView('junior');closeSidebar()">
-          <div><div class="sb-item-name t" data-ar="جونيور" data-en="Junior"></div><div class="sb-item-sub t" data-ar="مقاسات الأطفال" data-en="Kids sizes"></div></div>
+          <div><div class="sb-item-name t" data-ar="كل الجونيور" data-en="All Junior"></div></div>
+        </div>
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('jrcrewneck');closeSidebar()">
+          <div><div class="sb-item-name t" data-ar="كرو نيك" data-en="Crewneck"></div></div>
+        </div>
+        <div class="sb-item sb-subitem sb-subitem2" onclick="showView('jrhoodie');closeSidebar()">
+          <div><div class="sb-item-name t" data-ar="هودي" data-en="Hoodie"></div></div>
         </div>
       </div>
       <div class="sb-item sb-subitem" id="sbSummerToggle" onclick="toggleSbNested('sbSummerSub','sbSummerArrow')">
@@ -1199,6 +1214,28 @@ html[lang=en] .contact-layout > div:last-child{order:1}
       <div class="shop-header-title t" data-ar="جونيور" data-en="Junior"></div>
     </div>
     <div class="products-grid" id="grid-junior"></div>
+  </div>
+</div>
+
+<!-- JUNIOR CREWNECK -->
+<div class="view" id="view-jrcrewneck">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-title t" data-ar="جونيور — كرو نيك" data-en="Junior Crewneck"></div>
+    </div>
+    <div class="products-grid" id="grid-jrcrewneck"></div>
+  </div>
+</div>
+
+<!-- JUNIOR HOODIE -->
+<div class="view" id="view-jrhoodie">
+  <div class="page-logo" onclick="goHome()"><img src="imgs/main logo.webp" alt="Leka"/></div>
+  <div class="shop-wrap">
+    <div class="shop-header">
+      <div class="shop-header-title t" data-ar="جونيور — هودي" data-en="Junior Hoodie"></div>
+    </div>
+    <div class="products-grid" id="grid-jrhoodie"></div>
   </div>
 </div>
 
@@ -2896,6 +2933,8 @@ function renderGrids(){
   const isJuniorP=p=>p.categories.includes('junior_hoodie')||p.categories.includes('junior_crewneck');
   document.getElementById('grid-winter').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')||p.categories.includes('hoodie')||isJuniorP(p)));
   document.getElementById('grid-junior').innerHTML=buildCards(PRODUCTS.filter(isJuniorP));
+  document.getElementById('grid-jrcrewneck').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('junior_crewneck')));
+  document.getElementById('grid-jrhoodie').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('junior_hoodie')));
   document.getElementById('grid-summer').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('half')||p.categories.includes('full')));
   document.getElementById('grid-crewneck').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('crewneck')));
   document.getElementById('grid-hoodie').innerHTML=buildCards(PRODUCTS.filter(p=>p.categories.includes('hoodie')));
