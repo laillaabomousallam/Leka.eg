@@ -2662,6 +2662,15 @@ function isPooledInventory(cat,color,size){
   if(size==='L'||size==='M') return false;
   return true;
 }
+
+// المنتجات اللي مخزونها مشترك مع بعض لنفس اللون والمقاس: نفس النوع دايماً،
+// وكمان مقاسا S وM بتاعين الجونيور بيتشاركوا مع الهودي/الكرو نيك الكبار (هودي مع هودي، وكرو نيك مع كرو نيك)
+function poolProductIds(list,cat,size){
+  const adult=cat==='junior_hoodie'?'hoodie':cat==='junior_crewneck'?'crewneck':cat;
+  const linkSM=(size==='S'||size==='M')&&(adult==='hoodie'||adult==='crewneck');
+  return list.filter(p=>p.cat===cat||(linkSM&&(p.cat===adult||p.cat==='junior_'+adult))).map(p=>p.id);
+}
+
 function getQty(productId,colorKey,size){
   const k=`${productId}_${colorKey}_${size}`;
   return inventory[k]!==undefined ? inventory[k] : 99;
@@ -3636,7 +3645,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     const colorKey=item.colorEn||item.colorKey||'Black';
     const boughtProduct=PRODUCTS.find(p=>p.id===item.id);
     const isShared=boughtProduct&&isPooledInventory(boughtProduct.cat,colorKey,item.size);
-    const sameTypeIds=isShared?PRODUCTS.filter(p=>p.cat===boughtProduct.cat).map(p=>p.id):[item.id];
+    const sameTypeIds=isShared?poolProductIds(PRODUCTS,boughtProduct.cat,item.size):[item.id];
     const {data:newQtyData}=await sb.rpc('decrement_shared_stock',{
       p_color:colorKey,p_size:item.size,p_product_ids:sameTypeIds,p_qty:item.qty
     });
