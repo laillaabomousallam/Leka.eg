@@ -501,6 +501,10 @@ html[lang=en] .c-drawer.open{transform:translateX(0)}
 .ci-name{font-size:.8rem;font-weight:500;margin-bottom:3px}
 .ci-sub{font-size:.68rem;color:var(--muted)}
 .ci-rm{background:none;border:none;color:var(--muted);padding:2px;display:inline-flex;cursor:pointer}
+.ci-qty{display:inline-flex;align-items:center;background:#f2f2f2;border-radius:16px;margin-top:6px}
+.ci-qty button{background:none;border:none;width:30px;height:28px;font-size:1rem;color:var(--ink);cursor:pointer}
+.ci-qty button:disabled{opacity:.3;cursor:default}
+.ci-qty span{min-width:22px;text-align:center;font-size:.78rem;font-weight:600}
 .ci-rm svg{width:15px;height:15px}
 .ci-price{font-size:.8rem;font-weight:600}
 .c-foot{background:var(--paper);padding:1.1rem 1.4rem calc(1.1rem + env(safe-area-inset-bottom));border-top:1px solid var(--line);flex-shrink:0;height:150px;margin-bottom:2rem;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
@@ -2464,13 +2468,14 @@ async function createAccount(){
   msg.textContent='';
   renderAccountView();
   checkIfBlocked();
-  pullCart('login');
+  pullAllSync('login');
 }
 function forgetAccount(){
   customerProfile=null;
   isBlockedCustomer=false;
   localStorage.removeItem('leka_customer');
   localStorage.removeItem('leka_cart_base');
+  localStorage.removeItem('leka_favs_base');
   renderAccountView();
 }
 
@@ -2522,7 +2527,7 @@ async function welcomeSignIn(){
   saveCustomerProfileLocal({name:data.name,phone:data.phone,email:data.email,addresses:data.addresses||[]});
   closeWelcomeModal();
   checkIfBlocked();
-  pullCart('login');
+  pullAllSync('login');
 }
 function openCreateAccountFromWelcome(){
   closeWelcomeModal();
@@ -3043,6 +3048,8 @@ function toggleFav(id){
   if(i===-1) favorites.push(id);
   else favorites.splice(i,1);
   localStorage.setItem('leka_favs',JSON.stringify(favorites));
+  localStorage.setItem('leka_favs_dirty','1');
+  scheduleSyncPush('favs');
   renderGrids();
   const sub=document.getElementById('sbFavCount');
   if(sub) sub.textContent=favorites.length+' items';
@@ -3081,13 +3088,21 @@ function renderFavs(){
   const grid=document.getElementById('grid-favs');
   const empty=document.getElementById('favsEmpty');
   if(!grid) return;
-  const favProds=PRODUCTS.filter(p=>favorites.includes(p.id));
-  if(!favProds.length){
+  // المفضلة متخزنة كـ "رقم المنتج_اللون" — بنعرض كل منتج باللون اللي اتحط في المفضلة
+  const favCards=[];
+  favorites.forEach(f=>{
+    const id=parseInt(f,10), p=PRODUCTS.find(x=>x.id===id);
+    if(!p) return;
+    const key=typeof f==='string'&&f.indexOf('_')>0?f.slice(f.indexOf('_')+1):null;
+    const idx=key?p.colors.findIndex(c=>getColorKey(c)===key):0;
+    if(idx>=0) favCards.push(makeCard(p,idx));
+  });
+  if(!favCards.length){
     grid.innerHTML='';
     if(empty){empty.style.display='block';empty.textContent=lang==='ar'?'لا يوجد منتجات في المفضلة':'No items in your wishlist yet'}
   } else {
     if(empty) empty.style.display='none';
-    grid.innerHTML=favProds.map(p=>makeCard(p,0)).join('');
+    grid.innerHTML=favCards.join('');
   }
 }
 
@@ -3282,31 +3297,14 @@ document.getElementById('buyNow').onclick=()=>{if(cur){addToCart(cur,selSize,cur
 function saveCart(){
   localStorage.setItem('leka_cart',JSON.stringify(cart));
   localStorage.setItem('leka_cart_dirty','1');
-  scheduleCartPush();
+  scheduleSyncPush('cart');
 }
 
-// ── مزامنة العربة بين الأجهزة (للعميلة اللي عاملة حساب) ──
-// العربة بتتحفظ على السيرفر مع حساب العميلة (بالإيميل). كل جهاز بيفتكر آخر نسخة من السيرفر شافها (leka_cart_base)
-// وهل فيه تعديلات لسه متبعتتش (leka_cart_dirty) — من غير ما نعتمد على ساعة الجهاز
-// لو الدالتين مش موجودين في قاعدة البيانات لسه (supabase_cart_sync.sql) أو حصل أي خطأ، العربة بتفضل شغالة على الجهاز عادي
-let cartPushTimer=null,cartSyncBusy=false;
+// ── مزامنة العربة والمفضلة بين الأجهزة (للعميلة اللي عاملة حساب) ──
+// بتتحفظ على السيرفر مع حساب العميلة (بالإيميل). كل جهاز بيفتكر آخر نسخة من السيرفر شافها (<مفتاح>_base)
+// وهل فيه تعديلات لسه متبعتتش (<مفتاح>_dirty) — من غير ما نعتمد على ساعة الجهاز
+// لو الدوال مش موجودة في قاعدة البيانات لسه (supabase_cart_sync.sql / supabase_favorites_sync.sql) أو حصل أي خطأ، كله بيفضل شغال على الجهاز عادي
 const cartLineKey=i=>i.id+'|'+i.size+'|'+i.colorHex;
-function cartSyncEmail(){ return customerProfile&&customerProfile.email?customerProfile.email:null; }
-function scheduleCartPush(){
-  if(!cartSyncEmail()) return;
-  clearTimeout(cartPushTimer);
-  cartPushTimer=setTimeout(pushCart,800);
-}
-async function pushCart(){
-  const email=cartSyncEmail(); if(!email) return;
-  const snapshot=JSON.stringify(cart);
-  try{
-    const {data,error}=await sb.rpc('save_customer_cart',{p_email:email,p_cart:cart});
-    if(error||!data) return;
-    localStorage.setItem('leka_cart_base',String(Date.parse(data)));
-    if(JSON.stringify(cart)===snapshot) localStorage.setItem('leka_cart_dirty','');
-  }catch(e){console.warn('Cart sync:',e)}
-}
 // بنرجّع بيانات كل قطعة من المنتجات الحالية (السعر والاسم)، ونشيل القطع اللي المنتج بتاعها اتمسح من الموقع
 function sanitizeCartItems(items){
   if(!Array.isArray(items)) return [];
@@ -3324,44 +3322,71 @@ function mergeCartItems(a,b){
   });
   return out;
 }
-function applyCartFromSync(){
-  localStorage.setItem('leka_cart',JSON.stringify(cart));
-  updateBadge();
-  if(document.getElementById('cDrawer').classList.contains('open')) renderCart();
+function sanitizeFavs(list){
+  if(!Array.isArray(list)) return [];
+  return [...new Set(list.filter(f=>(typeof f==='string'||typeof f==='number')&&PRODUCTS.some(p=>p.id===parseInt(f,10))))];
 }
-// mode 'login': أول ما العميلة تدخل حسابها بنضم عربة الجهاز لعربة الحساب. mode 'load': تحديث عادي (فتح الموقع/الرجوع للتاب)
-async function pullCart(mode){
-  const email=cartSyncEmail(); if(!email||cartSyncBusy) return;
-  if(!PRODUCTS.length) return;
-  cartSyncBusy=true;
+function mergeFavs(a,b){ return [...new Set([...a,...b])]; }
+const SYNC_CHANNELS={
+  cart:{ls:'leka_cart',col:'cart',get:()=>cart,set:v=>{cart=v},clean:sanitizeCartItems,merge:mergeCartItems,
+    rpcGet:'get_customer_cart',rpcSave:'save_customer_cart',param:'p_cart',
+    onApply(){ updateBadge(); if(document.getElementById('cDrawer').classList.contains('open')) renderCart(); }},
+  favs:{ls:'leka_favs',col:'favorites',get:()=>favorites,set:v=>{favorites=v},clean:sanitizeFavs,merge:mergeFavs,
+    rpcGet:'get_customer_favorites',rpcSave:'save_customer_favorites',param:'p_favorites',
+    onApply(){ renderGrids(); const sub=document.getElementById('sbFavCount'); if(sub) sub.textContent=favorites.length+' items'; }}
+};
+const syncTimers={},syncBusy={};
+function cartSyncEmail(){ return customerProfile&&customerProfile.email?customerProfile.email:null; }
+function scheduleSyncPush(name){
+  if(!cartSyncEmail()) return;
+  clearTimeout(syncTimers[name]);
+  syncTimers[name]=setTimeout(()=>pushSync(name),800);
+}
+async function pushSync(name){
+  const ch=SYNC_CHANNELS[name], email=cartSyncEmail(); if(!email) return;
+  const snapshot=JSON.stringify(ch.get());
   try{
-    const {data,error}=await sb.rpc('get_customer_cart',{p_email:email});
+    const {data,error}=await sb.rpc(ch.rpcSave,{p_email:email,[ch.param]:ch.get()});
+    if(error||!data) return;
+    localStorage.setItem(ch.ls+'_base',String(Date.parse(data)));
+    if(JSON.stringify(ch.get())===snapshot) localStorage.setItem(ch.ls+'_dirty','');
+  }catch(e){console.warn('Sync '+name+':',e)}
+}
+// mode 'login': أول ما العميلة تدخل حسابها بنضم اللي على الجهاز للي على الحساب. mode 'load': تحديث عادي (فتح الموقع/الرجوع للتاب)
+async function pullSync(name,mode){
+  const ch=SYNC_CHANNELS[name], email=cartSyncEmail();
+  if(!email||syncBusy[name]||!PRODUCTS.length) return;
+  syncBusy[name]=true;
+  try{
+    const {data,error}=await sb.rpc(ch.rpcGet,{p_email:email});
     if(error||!data||!data[0]) return;
     const row=data[0];
     const srvTs=row.updated_at?Date.parse(row.updated_at):null;
-    const base=parseInt(localStorage.getItem('leka_cart_base')||'0',10)||null;
-    const dirty=!!localStorage.getItem('leka_cart_dirty');
-    if(srvTs===null){ if(cart.length) await pushCart(); return; }
-    const srvCart=sanitizeCartItems(row.cart);
-    if(srvTs===base && mode!=='login'){ if(dirty) await pushCart(); return; }
-    if(srvTs!==base || mode==='login'){
-      if(dirty||mode==='login'){
-        cart=mergeCartItems(sanitizeCartItems(cart),srvCart);
-        localStorage.setItem('leka_cart_base',String(srvTs));
-        saveCart(); // dirty عشان تتبعت النسخة المدمجة
-      } else {
-        cart=srvCart;
-        localStorage.setItem('leka_cart_base',String(srvTs));
-        localStorage.setItem('leka_cart_dirty','');
-      }
-      applyCartFromSync();
+    const base=parseInt(localStorage.getItem(ch.ls+'_base')||'0',10)||null;
+    const dirty=!!localStorage.getItem(ch.ls+'_dirty');
+    if(srvTs===null){ if(ch.get().length) await pushSync(name); return; }
+    if(srvTs===base&&mode!=='login'){ if(dirty) await pushSync(name); return; }
+    const srvList=ch.clean(row[ch.col]);
+    if(dirty||mode==='login'){
+      ch.set(ch.merge(ch.clean(ch.get()),srvList));
+      localStorage.setItem(ch.ls,JSON.stringify(ch.get()));
+      localStorage.setItem(ch.ls+'_base',String(srvTs));
+      localStorage.setItem(ch.ls+'_dirty','1'); // عشان النسخة المدمجة تتبعت
+      scheduleSyncPush(name);
+    } else {
+      ch.set(srvList);
+      localStorage.setItem(ch.ls,JSON.stringify(ch.get()));
+      localStorage.setItem(ch.ls+'_base',String(srvTs));
+      localStorage.setItem(ch.ls+'_dirty','');
     }
-  }catch(e){console.warn('Cart sync:',e)}
-  finally{cartSyncBusy=false}
+    ch.onApply();
+  }catch(e){console.warn('Sync '+name+':',e)}
+  finally{syncBusy[name]=false}
 }
+const pullAllSync=mode=>Promise.all([pullSync('cart',mode),pullSync('favs',mode)]);
 let lastCartPull=0;
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'&&Date.now()-lastCartPull>20000){ lastCartPull=Date.now(); pullCart('load'); }
+  if(document.visibilityState==='visible'&&Date.now()-lastCartPull>20000){ lastCartPull=Date.now(); pullAllSync('load'); }
 });
 
 function addToCart(p,size,color,amount){
@@ -3445,7 +3470,8 @@ function renderCart(){
   body.innerHTML=cart.map((item,i)=>`
     <div class="ci"><img src="${item.img}" alt=""/>
     <div><div class="ci-name">${lang==='ar'?item.nameAr:item.nameEn}</div>
-    <div class="ci-sub">${item.size} · ${lang==='ar'?item.colorAr:item.colorEn} · ×${item.qty}</div></div>
+    <div class="ci-sub">${item.size} · ${lang==='ar'?item.colorAr:item.colorEn}</div>
+    <div class="ci-qty"><button onclick="changeCartQty(${i},-1)" ${item.qty<=1?'disabled':''} aria-label="${lang==='ar'?'تقليل الكمية':'Decrease quantity'}">−</button><span>${item.qty}</span><button onclick="changeCartQty(${i},1)" ${item.qty>=cartMaxQty(item)?'disabled':''} aria-label="${lang==='ar'?'زيادة الكمية':'Increase quantity'}">+</button></div></div>
     <div class="ci-right">
       <div class="ci-price">${item.price*item.qty} EGP</div>
       <button class="ci-rm" onclick="removeItem(${i})" aria-label="${lang==='ar'?'إزالة':'Remove'}" title="${lang==='ar'?'إزالة':'Remove'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M4 6h16"/><path d="M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/><line x1="10" y1="10" x2="10" y2="18"/><line x1="12" y1="10" x2="12" y2="18"/><line x1="14" y1="10" x2="14" y2="18"/></svg></button>
@@ -3453,6 +3479,15 @@ function renderCart(){
   document.getElementById('cTotal').textContent=cart.reduce((a,i)=>a+i.price*i.qty,0)+' EGP';
 }
 function removeItem(i){cart.splice(i,1);saveCart();updateBadge();renderCart()}
+// أقصى كمية للقطعة في العربة: 10 أو المتاح في المخزون (الأقل)
+function cartMaxQty(item){return Math.max(1,Math.min(10,getQty(item.id,item.colorKey||item.colorEn,item.size)))}
+function changeCartQty(i,delta){
+  const item=cart[i]; if(!item) return;
+  const n=item.qty+delta;
+  if(n<1||n>cartMaxQty(item)) return;
+  item.qty=n;
+  saveCart();updateBadge();renderCart();
+}
 function openCart(){renderCart();document.getElementById('cDrawer').classList.add('open');document.getElementById('cOverlay').classList.add('open');lockBodyScroll()}
 function closeCart(){document.getElementById('cDrawer').classList.remove('open');document.getElementById('cOverlay').classList.remove('open');unlockBodyScroll()}
 document.getElementById('cartBtn').onclick=openCart;
@@ -4145,7 +4180,7 @@ loadProducts().then(async ()=>{
   maybeShowWelcomeModal();
   checkIfBlocked();
   lastCartPull=Date.now();
-  pullCart('load');
+  pullAllSync('load');
 });
 loadShippingCosts();
 </script>
