@@ -3580,6 +3580,14 @@ document.getElementById('placeOrderBtn').onclick=async function(){
     markBad(errBType);
   }
   if(!valid){
+    // لو العميلة مختارة عنوان محفوظ، خانات العنوان مخفية — فأي نقص فيها كان بيفشل من غير ما يظهرلها حاجة.
+    // بنفتح الخانات (من غير ما نمسح اللي فيها) عشان تشوف الخانة الناقصة وتكملها
+    const addrFields=document.getElementById('coAddressFields');
+    if(addrFields&&addrFields.style.display==='none'){
+      addrFields.style.display='';
+      document.querySelectorAll('#coSavedAddrOptions input[type=radio]').forEach(r=>{r.checked=false});
+      const newMode=document.getElementById('coAddrModeNew'); if(newMode) newMode.checked=true;
+    }
     if(firstBad) firstBad.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
