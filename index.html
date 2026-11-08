@@ -2911,6 +2911,14 @@ function catLabel(p){
   if(hasFull) return lang==='ar'?'كم طويل — موديست':'Long Sleeve — Modest';
   return lang==='ar'?'كل المنتجات':'All Products';
 }
+// دوايرة الألوان على الكارت: بنبدّل الكارت نفسه باللون اللي اتدوس عليه
+function switchCardColor(pid,idx,el){
+  const p=PRODUCTS.find(x=>x.id===pid), card=el&&el.closest('.card');
+  if(!p||!card||!p.colors[idx]) return;
+  const tmp=document.createElement('div');
+  tmp.innerHTML=makeCard(p,idx).trim();
+  card.replaceWith(tmp.firstElementChild);
+}
 function makeCard(p,colorIdx=0){
   const c=p.colors[colorIdx];
   const colorKey=getColorKey(c);
@@ -2926,7 +2934,7 @@ function makeCard(p,colorIdx=0){
   const badgeClass=badge==='new'?'badge-new':(badge==='sale'||badge==='sale13')?'badge-sale':'';
   const badgeHtml=badgeTxt?`<div class="card-badge ${badgeClass}">${badgeTxt}</div>`:'';
   // دوايرة الألوان
-  const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${swatchBg(col)};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i})"></div>`).join('');
+  const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${swatchBg(col)};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i},this)"></div>`).join('');
   return `<div class="card" onclick="openProductWithColor(${p.id},${colorIdx})">
     <div class="card-img" style="position:relative">
       <img src="${c.img}" alt="${name}" loading="lazy" id="cardimg_${p.id}_${colorIdx}"/>
@@ -3748,18 +3756,23 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   }
   if(!cart.length){showToast({nameAr:lang==='ar'?'لا يوجد منتجات في عربة التسوق':'Cart is empty',nameEn:'Cart is empty'});return}
 
+  // بنقفل الزرار فورًا (قبل أي انتظار) عشان لو العميلة دوست مرتين بسرعة ميتسجلش أوردرين
+  const btn=this;
+  if(btn.disabled) return;
+  btn.disabled=true;btn.textContent=lang==='ar'?'جاري الإرسال...':'Submitting...';
+  const resetBtn=()=>{btn.disabled=false;btn.textContent=lang==='ar'?'تأكيد الطلب':'Place Order';};
+
   // فحص إضافي: حتى لو من غير حساب، لو رقم الموبايل أو الإيميل اللي دخلته دلوقتي متسجل عليه حظر منسمحلهاش تكمل —
   // من غير ما نقول ليها إننا عرفنا من البيانات دي بالذات
   const {data:blockCheck}=await sb.rpc('check_customer_blocked',{p_phone:phone,p_email:email||null});
   if(blockCheck){
+    resetBtn();
     openBlockedModal();
     return;
   }
 
   const total=cart.reduce((a,i)=>a+i.price*i.qty,0)+(getShippingCost()||0);
   const itemsData=cart.map(i=>({name:i.nameAr+' / '+i.nameEn,size:i.size,color:i.colorAr+' / '+i.colorEn,qty:i.qty,price:i.price}));
-
-  const btn=this;btn.disabled=true;btn.textContent=lang==='ar'?'جاري الإرسال...':'Submitting...';
 
   // توليد رقم أوردر عشوائي وفريد — بيتأكد إن الرقم مش مستخدم قبل كده قبل ما يحاول يحفظ
   const orderNum=await generateUniqueOrderNumber();
