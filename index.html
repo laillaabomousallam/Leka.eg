@@ -2687,11 +2687,21 @@ function poolProductIds(list,cat,size){
   return list.filter(p=>p.cat===cat||(linkSM&&(p.cat===adult||p.cat==='junior_'+adult))).map(p=>p.id);
 }
 
-// بعض الألوان (زي تصميمين أسود بلونين) مخزونها مشترك مع لون تاني — stockKey هو اللون اللي مخزونه بيتخصم منه
+// اللون المقسوم لونين (زي أسود × رمادي) مخزونه هو مخزون اللون الأساسي بتاعه (أول لون) — يعني أسود عادي
+// بنحدد اللون الأساسي بأقرب لون من الألوان الأساسية، من غير ما حد يضبط حاجة يدوي
+const BASE_STOCK_COLORS=[['Black','#0a0a0a'],['White','#f0f0f0'],['Gray','#3f3b3b'],['Burgundy','#5b0b0b']];
+function baseStockKeyOf(hex){
+  const rgb=h=>{const m=/^#?([0-9a-f]{6})$/i.exec(h||''); if(!m) return null; const n=parseInt(m[1],16); return [n>>16&255,n>>8&255,n&255];};
+  const a=rgb(hex); if(!a) return null;
+  let best=null,bd=Infinity;
+  BASE_STOCK_COLORS.forEach(([k,h])=>{const b=rgb(h),d=(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2; if(d<bd){bd=d;best=k;}});
+  return best;
+}
+function colorStockKey(c){ return c.stockKey||(c.hex2?baseStockKeyOf(c.hex):null)||c.key; }
 function stockKeyFor(productId,colorKey){
   const p=PRODUCTS.find(x=>x.id===productId);
   const c=p&&p.colors.find(x=>getColorKey(x)===colorKey);
-  return (c&&c.stockKey)||colorKey;
+  return c?colorStockKey({...c,key:colorKey}):colorKey;
 }
 function getQty(productId,colorKey,size){
   const sk=stockKeyFor(productId,colorKey);
