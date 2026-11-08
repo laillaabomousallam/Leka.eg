@@ -2005,7 +2005,7 @@ function mapProductRow(row){
     sizes:row.sizes||['S','M','L','XL'],
     // بنستخبى أي لون لسه ملوش صور مرفوعة — يفضل يظهر في الداشبورد بس لحد ما يترفعله صور
     colors:(row.colors||[]).filter(c=>c.images&&c.images.length).map(c=>({
-      nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,key:c.key,
+      nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,hex2:c.hex2||null,key:c.key,
       images:c.images,
       img:c.images[0],
       badge:c.badge||null,
@@ -2663,6 +2663,7 @@ async function loadBestSeller(){
   doSearch();
 }
 
+function swatchBg(c){return c&&c.hex2?`linear-gradient(135deg,${c.hex} 50%,${c.hex2} 50%)`:(c?c.hex:'')} // لون واحد أو لونين متقسمين نص ونص
 function getColorKey(color){
   return color.key || color.nameEn;
 }
@@ -2899,7 +2900,7 @@ function makeCard(p,colorIdx=0){
   const badgeClass=badge==='new'?'badge-new':(badge==='sale'||badge==='sale13')?'badge-sale':'';
   const badgeHtml=badgeTxt?`<div class="card-badge ${badgeClass}">${badgeTxt}</div>`:'';
   // دوايرة الألوان
-  const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${col.hex};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i})"></div>`).join('');
+  const dots=p.colors.map((col,i)=>`<div class="cdot ${i===colorIdx?'cdot-active':''}" style="background:${swatchBg(col)};${col.hex==='#f0f0f0'?'border-color:#ccc':''}" onclick="event.stopPropagation();switchCardColor(${p.id},${i})"></div>`).join('');
   return `<div class="card" onclick="openProductWithColor(${p.id},${colorIdx})">
     <div class="card-img" style="position:relative">
       <img src="${c.img}" alt="${name}" loading="lazy" id="cardimg_${p.id}_${colorIdx}"/>
@@ -3153,7 +3154,7 @@ function renderProd(p){
     const key=getColorKey(c);
     const colorAvail=isColorAvailable(p,key);
     return `<div class="color-sw ${i===selColor?'active':''} ${!colorAvail?'color-sold-out':''}" 
-      style="background:${c.hex};${c.hex==='#f0f0f0'?'border-color:#bbb!important':''}" 
+      style="background:${swatchBg(c)};${c.hex==='#f0f0f0'?'border-color:#bbb!important':''}" 
       onclick="${colorAvail?`switchColor(${i})`:''}" 
       title="${!colorAvail?(lang==='ar'?'نفذت الكمية':'Sold Out'):''}"></div>`;
   }).join('');
@@ -3311,7 +3312,7 @@ function saveCart(){
 // بتتحفظ على السيرفر مع حساب العميلة (بالإيميل). كل جهاز بيفتكر آخر نسخة من السيرفر شافها (<مفتاح>_base)
 // وهل فيه تعديلات لسه متبعتتش (<مفتاح>_dirty) — من غير ما نعتمد على ساعة الجهاز
 // لو الدوال مش موجودة في قاعدة البيانات لسه (supabase_cart_sync.sql / supabase_favorites_sync.sql) أو حصل أي خطأ، كله بيفضل شغال على الجهاز عادي
-const cartLineKey=i=>i.id+'|'+i.size+'|'+i.colorHex;
+const cartLineKey=i=>i.id+'|'+i.size+'|'+(i.colorKey||i.colorHex);
 // بنرجّع بيانات كل قطعة من المنتجات الحالية (السعر والاسم)، ونشيل القطع اللي المنتج بتاعها اتمسح من الموقع
 function sanitizeCartItems(items){
   if(!Array.isArray(items)) return [];
@@ -3398,7 +3399,7 @@ document.addEventListener('visibilitychange',()=>{
 
 function addToCart(p,size,color,amount){
   const colorKey=getColorKey(color);
-  const ex=cart.find(i=>i.id===p.id&&i.size===size&&i.colorHex===color.hex);
+  const ex=cart.find(i=>i.id===p.id&&i.size===size&&(i.colorKey||i.colorEn)===colorKey);
   if(ex)ex.qty+=amount;
   else cart.push({id:p.id,nameAr:p.nameAr,nameEn:p.nameEn,price:p.price,size,colorHex:color.hex,colorAr:color.nameAr,colorEn:color.nameEn,colorKey,img:color.img,qty:amount});
   saveCart();updateBadge();showToast(p);
@@ -3431,7 +3432,7 @@ function renderQS(mode){
     const key=getColorKey(c);
     const avail=isColorAvailable(p,key);
     return `<div class="qs-color-sw ${i===qsSelColor?'active':''} ${!avail?'color-sold-out':''}"
-      style="background:${c.hex};${c.hex==='#f0f0f0'?'border-color:#bbb!important':''}"
+      style="background:${swatchBg(c)};${c.hex==='#f0f0f0'?'border-color:#bbb!important':''}"
       onclick="${avail?`qsSwitchColor('${mode}',${i})`:''}"
     ></div>`;
   }).join('');
@@ -3778,7 +3779,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   // لو حصل أي خطأ هنا الأوردر اتحفظ فعلًا، فلازم العميلة تشوف تأكيد الطلب مش زرار متعلق (عشان ماتبعتش أوردر مكرر)
   try{
   for(const item of cart){
-    const colorKey=item.colorEn||item.colorKey||'Black';
+    const colorKey=item.colorKey||item.colorEn||'Black';
     const boughtProduct=PRODUCTS.find(p=>p.id===item.id);
     const isShared=boughtProduct&&isPooledInventory(boughtProduct.cat,colorKey,item.size);
     const sameTypeIds=isShared?poolProductIds(PRODUCTS,boughtProduct.cat,item.size):[item.id];
