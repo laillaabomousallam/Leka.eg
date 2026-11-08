@@ -462,7 +462,10 @@ html[lang=en] .prod-notice{border-right:none;border-left:none}
 .order-item-price{font-size:.78rem;font-weight:600}
 .order-row{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.45rem;color:var(--mid)}
 .order-row.total{font-weight:700;font-size:.9rem;color:var(--ink);margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--line)}
-.order-notice{font-size:.68rem;color:var(--muted);margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--line);line-height:1.6}
+.order-notice{font-size:.68rem;color:var(--muted);margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--line);line-height:1.6;display:flex;align-items:flex-start;gap:.45rem}
+.co-ico{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.order-notice .co-ico{margin-top:2px}
+.pay-opt-name{display:flex;align-items:center;gap:.45rem}
 
 /* ─── SUCCESS ─── */
 .success-wrap{
@@ -1595,12 +1598,12 @@ html[lang=en] .contact-layout > div:last-child{order:1}
         <div class="pay-opts">
           <label class="pay-opt">
             <input type="radio" name="payment" value="cod" checked/>
-            <div><div class="pay-opt-name t" data-ar="💵 كاش عند الاستلام" data-en="💵 Cash on Delivery"></div>
+            <div><div class="pay-opt-name"><svg class="co-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></svg><span class="t" data-ar="كاش عند الاستلام" data-en="Cash on Delivery"></span></div>
             <div class="pay-opt-sub t" data-ar="ادفع لما الأوردر يوصلك" data-en="Pay when your order arrives"></div></div>
           </label>
           <label class="pay-opt">
             <input type="radio" name="payment" value="instapay"/>
-            <div><div class="pay-opt-name t" data-ar="📱 InstaPay" data-en="📱 InstaPay"></div>
+            <div><div class="pay-opt-name"><svg class="co-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg><span class="t" data-ar="InstaPay" data-en="InstaPay"></span></div>
             <div class="pay-opt-sub t" data-ar="تحويل اونلاين قبل الشحن" data-en="Online transfer before shipping"></div></div>
           </label>
         </div>
@@ -1612,15 +1615,15 @@ html[lang=en] .contact-layout > div:last-child{order:1}
           <div class="order-row"><span class="t" data-ar="المجموع" data-en="Subtotal"></span><span id="osSubtotal">0 EGP</span></div>
           <div class="order-row"><span class="t" data-ar="الشحن" data-en="Shipping"></span><span id="osShipping"></span></div>
           <div class="order-row total"><span class="t" data-ar="الإجمالي" data-en="Total"></span><span id="osTotal">0 EGP</span></div>
-          <div class="order-notice t"
-               data-ar="يمكن معاينة المنتج عند الاستلام "
-               data-en="✅ Inspect on delivery"></div>
-          <div class="order-notice t" style="margin-top:.4rem;padding-top:0;border-top:none"
-               data-ar="🚚 التوصيل خلال 3 إلى 5 أيام عمل"
-               data-en="🚚 Delivery within 3 to 5 business days"></div>
-          <div class="order-notice t"
-               data-ar="⚠️ في حالة عدم استلام الشحنة، يتم دفع قيمة الشحن."
-               data-en="⚠️ If the shipment is not received, the shipping cost must still be paid."></div>
+          <div class="order-notice"><svg class="co-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg><span class="t"
+               data-ar="يمكن معاينة المنتج عند الاستلام"
+               data-en="Inspect on delivery"></span></div>
+          <div class="order-notice" style="margin-top:.4rem;padding-top:0;border-top:none"><svg class="co-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 5h13v11H1z"/><path d="M14 9h4l3 3v4h-7"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><span class="t"
+               data-ar="التوصيل خلال 3 إلى 5 أيام عمل"
+               data-en="Delivery within 3 to 5 business days"></span></div>
+          <div class="order-notice"><svg class="co-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18h.01"/></svg><span class="t"
+               data-ar="في حالة عدم استلام الشحنة، يتم دفع قيمة الشحن."
+               data-en="If the shipment is not received, the shipping cost must still be paid."></span></div>
         </div>
       </div>
     </div>
