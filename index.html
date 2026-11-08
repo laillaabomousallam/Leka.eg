@@ -2005,7 +2005,7 @@ function mapProductRow(row){
     sizes:row.sizes||['S','M','L','XL'],
     // بنستخبى أي لون لسه ملوش صور مرفوعة — يفضل يظهر في الداشبورد بس لحد ما يترفعله صور
     colors:(row.colors||[]).filter(c=>c.images&&c.images.length).map(c=>({
-      nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,hex2:c.hex2||null,key:c.key,
+      nameAr:c.nameAr,nameEn:c.nameEn,hex:c.hex,hex2:c.hex2||null,key:c.key,stockKey:c.stockKey||null,
       images:c.images,
       img:c.images[0],
       badge:c.badge||null,
@@ -2687,9 +2687,25 @@ function poolProductIds(list,cat,size){
   return list.filter(p=>p.cat===cat||(linkSM&&(p.cat===adult||p.cat==='junior_'+adult))).map(p=>p.id);
 }
 
+// بعض الألوان (زي تصميمين أسود بلونين) مخزونها مشترك مع لون تاني — stockKey هو اللون اللي مخزونه بيتخصم منه
+function stockKeyFor(productId,colorKey){
+  const p=PRODUCTS.find(x=>x.id===productId);
+  const c=p&&p.colors.find(x=>getColorKey(x)===colorKey);
+  return (c&&c.stockKey)||colorKey;
+}
 function getQty(productId,colorKey,size){
-  const k=`${productId}_${colorKey}_${size}`;
-  return inventory[k]!==undefined ? inventory[k] : 99;
+  const sk=stockKeyFor(productId,colorKey);
+  const k=`${productId}_${sk}_${size}`;
+  if(inventory[k]!==undefined) return inventory[k];
+  // لو المنتج ملوش صف للون ده، بنجيب الكمية من أي منتج من نفس النوع (المخزون مشترك)
+  const p=PRODUCTS.find(x=>x.id===productId);
+  if(p&&sk!==colorKey){
+    for(const id of poolProductIds(PRODUCTS,p.cat,size)){
+      const v=inventory[`${id}_${sk}_${size}`];
+      if(v!==undefined) return v;
+    }
+  }
+  return 99;
 }
 function isAvailable(productId,size,colorKey='Black'){return getQty(productId,colorKey,size)>0}
 function isProductAvailable(p){
@@ -3779,7 +3795,7 @@ document.getElementById('placeOrderBtn').onclick=async function(){
   // لو حصل أي خطأ هنا الأوردر اتحفظ فعلًا، فلازم العميلة تشوف تأكيد الطلب مش زرار متعلق (عشان ماتبعتش أوردر مكرر)
   try{
   for(const item of cart){
-    const colorKey=item.colorKey||item.colorEn||'Black';
+    const colorKey=stockKeyFor(item.id,item.colorKey||item.colorEn||'Black');
     const boughtProduct=PRODUCTS.find(p=>p.id===item.id);
     const isShared=boughtProduct&&isPooledInventory(boughtProduct.cat,colorKey,item.size);
     const sameTypeIds=isShared?poolProductIds(PRODUCTS,boughtProduct.cat,item.size):[item.id];
